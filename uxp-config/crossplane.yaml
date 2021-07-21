@@ -1,0 +1,10 @@
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: devops-toolkit
+spec:
+  crossplane:
+    version: ">=v1.2.3"
+  dependsOn:
+  - provider: registry.upbound.io/crossplane/provider-aws
+    version: "v0.18.1"

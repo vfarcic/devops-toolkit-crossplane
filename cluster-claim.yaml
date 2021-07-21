@@ -1,0 +1,18 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team
+  namespace: infra
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team
+  compositionSelector:
+    matchLabels:
+      provider: aws
+      cluster: eks
+  parameters:
+    # Possible values small, medium, large
+    nodeSize: small
+    # version: "1.20"
+    minNodeCount: 3
