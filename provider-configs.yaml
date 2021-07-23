@@ -11,3 +11,17 @@ spec:
       namespace: upbound-system
       name: aws-creds
       key: creds
+
+---
+
+apiVersion: azure.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: upbound-system
+      name: azure-creds
+      key: creds

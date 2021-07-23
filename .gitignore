@@ -1,4 +1,5 @@
 /creds
 /aws-creds.conf
+/azure-creds.json
 /kubeconfig.yaml
 

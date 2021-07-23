@@ -8,3 +8,5 @@ spec:
   dependsOn:
   - provider: registry.upbound.io/crossplane/provider-aws
     version: "v0.18.1"
+  - provider: registry.upbound.io/crossplane/provider-azure
+    version: "v0.16.1"
