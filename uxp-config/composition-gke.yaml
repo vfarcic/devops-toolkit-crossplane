@@ -25,7 +25,7 @@ spec:
             username:
           initialClusterVersion: latest
         writeConnectionSecretToRef:
-          namespace: crossplane-system
+          namespace: upbound-system
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -39,9 +39,6 @@ spec:
       toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.initialClusterVersion
-    - type: ToCompositeFieldPath
-      fromFieldPath: metadata.annotations[crossplane.io/external-name]
-      toFieldPath: status.clusterName
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.status
       toFieldPath: status.controlPlaneStatus
