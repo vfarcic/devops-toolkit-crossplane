@@ -26,6 +26,7 @@ metadata:
           enum:
           - cluster-aws
           - cluster-azure
+          - cluster-google
           validation:
           - required: true
             customError: Cluster type is required.

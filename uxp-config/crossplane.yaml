@@ -10,3 +10,5 @@ spec:
     version: "v0.18.1"
   - provider: registry.upbound.io/crossplane/provider-azure
     version: "v0.16.1"
+  - provider: registry.upbound.io/crossplane/provider-gcp
+    version: "v0.17.1"
