@@ -21,8 +21,6 @@ spec:
       spec:
         forProvider:
           location: us-east1
-          masterAuth:
-            username:
           initialClusterVersion: latest
         writeConnectionSecretToRef:
           namespace: upbound-system
