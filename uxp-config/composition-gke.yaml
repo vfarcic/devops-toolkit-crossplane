@@ -8,7 +8,7 @@ metadata:
 spec:
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
-    kind: CompositeKubernetesCluster
+    kind: CompositeCluster
   patchSets:
   - name: metadata
     patches:
