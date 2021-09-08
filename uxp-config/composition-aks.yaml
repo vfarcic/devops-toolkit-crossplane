@@ -24,9 +24,6 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: metadata.name
-      toFieldPath: metadata.labels.resourcegroup
   - name: aks
     base:
       apiVersion: compute.azure.crossplane.io/v1alpha3
