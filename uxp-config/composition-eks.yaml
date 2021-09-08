@@ -9,7 +9,7 @@ spec:
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
     kind: CompositeCluster
-  writeConnectionSecretsToNamespace: crossplane-system
+  writeConnectionSecretsToNamespace: upbound-system
   patchSets:
   - name: metadata
     patches:
@@ -25,8 +25,6 @@ spec:
           version: "1.21"
           roleArnSelector:
             matchControllerRef: true
-            matchLabels:
-              role: controlplane
           resourcesVpcConfig:
             endpointPrivateAccess: true
             endpointPublicAccess: true
@@ -43,6 +41,12 @@ spec:
         - type: string
           string:
             fmt: "%s-ekscluster"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-controlplane"
     - type: ToCompositeFieldPath
       fromFieldPath: spec.id
       toFieldPath: status.clusterName
@@ -68,8 +72,6 @@ spec:
             matchControllerRef: true
           nodeRoleSelector:
             matchControllerRef: true
-            matchLabels:
-              role: nodegroup
           subnetSelector:
             matchLabels:
               access: public
@@ -90,6 +92,12 @@ spec:
             small: t3.small
             medium: t3.medium
             large: t3.large
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.nodeRoleSelector.matchLabels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodegroup"
     - fromFieldPath: spec.parameters.minNodeCount
       toFieldPath: spec.forProvider.scalingConfig.minSize
     - fromFieldPath: spec.parameters.minNodeCount
@@ -105,9 +113,6 @@ spec:
     base:
       apiVersion: identity.aws.crossplane.io/v1beta1
       kind: IAMRole
-      metadata:
-        labels:
-          role: controlplane
       spec:
         forProvider:
           assumeRolePolicyDocument: |
@@ -134,13 +139,16 @@ spec:
         - type: string
           string:
             fmt: "%s-controlplane"
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-controlplane"
   - name: iamrole-nodegroup
     base:
       apiVersion: identity.aws.crossplane.io/v1beta1
       kind: IAMRole
-      metadata:
-        labels:
-          role: nodegroup
       spec:
         forProvider:
           assumeRolePolicyDocument: |
@@ -167,6 +175,12 @@ spec:
         - type: string
           string:
             fmt: "%s-nodegroup"
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodegroup"
   - name: iamattachment-controlplane
     base:
       apiVersion: identity.aws.crossplane.io/v1beta1
@@ -176,11 +190,15 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
           roleNameSelector:
             matchControllerRef: true
-            matchLabels:
-              role: controlplane
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-controlplane"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
       transforms:
         - type: string
           string:
@@ -194,8 +212,6 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
           roleNameSelector:
             matchControllerRef: true
-            matchLabels:
-              role: controlplane
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -203,6 +219,12 @@ spec:
         - type: string
           string:
             fmt: "%s-service"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-controlplane"
   - name: iamattachment-worker
     base:
       apiVersion: identity.aws.crossplane.io/v1beta1
@@ -212,8 +234,6 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
           roleNameSelector:
             matchControllerRef: true
-            matchLabels:
-              role: nodegroup
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -221,6 +241,12 @@ spec:
         - type: string
           string:
             fmt: "%s-worker"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodegroup"
   - name: iamattachment-cni
     base:
       apiVersion: identity.aws.crossplane.io/v1beta1
@@ -230,8 +256,6 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
           roleNameSelector:
             matchControllerRef: true
-            matchLabels:
-              role: nodegroup
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -239,6 +263,12 @@ spec:
         - type: string
           string:
             fmt: "%s-cni"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodegroup"
   - name: iamattachment-registry
     base:
       apiVersion: identity.aws.crossplane.io/v1beta1
@@ -248,8 +278,6 @@ spec:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
           roleNameSelector:
             matchControllerRef: true
-            matchLabels:
-              role: nodegroup
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -257,6 +285,12 @@ spec:
         - type: string
           string:
             fmt: "%s-registry"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodegroup"
   - name: vpc-nodepool
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1

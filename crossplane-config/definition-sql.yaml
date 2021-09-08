@@ -1,0 +1,45 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: compositesqls.devopstoolkitseries.com
+spec:
+  connectionSecretKeys:
+  - kubeconfig
+  defaultCompositionRef:
+    name: google-postgres
+  group: devopstoolkitseries.com
+  names:
+    kind: CompositeSQL
+    plural: compositesqls
+  claimNames:
+    kind: SQLClaim
+    plural: sqlclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Database ID
+              parameters:
+                type: object
+                properties:
+                  version:
+                    description: "The DB version depends on the DB type and versions available in the selected provider."
+                    type: string
+                  size:
+                    description: "Supported sizes: small, medium, large"
+                    type: string
+                    default: small
+                required:
+                - version
+            required:
+            - id
+            - parameters

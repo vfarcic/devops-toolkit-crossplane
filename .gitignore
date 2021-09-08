@@ -2,4 +2,4 @@
 /aws-creds.conf
 /azure-creds.json
 /kubeconfig.yaml
-
+/gcp-creds.json
