@@ -1,0 +1,63 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cluster-azure
+  labels:
+    provider: azure
+    cluster: aks
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeCluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: resourcegroup
+    base:
+      apiVersion: azure.crossplane.io/v1alpha3
+      kind: ResourceGroup
+      spec:
+        location: eastus
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: aks
+    base:
+      apiVersion: compute.azure.crossplane.io/v1alpha3
+      kind: AKSCluster
+      spec:
+        location: eastus
+        dnsNamePrefix: docatalog
+        version: "1.20.7"
+        nodeCount: 1
+        nodeVMSize: Standard_D2_v2
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.resourceGroupName
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.version
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.nodeCount
+    - fromFieldPath: spec.parameters.nodeSize
+      toFieldPath: spec.nodeVMSize
+      transforms:
+      - type: map
+        map:
+          small: Standard_D2_v2
+          medium: Standard_D4_v2
+          large: Standard_D16_v3
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.state
+      toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.state
+      toFieldPath: status.nodePoolStatus
+    readinessChecks:
+    - type: MatchString
+      fieldPath: "status.state"
+      matchString: "Succeeded"
