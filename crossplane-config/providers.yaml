@@ -1,0 +1,55 @@
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws
+spec:
+  package: crossplane/provider-aws:v0.19.0
+
+---
+
+apiVersion: aws.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: aws-creds
+      key: creds
+
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-helm
+spec:
+  package: crossplane/provider-helm:v0.5.0
+
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-civo
+spec:
+  package: crossplane/provider-civo:main
+
+---
+
+apiVersion: civo.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: provider-civo
+spec:
+  region: nyc1
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: civo-creds
+      key: credentials

@@ -1,0 +1,22 @@
+clusters:
+- name: a-team
+  instances: 3
+  size: g3.k3s.small
+  apps:
+  - istio
+  - kyverno
+  - sealed-secrets
+  - prometheus-operator
+- name: b-team
+  instances: 3
+  size: g3.k3s.small
+  apps:
+  - sealed-secrets
+- name: c-team
+  instances: 1
+  size: g3.k3s.medium
+  apps:
+  - istio
+  - kyverno
+  - sealed-secrets
+  - prometheus-operator

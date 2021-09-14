@@ -1,0 +1,26 @@
+{{- $root := . -}}
+{{- range .Values.clusters }}
+
+---
+
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: {{ .name }}
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: {{ .name }}
+  instances: {{ .instances }}
+  size: {{ .size }}
+  {{- if .apps }}
+  applications:{{- range .apps }}
+  - {{.}}{{- end }}
+  {{- end}}
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: {{ $root.Release.Namespace }}
+  providerConfigRef:
+    name: provider-civo
+{{- end }}

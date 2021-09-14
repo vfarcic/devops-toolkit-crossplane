@@ -1,0 +1,270 @@
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-0
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-0
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-1
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-1
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-2
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-2
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-3
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-3
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-4
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-4
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-5
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-5
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-6
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-6
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-7
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-7
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-8
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-8
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-9
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-9
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-10
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-10
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-11
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-11
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-12
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-12
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-13
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-13
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo
+---
+# Source: civo/templates/cluster.yaml
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: the-team-14
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: the-team-14
+  instances: 1
+  size: g3.k3s.small
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: default
+  providerConfigRef:
+    name: provider-civo

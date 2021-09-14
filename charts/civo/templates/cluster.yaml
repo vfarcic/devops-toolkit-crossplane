@@ -1,0 +1,21 @@
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: {{ include "civo.fullname" . }}
+  labels:
+    provider: civo
+    cluster: ck
+    {{- include "civo.labels" . | nindent 4 }}
+spec:
+  name: {{ include "civo.fullname" . }}
+  instances: {{ .Values.instances }}
+  size: {{ .Values.size }}
+  {{- if .Values.apps }}
+  applications:{{- range .Values.apps }}
+  - {{.}}{{- end }}
+  {{- end}}
+  connectionDetails:
+    connectionSecretNamePrefix: {{ include "civo.fullname" . }}
+    connectionSecretNamespace: {{ .Release.Namespace }}
+  providerConfigRef:
+    name: provider-civo

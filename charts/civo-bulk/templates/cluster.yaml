@@ -1,0 +1,27 @@
+{{ $root := . }}
+{{range $index := until (int .Values.count) }}
+{{ $indexedName := printf "%s-%d" $root.Values.name $index }}
+
+---
+
+kind: CivoKubernetes
+apiVersion: cluster.civo.crossplane.io/v1alpha1
+metadata:
+  name: {{ $indexedName }}
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  name: {{ $indexedName }}
+  instances: {{ $root.Values.instances }}
+  size: {{ $root.Values.size }}
+  {{- if $root.apps }}
+  applications:{{- range .apps }}
+  - {{.}}{{- end }}
+  {{- end}}
+  connectionDetails:
+    connectionSecretNamePrefix: cluster
+    connectionSecretNamespace: {{ $root.Release.Namespace }}
+  providerConfigRef:
+    name: provider-civo
+{{- end }}

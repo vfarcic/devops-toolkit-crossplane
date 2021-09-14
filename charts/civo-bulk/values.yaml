@@ -1,0 +1,9 @@
+name: the-team
+count: 5
+instances: 1
+size: g3.k3s.small
+apps:
+- istio
+- kyverno
+- sealed-secrets
+- prometheus-operator

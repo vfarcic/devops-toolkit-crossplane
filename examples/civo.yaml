@@ -1,0 +1,15 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team
+  compositionSelector:
+    matchLabels:
+      provider: civo
+      cluster: ck
+  parameters:
+    nodeSize: small
+    minNodeCount: 1
