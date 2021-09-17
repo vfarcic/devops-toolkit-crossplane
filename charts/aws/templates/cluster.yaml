@@ -104,7 +104,6 @@ spec:
 {{- range .Values.policiyAttachments }}
 ---
 
-# TODO: Loop
 apiVersion: identity.aws.crossplane.io/v1beta1
 kind: IAMRolePolicyAttachment
 metadata:
