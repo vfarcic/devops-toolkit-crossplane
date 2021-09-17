@@ -1,0 +1,30 @@
+version: 1.21
+region: us-east-1
+instanceType: t3.small
+minSize: 3
+roles:
+- name: eks
+- name: ec2
+policiyAttachments:
+- name: cluster
+  arn: AmazonEKSClusterPolicy
+  role: eks
+- name: service
+  arn: AmazonEKSServicePolicy
+  role: eks
+- name: worker
+  arn: AmazonEKSWorkerNodePolicy
+  role: ec2
+- name: cni
+  arn: AmazonEKS_CNI_Policy
+  role: ec2
+- name: registry
+  arn: AmazonEC2ContainerRegistryReadOnly
+  role: ec2
+zones:
+- zone: a
+  cidr: "10.0.0.0/24"
+- zone: b
+  cidr: "10.0.1.0/24"
+- zone: c
+  cidr: "10.0.2.0/24"

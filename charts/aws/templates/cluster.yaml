@@ -1,0 +1,249 @@
+{{- $root := . -}}
+---
+  
+apiVersion: eks.aws.crossplane.io/v1beta1
+kind: Cluster
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    version: "{{ .Values.version }}"
+    roleArnSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ .Chart.Name }}
+    resourcesVpcConfig:
+      endpointPrivateAccess: true
+      endpointPublicAccess: true
+      subnetIdSelector:
+        matchLabels:
+          provider: aws
+          cluster: eks
+          chart: {{ .Chart.Name }}
+  writeConnectionSecretToRef:
+    name: {{ .Chart.Name }}
+    namespace: {{ .Release.Namespace }}
+
+---
+
+apiVersion: eks.aws.crossplane.io/v1alpha1
+kind: NodeGroup
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    clusterNameSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ .Chart.Name }}
+    subnetSelector:
+      matchLabels:
+        access: public
+    scalingConfig:
+      minSize: 1
+      maxSize: 10
+      desiredSize: 1
+    instanceTypes:
+    - {{ .Values.instanceType }}
+    nodeRoleSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ .Chart.Name }}
+        type: ec2
+    scalingConfig:
+      minSize: {{ .Values.minSize }}
+      desiredSize: {{ .Values.minSize }}
+
+{{- range .Values.roles }}
+---
+
+apiVersion: identity.aws.crossplane.io/v1beta1
+kind: IAMRole
+metadata:
+  name: {{ $root.Chart.Name }}-{{ .name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ $root.Chart.Name }}
+    type: {{ .name }}
+spec:
+  forProvider:
+    assumeRolePolicyDocument: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Principal": {
+                    "Service": [
+                        "{{ .name }}.amazonaws.com"
+                    ]
+                },
+                "Action": [
+                    "sts:AssumeRole"
+                ]
+            }
+        ]
+      }
+
+{{- end }}
+
+{{- range .Values.policiyAttachments }}
+---
+
+# TODO: Loop
+apiVersion: identity.aws.crossplane.io/v1beta1
+kind: IAMRolePolicyAttachment
+metadata:
+  name: {{ $root.Chart.Name }}-{{ .name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ $root.Chart.Name }}
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/{{ .arn }}
+    roleNameSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ $root.Chart.Name }}
+        type: {{ .role }}
+
+{{- end }}
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: VPC
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    cidrBlock: 10.0.0.0/16
+    enableDnsSupport: true
+
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    description: Cluster communication with worker nodes
+    groupName: devops-catalog
+    region: {{ .Values.region }}
+    vpcIdSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ .Chart.Name }}
+    egress:
+    - fromPort: 0
+      toPort: 0
+      ipProtocol: "-1"
+      ipRanges:
+      - cidrIp: "0.0.0.0/0"
+
+{{- range .Values.zones }}
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Subnet
+metadata:
+  name: {{ $root.Chart.Name }}-{{ .zone }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ $root.Chart.Name }}
+    zone: {{ $root.Values.region }}{{ .zone }}
+    access: public
+spec:
+  forProvider:
+    region: {{ $root.Values.region }}
+    availabilityZone: {{ $root.Values.region }}{{ .zone }}
+    cidrBlock: {{ .cidr }}
+    vpcIdSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ $root.Chart.Name }}
+    mapPublicIPOnLaunch: true
+    tags:
+    - key: kubernetes.io/role/elb
+      value: "1"
+
+{{- end }}
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: InternetGateway
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    vpcIdSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ .Chart.Name }}
+
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: RouteTable
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    cluster: eks
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    region: {{ .Values.region }}
+    vpcIdSelector:
+      matchLabels:
+        provider: aws
+        cluster: eks
+        chart: {{ .Chart.Name }}
+    routes:
+      - destinationCidrBlock: 0.0.0.0/0
+        gatewayIdSelector:
+          matchLabels:
+            provider: aws
+            cluster: eks
+            chart: {{ .Chart.Name }}
+    associations:
+{{- range .Values.zones }}
+      - subnetIdSelector:
+          matchLabels:
+            zone: {{ $root.Values.region }}{{ .zone }}
+            access: public
+{{- end }}
