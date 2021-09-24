@@ -18,6 +18,7 @@ spec:
         provider: aws
         cluster: eks
         chart: {{ .Chart.Name }}
+        type: eks
     resourcesVpcConfig:
       endpointPrivateAccess: true
       endpointPublicAccess: true
