@@ -3,4 +3,4 @@
 /azure-creds.json
 /kubeconfig.yaml
 /gcp-creds.json
-kubeconfig.yaml
+kubeconfig*.yaml
