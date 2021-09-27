@@ -1,0 +1,50 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: compositesgs.devopstoolkitseries.com
+spec:
+  defaultCompositionRef:
+    name: sg-aws
+  group: devopstoolkitseries.com
+  names:
+    kind: CompositeSg
+    plural: compositesgs
+  claimNames:
+    kind: SgClaim
+    plural: sgclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID
+              parameters:
+                type: object
+                properties:
+                  egressCidr:
+                    description: CIDR IP
+                    type: string
+                    default: "0.0.0.0/0"
+                required:
+                - egressCidr
+            required:
+            - id
+            - parameters
+          status:
+            type: object
+            properties:
+              egressCidr:
+                description: Egress CIDR
+                type: string
+    additionalPrinterColumns:
+    - name: egressCidr
+      type: string
+      jsonPath: ".status.egressCidr"

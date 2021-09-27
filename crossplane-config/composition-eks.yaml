@@ -303,7 +303,7 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-  - name: sc-nodepool
+  - name: sg-nodepool
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1
       kind: SecurityGroup
