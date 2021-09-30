@@ -1,0 +1,39 @@
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: VPC
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    region: us-east-1
+    cidrBlock: 10.0.0.0/16
+    enableDnsSupport: true
+
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: SecurityGroup
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    provider: aws
+    chart: {{ .Chart.Name }}
+spec:
+  forProvider:
+    description: A silly example
+    groupName: devops-catalog
+    region: us-east-1
+    vpcIdSelector:
+      matchLabels:
+        provider: aws
+        chart: {{ .Chart.Name }}
+    egress:
+    - fromPort: 3306
+      toPort: 3306
+      ipProtocol: tcp
+      ipRanges:
+{{- range .Values.egressCidrIps }}
+      - cidrIp: "{{ . }}"
+{{- end }}
