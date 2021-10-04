@@ -1,0 +1,16 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team
+  namespace: infra
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team
+  compositionSelector:
+    matchLabels:
+      provider: google
+      cluster: gke
+  parameters:
+    nodeSize: small
+    minNodeCount: 3
