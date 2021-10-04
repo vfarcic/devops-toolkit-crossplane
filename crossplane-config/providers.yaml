@@ -1,3 +1,7 @@
+#######
+# AWS #
+#######
+
 ---
 
 apiVersion: pkg.crossplane.io/v1
@@ -21,14 +25,37 @@ spec:
       name: aws-creds
       key: creds
 
+#######
+# GCP #
+#######
+
 ---
 
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-helm
+  name: provider-gcp
 spec:
-  package: crossplane/provider-helm:v0.5.0
+  package: crossplane/provider-gcp:v0.18.0
+
+---
+
+apiVersion: gcp.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  projectID: PROJECT_ID
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: gcp-creds
+      key: creds
+
+########
+# Civo #
+########
 
 ---
 
@@ -53,3 +80,25 @@ spec:
       namespace: crossplane-system
       name: civo-creds
       key: credentials
+
+##########
+# Random #
+##########
+
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-helm
+spec:
+  package: crossplane/provider-helm:v0.5.0
+
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-sql
+spec:
+  package: crossplane/provider-sql:master
