@@ -1,0 +1,33 @@
+apiVersion: container.gcp.crossplane.io/v1beta1
+kind: GKECluster
+metadata:
+  name: devops-toolkit
+spec:
+  forProvider:
+    location: us-east1
+    initialClusterVersion: latest
+
+---
+
+apiVersion: container.gcp.crossplane.io/v1alpha1
+kind: NodePool
+metadata:
+  name: devops-toolkit
+spec:
+  forProvider:
+    locations:
+    - us-east1-b
+    clusterRef:
+      name: devops-toolkit
+    initialNodeCount: 1
+    config:
+      preemptible: true
+      machineType: e2-standard-2
+      oauthScopes:
+      - https://www.googleapis.com/auth/cloud-platform
+    autoscaling:
+      enabled: true
+      minNodeCount: 1
+      maxNodeCount: 2
+    management:
+      autoUpgrade: false

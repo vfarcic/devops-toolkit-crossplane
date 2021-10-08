@@ -45,7 +45,7 @@ kind: ProviderConfig
 metadata:
   name: default
 spec:
-  projectID: PROJECT_ID
+  projectID: devops-toolkit-20211008174130
   credentials:
     source: Secret
     secretRef:

@@ -2,7 +2,6 @@ apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
   name: a-team
-  namespace: infra
   labels:
     cluster-owner: vfarcic
 spec:

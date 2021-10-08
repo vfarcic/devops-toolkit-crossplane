@@ -1,0 +1,15 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQLClaim
+metadata:
+  name: a-team-mysql
+spec:
+  id: a-team-mysql
+  compositionSelector:
+    matchLabels:
+      provider: google
+      db: mysql
+  parameters:
+    version: "8_0"
+    size: small
+  writeConnectionSecretToRef:
+    name: a-team-mysql
