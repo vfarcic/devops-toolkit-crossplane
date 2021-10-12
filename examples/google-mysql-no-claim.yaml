@@ -3,7 +3,7 @@ kind: CompositeSQL
 metadata:
   name: a-team-mysql
 spec:
-  id: a-team-mysql
+  id: a-team-mysql-2
   compositionRef:
     name: google-mysql
   parameters:
