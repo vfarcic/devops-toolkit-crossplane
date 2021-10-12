@@ -11,3 +11,4 @@ spec:
     size: small
   writeConnectionSecretToRef:
     name: a-team-mysql
+    namespace: a-team
