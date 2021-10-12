@@ -1,15 +1,13 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
-kind: ClusterClaim
+kind: CompositeCluster
 metadata:
   name: a-team-ck
   labels:
     cluster-owner: vfarcic
 spec:
   id: a-team-ck
-  compositionSelector:
-    matchLabels:
-      provider: civo
-      cluster: ck
+  compositionRef:
+    name: 
   parameters:
     nodeSize: small
     minNodeCount: 1
