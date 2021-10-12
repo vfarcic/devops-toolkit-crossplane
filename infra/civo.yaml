@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-ck
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-ck
+  compositionRef:
+    name: cluster-civo
+  parameters:
+    nodeSize: small
+    minNodeCount: 1
