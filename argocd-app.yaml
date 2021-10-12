@@ -1,0 +1,46 @@
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: production
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Production project
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: production
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: production
+  source:
+    repoURL: https://github.com/vfarcic/devops-toolkit-crossplane
+    targetRevision: HEAD
+    path: infra
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: true

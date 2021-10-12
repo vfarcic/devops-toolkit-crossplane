@@ -445,3 +445,42 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+  - name: helm
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            key: kubeconfig
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: metadata.uid
+      toFieldPath: spec.credentials.secretRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-ekscluster"
+    readinessChecks:
+      - type: None
+  - name: prometheus
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: prometheus
+          chart:
+            name: prometheus
+            repository: https://prometheus-community.github.io/helm-charts
+            version: "14.9.2"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name

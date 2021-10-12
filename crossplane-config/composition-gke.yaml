@@ -16,8 +16,8 @@ spec:
   resources:
   - name: gkecluster
     base:
-      apiVersion: container.gcp.crossplane.io/v1beta1
-      kind: GKECluster
+      apiVersion: container.gcp.crossplane.io/v1beta2
+      kind: Cluster
       spec:
         forProvider:
           location: us-east1
@@ -48,7 +48,7 @@ spec:
       matchString: "RUNNING"
   - name: nodepool
     base:
-      apiVersion: container.gcp.crossplane.io/v1alpha1
+      apiVersion: container.gcp.crossplane.io/v1beta1
       kind: NodePool
       spec:
         forProvider:
@@ -92,4 +92,3 @@ spec:
     - type: MatchString
       fieldPath: status.atProvider.status
       matchString: RUNNING
-  writeConnectionSecretsToNamespace: crossplane-system

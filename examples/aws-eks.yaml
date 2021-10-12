@@ -1,11 +1,11 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: a-team
+  name: a-team-eks
   labels:
     cluster-owner: vfarcic
 spec:
-  id: a-team
+  id: a-team-eks
   compositionSelector:
     matchLabels:
       provider: aws
