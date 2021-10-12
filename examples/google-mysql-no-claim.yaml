@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeSQL
+metadata:
+  name: a-team-mysql
+spec:
+  id: a-team-mysql
+  compositionRef:
+    name: google-mysql
+  parameters:
+    version: "8_0"
+    size: small
+  writeConnectionSecretToRef:
+    name: a-team-mysql
