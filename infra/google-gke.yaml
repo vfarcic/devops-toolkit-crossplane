@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-gke
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-gke
+  compositionRef:
+    name: cluster-google
+  parameters:
+    nodeSize: small
+    minNodeCount: 1
