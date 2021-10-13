@@ -9,5 +9,5 @@ spec:
   compositionRef:
     name: cluster-civo
   parameters:
-    nodeSize: small
-    minNodeCount: 1
+    nodeSize: medium
+    minNodeCount: 3
