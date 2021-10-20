@@ -5,7 +5,7 @@ metadata:
   labels:
     cluster-owner: vfarcic
 spec:
-  id: a-team-aks
+  id: ateamaks
   compositionRef:
     name: cluster-azure
   parameters:

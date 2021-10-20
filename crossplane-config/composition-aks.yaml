@@ -40,15 +40,23 @@ spec:
           - maxCount: 10
             enableAutoScaling: true
             vmSize: Standard_D2_v2
+          identity:
+            - type: SystemAssigned
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
+    - fromFieldPath: metadata.uid
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-akscluster"
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.defaultNodePool[0].name
     - fromFieldPath: spec.id
-      toFieldPath: spec.resourceGroupName
+      toFieldPath: spec.forProvider.resourceGroupName
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.kubernetesVersion
     - fromFieldPath: spec.parameters.minNodeCount
@@ -62,12 +70,19 @@ spec:
           medium: Standard_D4_v2
           large: Standard_D16_v3
     - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions.status
+      fromFieldPath: spec.id
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[1].status
       toFieldPath: status.controlPlaneStatus
     - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions.status
+      fromFieldPath: status.conditions[1].status
       toFieldPath: status.nodePoolStatus
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
     readinessChecks:
     - type: MatchString
       fieldPath: status.conditions.status
       matchString: Succeeded
+    connectionDetails:
+      - fromConnectionSecretKey: kubeconfig
