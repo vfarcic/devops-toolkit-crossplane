@@ -25,6 +25,29 @@ spec:
       name: aws-creds
       key: creds
 
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-tf-aws
+spec:
+  package: crossplane/provider-tf-aws:v0.2.4
+
+---
+
+apiVersion: aws.tf.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: aws-creds
+      key: creds    
+
 #######
 # GCP #
 #######
@@ -51,6 +74,56 @@ spec:
     secretRef:
       namespace: crossplane-system
       name: gcp-creds
+      key: creds
+
+#########
+# Azure #
+#########
+
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-azure
+spec:
+  package: crossplane/provider-azure:v0.16.1
+
+---
+
+apiVersion: azure.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: azure-creds
+      key: creds
+
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-azure
+spec:
+  package: crossplane/provider-tf-azure:v0.2.2
+
+---
+
+apiVersion: azure.tf.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: crossplane-system
+      name: azure-creds
       key: creds
 
 ########

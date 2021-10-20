@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-aks-no-claim
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-aks
+  compositionRef:
+    name: cluster-azure
+  parameters:
+    nodeSize: small
+    minNodeCount: 3

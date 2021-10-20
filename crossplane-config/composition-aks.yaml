@@ -17,34 +17,44 @@ spec:
   resources:
   - name: resourcegroup
     base:
-      apiVersion: azure.crossplane.io/v1alpha3
+      apiVersion: resource.azure.tf.crossplane.io/v1alpha1
       kind: ResourceGroup
       spec:
-        location: eastus
+        forProvider:
+          location: eastus
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
   - name: aks
     base:
-      apiVersion: compute.azure.crossplane.io/v1alpha3
-      kind: AKSCluster
+      apiVersion: kubernetes.azure.tf.crossplane.io/v1alpha1
+      kind: KubernetesCluster
       spec:
-        location: eastus
-        dnsNamePrefix: docatalog
-        version: "1.20.7"
-        nodeCount: 1
-        nodeVMSize: Standard_D2_v2
+        forProvider:
+          location: eastus
+          dnsPrefix: dot
+          kubernetesVersion: "1.20.7"
+          defaultNodePool:
+          - maxCount: 10
+            enableAutoScaling: true
+            vmSize: Standard_D2_v2
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.defaultNodePool[0].name
     - fromFieldPath: spec.id
       toFieldPath: spec.resourceGroupName
     - fromFieldPath: spec.parameters.version
-      toFieldPath: spec.version
+      toFieldPath: spec.forProvider.kubernetesVersion
     - fromFieldPath: spec.parameters.minNodeCount
-      toFieldPath: spec.nodeCount
+      toFieldPath: spec.forProvider.defaultNodePool[0].minCount
     - fromFieldPath: spec.parameters.nodeSize
-      toFieldPath: spec.nodeVMSize
+      toFieldPath: spec.forProvider.defaultNodePool[0].vmSize
       transforms:
       - type: map
         map:
@@ -52,12 +62,12 @@ spec:
           medium: Standard_D4_v2
           large: Standard_D16_v3
     - type: ToCompositeFieldPath
-      fromFieldPath: status.state
+      fromFieldPath: status.conditions.status
       toFieldPath: status.controlPlaneStatus
     - type: ToCompositeFieldPath
-      fromFieldPath: status.state
+      fromFieldPath: status.conditions.status
       toFieldPath: status.nodePoolStatus
     readinessChecks:
     - type: MatchString
-      fieldPath: "status.state"
-      matchString: "Succeeded"
+      fieldPath: status.conditions.status
+      matchString: Succeeded
