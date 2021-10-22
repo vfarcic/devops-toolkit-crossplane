@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-eks-no-claim
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-eks-no-claim
+  compositionRef:
+    name: cluster-aws
+  parameters:
+    nodeSize: small
+    minNodeCount: 3
