@@ -5,7 +5,7 @@ metadata:
   labels:
     cluster-owner: vfarcic
 spec:
-  id: a-team-eks
+  id: a-team-eks-no-claim
   compositionRef:
     name: cluster-aws
   parameters:
