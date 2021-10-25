@@ -25,34 +25,6 @@ spec:
       name: aws-creds
       key: creds    
 
-#######
-# GCP #
-#######
-
----
-
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-gcp
-spec:
-  package: crossplane/provider-gcp:v0.18.0
-
----
-
-apiVersion: gcp.crossplane.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
-spec:
-  projectID: devops-toolkit-20211022181428
-  credentials:
-    source: Secret
-    secretRef:
-      namespace: crossplane-system
-      name: gcp-creds
-      key: creds
-
 #########
 # Azure #
 #########

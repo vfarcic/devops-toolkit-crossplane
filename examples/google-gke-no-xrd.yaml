@@ -1,7 +1,7 @@
-apiVersion: container.gcp.crossplane.io/v1beta1
-kind: GKECluster
+apiVersion: container.gcp.crossplane.io/v1beta2
+kind: Cluster
 metadata:
-  name: devops-toolkit
+  name: a-team-gke-no-xrd
 spec:
   forProvider:
     location: us-east1
@@ -9,16 +9,16 @@ spec:
 
 ---
 
-apiVersion: container.gcp.crossplane.io/v1alpha1
+apiVersion: container.gcp.crossplane.io/v1beta1
 kind: NodePool
 metadata:
-  name: devops-toolkit
+  name: a-team-gke-no-xrd
 spec:
   forProvider:
     locations:
     - us-east1-b
     clusterRef:
-      name: devops-toolkit
+      name: a-team-gke-no-xrd
     initialNodeCount: 1
     config:
       preemptible: true
