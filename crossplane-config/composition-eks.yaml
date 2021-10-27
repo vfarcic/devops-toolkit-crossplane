@@ -553,7 +553,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: "%s-argocd-project"
+            fmt: "%s-ns-prod"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: argocd-project

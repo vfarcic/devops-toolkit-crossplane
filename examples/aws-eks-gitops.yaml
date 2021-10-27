@@ -13,5 +13,6 @@ spec:
   parameters:
     nodeSize: small
     minNodeCount: 3
+    gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane
   writeConnectionSecretToRef:
-    name: my-secret
+    name: a-team-eks-ekscluster
