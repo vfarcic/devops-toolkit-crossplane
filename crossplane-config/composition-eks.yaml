@@ -35,7 +35,7 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.version
-    - fromFieldPath: metadata.uid
+    - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
         - type: string
@@ -459,7 +459,7 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.credentials.secretRef.namespace
-    - fromFieldPath: metadata.uid
+    - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
       transforms:
         - type: string
@@ -547,7 +547,9 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: metadata.uid
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
       transforms:
         - type: string
