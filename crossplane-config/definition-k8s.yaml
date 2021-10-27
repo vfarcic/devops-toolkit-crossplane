@@ -41,6 +41,10 @@ spec:
                     description: The minimum number of nodes
                     type: integer
                     default: 1
+                  gitOpsRepo:
+                    description: The repository with GitOps manifests used by Argo CD
+                    type: string
+                    default: "https://github.com/vfarcic/devops-toolkit-crossplane"
                 required:
                 - nodeSize
             required:

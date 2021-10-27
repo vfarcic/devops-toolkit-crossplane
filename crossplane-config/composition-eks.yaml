@@ -457,6 +457,8 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: metadata.uid
       toFieldPath: spec.credentials.secretRef.name
       transforms:
@@ -599,17 +601,15 @@ spec:
             apiVersion: argoproj.io/v1alpha1
             kind: Application
             metadata:
-              name: production-infra
+              name: production-apps
               namespace: argocd
               finalizers:
                 - resources-finalizer.argocd.argoproj.io
             spec:
               project: production
               source:
-                # TODO: Continue refactoring
-                repoURL: https://github.com/vfarcic/devops-toolkit-crossplane
                 targetRevision: HEAD
-                path: infra
+                path: apps
               destination:
                 server: https://kubernetes.default.svc
                 namespace: production
@@ -628,3 +628,5 @@ spec:
             fmt: "%s-argocd-app"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.gitOpsRepo
+      toFieldPath: spec.forProvider.manifest.spec.source.repoURL
