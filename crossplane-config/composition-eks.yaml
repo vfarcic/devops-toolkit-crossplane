@@ -488,27 +488,6 @@ spec:
             fmt: "%s-prometheus"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: traefik
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: Release
-      spec:
-        rollbackLimit: 3
-        forProvider:
-          namespace: traefik
-          chart:
-            name: traefik
-            repository: https://helm.traefik.io/traefik
-            version: "10.6.0"
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-traefik"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: argocd
     base:
       apiVersion: helm.crossplane.io/v1beta1

@@ -13,3 +13,5 @@ spec:
   parameters:
     nodeSize: small
     minNodeCount: 3
+  writeConnectionSecretToRef:
+    name: my-secret
