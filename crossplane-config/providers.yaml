@@ -89,15 +89,6 @@ spec:
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-helm
-spec:
-  package: crossplane/provider-helm:v0.5.0
-
----
-
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
   name: provider-sql
 spec:
   package: crossplane/provider-sql:master

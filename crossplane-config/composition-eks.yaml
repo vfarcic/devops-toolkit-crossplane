@@ -457,8 +457,6 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: metadata.uid
       toFieldPath: spec.credentials.secretRef.name
       transforms:
@@ -482,5 +480,151 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-prometheus"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: traefik
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: traefik
+          chart:
+            name: traefik
+            repository: https://helm.traefik.io/traefik
+            version: "10.6.0"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-traefik"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: argocd
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: argocd
+          chart:
+            name: argo-cd
+            repository: https://argoproj.github.io/argo-helm
+            version: "3.26.3"
+          set:
+          - name: server.extraArgs
+            value: "{--insecure}"
+          - name: controller.args.appResyncPeriod
+            value: "30"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: kubernetes
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            key: kubeconfig
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: metadata.uid
+      toFieldPath: spec.credentials.secretRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-ekscluster"
+    readinessChecks:
+      - type: None
+  - name: argocd-project
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: AppProject
+            metadata:
+              name: production
+              namespace: argocd
+              finalizers:
+                - resources-finalizer.argocd.argoproj.io
+            spec:
+              description: Production project
+              sourceRepos:
+              - '*'
+              destinations:
+              - namespace: '*'
+                server: '*'
+              clusterResourceWhitelist:
+              - group: '*'
+                kind: '*'
+              namespaceResourceWhitelist:
+              - group: '*'
+                kind: '*'
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd-project"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: argocd-app
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: Application
+            metadata:
+              name: production-infra
+              namespace: argocd
+              finalizers:
+                - resources-finalizer.argocd.argoproj.io
+            spec:
+              project: production
+              source:
+                # TODO: Continue refactoring
+                repoURL: https://github.com/vfarcic/devops-toolkit-crossplane
+                targetRevision: HEAD
+                path: infra
+              destination:
+                server: https://kubernetes.default.svc
+                namespace: production
+              syncPolicy:
+                automated:
+                  selfHeal: true
+                  prune: true
+                  allowEmpty: true
+
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd-app"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name

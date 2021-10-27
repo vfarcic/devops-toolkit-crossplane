@@ -4,3 +4,4 @@
 /kubeconfig.yaml
 /gcp-creds.json
 kubeconfig*.yaml
+/tmp/*
