@@ -1,0 +1,11 @@
+apiVersion: database.aws.crossplane.io/v1beta1
+kind: RDSInstance
+metadata:
+  name: a-team-rds
+spec:
+  forProvider:
+    region: us-east-1
+    dbInstanceClass: db.m5.large
+    engine: postgres
+    masterUsername: admin123
+    allocatedStorage: 1000
