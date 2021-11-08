@@ -33,7 +33,7 @@ metadata:
 spec:
   project: production
   source:
-    repoURL: https://github.com/vfarcic/devops-toolkit-crossplane
+    repoURL: https://github.com/vfarcic/devops-toolkit-crossplane.git
     targetRevision: HEAD
     path: infra
   destination:
@@ -57,7 +57,7 @@ metadata:
 spec:
   project: production
   source:
-    repoURL: https://github.com/vfarcic/devops-toolkit-crossplane
+    repoURL: https://github.com/vfarcic/devops-toolkit-crossplane.git
     targetRevision: HEAD
     path: apps
   destination:
