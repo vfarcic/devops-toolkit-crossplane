@@ -467,6 +467,27 @@ spec:
             fmt: "%s-ekscluster"
     readinessChecks:
       - type: None
+  - name: crossplane
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: crossplane-system
+          chart:
+            name: crossplane
+            repository: https://charts.crossplane.io/stable
+            version: "1.5.0"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-crossplane"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
   - name: prometheus
     base:
       apiVersion: helm.crossplane.io/v1beta1

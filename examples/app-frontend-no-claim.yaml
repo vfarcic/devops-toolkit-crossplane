@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: App
+metadata:
+  name: devops-toolkit
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: devops-toolkit-no-claim
+  compositionRef:
+    name: app-frontend
+  parameters:
+    namespace: a-team
+    image: vfarcic/devops-toolkit-series

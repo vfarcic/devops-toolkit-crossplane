@@ -1,0 +1,56 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: apps.devopstoolkitseries.com
+spec:
+  defaultCompositionRef:
+    name: frontend
+  group: devopstoolkitseries.com
+  names:
+    kind: App
+    plural: apps
+  claimNames:
+    kind: AppClaim
+    plural: appclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of this application that other objects will use to refer to it.
+              parameters:
+                type: object
+                properties:
+                  namespace:
+                    description: The container image of the application
+                    type: string
+                    default: production
+                  image:
+                    description: The container image of the application
+                    type: string
+                  host:
+                    description: The host address of the application
+                    type: string
+                required:
+                - image
+            required:
+            - id
+            - parameters
+          status:
+            type: object
+            properties:
+              host:
+                description: The host address of the application
+                type: string
+    additionalPrinterColumns:
+    - name: host
+      type: string
+      jsonPath: ".status.host"
