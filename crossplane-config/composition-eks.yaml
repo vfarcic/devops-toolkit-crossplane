@@ -514,6 +514,26 @@ spec:
             fmt: "%s-argocd"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+  - name: kubevela
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: vela-system
+          chart:
+            name: vela-core
+            repository: https://kubevelacharts.oss-cn-hangzhou.aliyuncs.com/core
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-kubevela"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
   - name: kubernetes
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -631,3 +651,192 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - fromFieldPath: spec.parameters.gitOpsRepo
       toFieldPath: spec.forProvider.manifest.spec.source.repoURL
+  - name: kubevela-backend
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: core.oam.dev/v1beta1
+            kind: ComponentDefinition
+            metadata:
+              name: backend
+              annotations:
+                definition.oam.dev/description: "It's backend and I'm too lazy to write descriptions"
+            spec:
+              workload:
+                definition:
+                  apiVersion: apps/v1
+                  kind: Deployment
+              schematic:
+                cue:
+                  template: |
+                    output: {
+                        apiVersion: "apps/v1"
+                        kind:       "Deployment"
+                        spec: {
+                            selector: matchLabels: {
+                                "app.oam.dev/component": context.name
+                            }
+                            template: {
+                                metadata: labels: {
+                                    "app.oam.dev/component": context.name
+                                }
+                                spec: {
+                                    containers: [{
+                                        name:  context.name
+                                        image: parameter.image
+
+                                        if parameter["cmd"] != _|_ {
+                                            command: parameter.cmd
+                                        }
+                                    }]
+                                }
+                            }
+                        }
+                    }
+                    parameter: {
+                        image: string
+                        cmd?: [...string]
+                    }
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-kubevela-backend"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: kubevela-frontend
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: core.oam.dev/v1beta1
+            kind: ComponentDefinition
+            metadata:
+              name: frontend
+              annotations:
+                definition.oam.dev/description: "It's frontend and I'm too lazy to write descriptions"
+            spec:
+              workload:
+                definition:
+                  apiVersion: apps/v1
+                  kind: Deployment
+              schematic:
+                kube:
+                  template:
+                    apiVersion: apps/v1
+                    kind: Deployment
+                    spec:
+                      selector:
+                        matchLabels:
+                          app.oam.dev/component: frontend
+                      template:
+                        metadata:
+                          labels:
+                            app.oam.dev/component: frontend
+                        spec:
+                          containers:
+                          - name: frontend
+                            ports:
+                            - containerPort: 80
+                            livenessProbe:
+                              httpGet:
+                                path: /
+                                port: 80
+                            readinessProbe:
+                              httpGet:
+                                path: /
+                                port: 80
+                  parameters:
+                  - name: name
+                    required: true
+                    type: string
+                    fieldPaths:
+                    - metadata.name
+                    - metadata.labels.app
+                    - spec.selector.matchLabels.app
+                    - spec.template.metadata.labels.app
+                  - name: image
+                    required: true
+                    type: string
+                    fieldPaths:
+                    - spec.template.spec.containers[0].image
+                  - name: port
+                    required: false
+                    type: number
+                    fieldPaths:
+                    - spec.template.spec.containers[0].ports[0].containerPort
+                    - spec.template.spec.containers[0].livenessProbe.httpGet.port
+                    - spec.template.spec.containers[0].readinessProbe.httpGet.port
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-kubevela-frontend"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: kubevela-autoscaler
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: core.oam.dev/v1beta1
+            kind: TraitDefinition
+            metadata:
+              annotations:
+                definition.oam.dev/description: "configure k8s HPA for Deployment"
+              name: autoscaler
+            spec:
+              appliesToWorkloads:
+                - frontend
+              schematic:
+                cue:
+                  template: |
+                    outputs: hpa: {
+                        apiVersion: "autoscaling/v2beta2"
+                        kind:       "HorizontalPodAutoscaler"
+                        metadata: name: context.name
+                        spec: {
+                            scaleTargetRef: {
+                                apiVersion: "apps/v1"
+                                kind:       "Deployment"
+                                name:       context.name
+                            }
+                            minReplicas: parameter.min
+                            maxReplicas: parameter.max
+                            metrics: [{
+                                type: "Resource"
+                                resource: {
+                                    name: "cpu"
+                                    target: {
+                                        type:               "Utilization"
+                                        averageUtilization: parameter.cpuUtil
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                    parameter: {
+                        min:     *2 | int
+                        max:     *6 | int
+                        cpuUtil: *80 | int
+                    }
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-kubevela-autoscaler"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
