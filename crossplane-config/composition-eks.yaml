@@ -505,6 +505,8 @@ spec:
             value: "{--insecure}"
           - name: controller.args.appResyncPeriod
             value: "30"
+          - name: secret.argocdServerAdminPassword
+            value: "$2a$10$X8iKPeE.TMBVfRQoASbF..ukBBB8V5or53PbanTnVPfUBu/WI9xMa"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -525,6 +527,7 @@ spec:
           chart:
             name: vela-core
             repository: https://kubevelacharts.oss-cn-hangzhou.aliyuncs.com/core
+            version: "1.1.8"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -639,7 +642,6 @@ spec:
                   selfHeal: true
                   prune: true
                   allowEmpty: true
-
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -662,6 +664,7 @@ spec:
             kind: ComponentDefinition
             metadata:
               name: backend
+              namespace: vela-system
               annotations:
                 definition.oam.dev/description: "It's backend and I'm too lazy to write descriptions"
             spec:
@@ -720,6 +723,7 @@ spec:
             kind: ComponentDefinition
             metadata:
               name: frontend
+              namespace: vela-system
               annotations:
                 definition.oam.dev/description: "It's frontend and I'm too lazy to write descriptions"
             spec:
@@ -793,9 +797,10 @@ spec:
             apiVersion: core.oam.dev/v1beta1
             kind: TraitDefinition
             metadata:
+              name: autoscaler
+              namespace: vela-system
               annotations:
                 definition.oam.dev/description: "configure k8s HPA for Deployment"
-              name: autoscaler
             spec:
               appliesToWorkloads:
                 - frontend
