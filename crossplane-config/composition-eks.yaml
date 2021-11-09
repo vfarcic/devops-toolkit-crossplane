@@ -505,8 +505,10 @@ spec:
             value: "{--insecure}"
           - name: controller.args.appResyncPeriod
             value: "30"
-          - name: secret.argocdServerAdminPassword
-            value: "$2a$10$X8iKPeE.TMBVfRQoASbF..ukBBB8V5or53PbanTnVPfUBu/WI9xMa"
+          - name: configs.secret.argocdServerAdminPassword
+            value: "$2a$10$m3eTlEdRen0nS86c5Zph5u/bDFQMcWZYdG3NVdiyaACCqoxLJaz16"
+          - name: configs.secret.argocdServerAdminPasswordMtime
+            value: "2021-11-08T15:04:05Z"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
