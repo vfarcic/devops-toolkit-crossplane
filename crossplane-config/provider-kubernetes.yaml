@@ -2,7 +2,5 @@ apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-kubernetes
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
 spec:
   package: crossplane/provider-kubernetes:main

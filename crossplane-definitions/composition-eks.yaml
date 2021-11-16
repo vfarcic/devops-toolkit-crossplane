@@ -2,8 +2,6 @@ apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
   name: cluster-aws
-  annotations:
-    argocd.argoproj.io/sync-wave: "150"
   labels:
     provider: aws
     cluster: eks
