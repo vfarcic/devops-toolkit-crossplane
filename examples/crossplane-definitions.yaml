@@ -5,8 +5,6 @@ kind: Application
 metadata:
   name: crossplane-definitions
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "50"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
