@@ -47,11 +47,11 @@ spec:
           status:
             type: object
             properties:
-              hostName:
+              host:
                 description: The host address of the application
                 type: string
-                default: production
+                default: xyz
     additionalPrinterColumns:
-    - name: hostName
+    - name: host
       type: string
-      jsonPath: ".status.hostName"
+      jsonPath: ".status.host"
