@@ -36,6 +36,10 @@ spec:
                   image:
                     description: The container image of the application
                     type: string
+                  port:
+                    description: The application port
+                    type: integer
+                    default: 80
                   host:
                     description: The host address of the application
                     type: string
@@ -50,7 +54,6 @@ spec:
               host:
                 description: The host address of the application
                 type: string
-                default: xyz
     additionalPrinterColumns:
     - name: host
       type: string

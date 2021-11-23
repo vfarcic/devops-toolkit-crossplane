@@ -1,15 +1,15 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: AppClaim
 metadata:
-  name: devops-toolkit
+  name: silly-demo
   labels:
     app-owner: vfarcic
 spec:
-  id: devops-toolkit
+  id: silly-demo
   compositionSelector:
     matchLabels:
-      type: frontend
+      type: backend
   parameters:
     namespace: a-team
-    image: vfarcic/devops-toolkit-series:2.7.0
-    host: devops-toolkit.127.0.0.1.nip.io
+    image: vfarcic/silly-demo:1.0.2
+    port: 8080

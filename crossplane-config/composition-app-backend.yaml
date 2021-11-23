@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: app-frontend
+  name: app-backend
   labels:
-    type: frontend
+    type: backend
 spec:
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
@@ -38,7 +38,7 @@ spec:
               template:
                 spec:
                   containers:
-                  - name: frontend
+                  - name: backend
                     ports:
                     - containerPort: 80
                     livenessProbe:
@@ -122,86 +122,5 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.ports[0].targetPort
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-    readinessChecks:
-      - type: None
-  - name: ingress
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
-      spec:
-        forProvider:
-          manifest:
-            apiVersion: networking.k8s.io/v1
-            kind: Ingress
-            metadata:
-              annotations:
-                ingress.kubernetes.io/ssl-redirect: "false"
-            spec:
-              rules:
-              - http:
-                  paths:
-                  - path: /
-                    pathType: ImplementationSpecific
-                    backend:
-                      service:
-                        name: devops-toolkit
-                        port:
-                          number: 80
-                host: devopstoolkitseries.com
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-ingress"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.manifest.metadata.name
-    - fromFieldPath: spec.parameters.namespace
-      toFieldPath: spec.forProvider.manifest.metadata.namespace
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.manifest.metadata.labels.app
-    - fromFieldPath: spec.parameters.host
-      toFieldPath: spec.forProvider.manifest.spec.rules[0].host
-    - fromFieldPath: spec.parameters.port
-      toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.port.number
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
-    - type: ToCompositeFieldPath
-      fromFieldPath: spec.parameters.host
-      toFieldPath: status.host
-    readinessChecks:
-      - type: None
-  - name: hpa
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
-      spec:
-        forProvider:
-          manifest:
-            apiVersion: autoscaling/v1
-            kind: HorizontalPodAutoscaler
-            spec:
-              minReplicas: 2
-              maxReplicas: 6
-              scaleTargetRef:
-                apiVersion: apps/v1
-                kind: Deployment
-              targetCPUUtilizationPercentage: 80
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-ingress"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.manifest.metadata.name
-    - fromFieldPath: spec.parameters.namespace
-      toFieldPath: spec.forProvider.manifest.metadata.namespace
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.manifest.metadata.labels.app
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.manifest.spec.scaleTargetRef.name
     readinessChecks:
       - type: None
