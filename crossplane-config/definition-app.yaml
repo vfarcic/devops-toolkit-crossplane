@@ -54,7 +54,3 @@ spec:
               host:
                 description: The host address of the application
                 type: string
-    additionalPrinterColumns:
-    - name: host
-      type: string
-      jsonPath: ".status.host"
