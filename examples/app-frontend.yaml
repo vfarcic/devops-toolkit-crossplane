@@ -1,0 +1,15 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: devops-toolkit
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: devops-toolkit
+  compositionSelector:
+    matchLabels:
+      type: frontend
+  parameters:
+    namespace: a-team
+    image: vfarcic/devops-toolkit-series:2.7.0
+    host: devops-toolkit.127.0.0.1.nip.io

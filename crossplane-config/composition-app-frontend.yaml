@@ -23,6 +23,8 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    readinessChecks:
+      - type: None
   - name: deployment
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -75,6 +77,8 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].image
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+    readinessChecks:
+      - type: None
   - name: service
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -108,6 +112,8 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.selector.app
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+    readinessChecks:
+      - type: None
   - name: ingress
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -128,9 +134,9 @@ spec:
                     pathType: ImplementationSpecific
                     backend:
                       service:
-                      name: devops-toolkit
-                      port:
-                        number: 80
+                        name: devops-toolkit
+                        port:
+                          number: 80
                 host: devopstoolkitseries.com
     patches:
     - fromFieldPath: spec.id
@@ -149,3 +155,8 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.rules[0].host
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.parameters.host
+      toFieldPath: status.hostName
+    readinessChecks:
+      - type: None

@@ -4,7 +4,7 @@ metadata:
   name: apps.devopstoolkitseries.com
 spec:
   defaultCompositionRef:
-    name: frontend
+    name: app-frontend
   group: devopstoolkitseries.com
   names:
     kind: App
@@ -47,10 +47,11 @@ spec:
           status:
             type: object
             properties:
-              host:
+              hostName:
                 description: The host address of the application
                 type: string
+                default: production
     additionalPrinterColumns:
-    - name: host
+    - name: hostName
       type: string
-      jsonPath: ".status.host"
+      jsonPath: ".status.hostName"
