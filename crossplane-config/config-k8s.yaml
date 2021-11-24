@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-k8s
 spec:
-  package: vfarcic/crossplane-k8s:v0.1.3
+  package: vfarcic/crossplane-k8s:v0.1.4
