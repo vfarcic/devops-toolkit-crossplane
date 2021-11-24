@@ -539,27 +539,6 @@ spec:
             fmt: "%s-argocd"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: kubevela
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: Release
-      spec:
-        rollbackLimit: 3
-        forProvider:
-          namespace: vela-system
-          chart:
-            name: vela-core
-            repository: https://kubevelacharts.oss-cn-hangzhou.aliyuncs.com/core
-            version: "1.1.8"
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-kubevela"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: kubernetes
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -676,195 +655,120 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - fromFieldPath: spec.parameters.gitOpsRepo
       toFieldPath: spec.forProvider.manifest.spec.source.repoURL
-  - name: kubevela-backend
+  - name: k8s-provider-sa
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       spec:
         forProvider:
           manifest:
-            apiVersion: core.oam.dev/v1beta1
-            kind: ComponentDefinition
+            apiVersion: v1
+            kind: ServiceAccount
             metadata:
-              name: backend
-              namespace: vela-system
-              annotations:
-                definition.oam.dev/description: "It's backend and I'm too lazy to write descriptions"
-            spec:
-              workload:
-                definition:
-                  apiVersion: apps/v1
-                  kind: Deployment
-              schematic:
-                cue:
-                  template: |
-                    output: {
-                        apiVersion: "apps/v1"
-                        kind:       "Deployment"
-                        spec: {
-                            selector: matchLabels: {
-                                "app.oam.dev/component": context.name
-                            }
-                            template: {
-                                metadata: labels: {
-                                    "app.oam.dev/component": context.name
-                                }
-                                spec: {
-                                    containers: [{
-                                        name:  context.name
-                                        image: parameter.image
-
-                                        if parameter["cmd"] != _|_ {
-                                            command: parameter.cmd
-                                        }
-                                    }]
-                                }
-                            }
-                        }
-                    }
-                    parameter: {
-                        image: string
-                        cmd?: [...string]
-                    }
+              name: provider-kubernetes
+              namespace: crossplane-system
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
         - type: string
           string:
-            fmt: "%s-kubevela-backend"
+            fmt: "%s-k8s-provider-sa"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: kubevela-frontend
+  - name: k8s-provider-crd
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       spec:
         forProvider:
           manifest:
-            apiVersion: core.oam.dev/v1beta1
-            kind: ComponentDefinition
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRoleBinding
             metadata:
-              name: frontend
-              namespace: vela-system
-              annotations:
-                definition.oam.dev/description: "It's frontend and I'm too lazy to write descriptions"
-            spec:
-              workload:
-                definition:
-                  apiVersion: apps/v1
-                  kind: Deployment
-              schematic:
-                kube:
-                  template:
-                    apiVersion: apps/v1
-                    kind: Deployment
-                    spec:
-                      selector:
-                        matchLabels:
-                          app.oam.dev/component: frontend
-                      template:
-                        metadata:
-                          labels:
-                            app.oam.dev/component: frontend
-                        spec:
-                          containers:
-                          - name: frontend
-                            ports:
-                            - containerPort: 80
-                            livenessProbe:
-                              httpGet:
-                                path: /
-                                port: 80
-                            readinessProbe:
-                              httpGet:
-                                path: /
-                                port: 80
-                  parameters:
-                  - name: name
-                    required: true
-                    type: string
-                    fieldPaths:
-                    - metadata.name
-                    - metadata.labels.app
-                    - spec.selector.matchLabels.app
-                    - spec.template.metadata.labels.app
-                  - name: image
-                    required: true
-                    type: string
-                    fieldPaths:
-                    - spec.template.spec.containers[0].image
-                  - name: port
-                    required: false
-                    type: number
-                    fieldPaths:
-                    - spec.template.spec.containers[0].ports[0].containerPort
-                    - spec.template.spec.containers[0].livenessProbe.httpGet.port
-                    - spec.template.spec.containers[0].readinessProbe.httpGet.port
+              name: provider-kubernetes
+            subjects:
+            - kind: ServiceAccount
+              name: provider-kubernetes
+              namespace: crossplane-system
+            roleRef:
+              kind: ClusterRole
+              name: cluster-admin
+              apiGroup: rbac.authorization.k8s.io
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
         - type: string
           string:
-            fmt: "%s-kubevela-frontend"
+            fmt: "%s-k8s-provider-crb"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: kubevela-autoscaler
+  - name: k8s-provider-cc
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       spec:
         forProvider:
           manifest:
-            apiVersion: core.oam.dev/v1beta1
-            kind: TraitDefinition
+            apiVersion: pkg.crossplane.io/v1alpha1
+            kind: ControllerConfig
             metadata:
-              name: autoscaler
-              namespace: vela-system
-              annotations:
-                definition.oam.dev/description: "configure k8s HPA for Deployment"
+              name: provider-kubernetes
             spec:
-              appliesToWorkloads:
-                - frontend
-              schematic:
-                cue:
-                  template: |
-                    outputs: hpa: {
-                        apiVersion: "autoscaling/v2beta2"
-                        kind:       "HorizontalPodAutoscaler"
-                        metadata: name: context.name
-                        spec: {
-                            scaleTargetRef: {
-                                apiVersion: "apps/v1"
-                                kind:       "Deployment"
-                                name:       context.name
-                            }
-                            minReplicas: parameter.min
-                            maxReplicas: parameter.max
-                            metrics: [{
-                                type: "Resource"
-                                resource: {
-                                    name: "cpu"
-                                    target: {
-                                        type:               "Utilization"
-                                        averageUtilization: parameter.cpuUtil
-                                    }
-                                }
-                            }]
-                        }
-                    }
-                    parameter: {
-                        min:     *2 | int
-                        max:     *6 | int
-                        cpuUtil: *80 | int
-                    }
+              serviceAccountName: provider-kubernetes
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
         - type: string
           string:
-            fmt: "%s-kubevela-autoscaler"
+            fmt: "%s-k8s-provider-cc"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: k8s-provider
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: provider-kubernetes
+            spec:
+              package: crossplane/provider-kubernetes:main
+              controllerConfigRef:
+                name: provider-kubernetes
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-k8s-provider"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: config-app
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Configuration
+            metadata:
+              name: crossplane-app
+            spec:
+              package: vfarcic/crossplane-app:v0.1.1
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-config-app"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
