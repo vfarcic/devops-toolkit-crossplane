@@ -9,6 +9,6 @@ spec:
   compositionRef:
     name: app-frontend
   parameters:
-    namespace: a-team
+    namespace: production
     image: vfarcic/devops-toolkit-series:2.7.0
     host: devops-toolkit.127.0.0.1.nip.io
