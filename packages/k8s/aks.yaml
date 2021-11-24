@@ -1,0 +1,88 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cluster-azure
+  labels:
+    provider: azure
+    cluster: aks
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeCluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: resourcegroup
+    base:
+      apiVersion: resource.azure.tf.crossplane.io/v1alpha1
+      kind: ResourceGroup
+      spec:
+        forProvider:
+          location: eastus
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+  - name: aks
+    base:
+      apiVersion: kubernetes.azure.tf.crossplane.io/v1alpha1
+      kind: KubernetesCluster
+      spec:
+        forProvider:
+          location: eastus
+          dnsPrefix: dot
+          kubernetesVersion: "1.20.7"
+          defaultNodePool:
+          - maxCount: 10
+            enableAutoScaling: true
+            vmSize: Standard_D2_v2
+          identity:
+            - type: SystemAssigned
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: metadata.uid
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-akscluster"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.defaultNodePool[0].name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.resourceGroupName
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.kubernetesVersion
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.defaultNodePool[0].minCount
+    - fromFieldPath: spec.parameters.nodeSize
+      toFieldPath: spec.forProvider.defaultNodePool[0].vmSize
+      transforms:
+      - type: map
+        map:
+          small: Standard_D2_v2
+          medium: Standard_D4_v2
+          large: Standard_D16_v3
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.id
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[1].status
+      toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[1].status
+      toFieldPath: status.nodePoolStatus
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.conditions.status
+      matchString: Succeeded
+    connectionDetails:
+      - fromConnectionSecretKey: kubeconfig
