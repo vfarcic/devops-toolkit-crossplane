@@ -11,5 +11,5 @@ spec:
       type: frontend
   parameters:
     namespace: a-team
-    image: vfarcic/devops-toolkit-series:3.0.0
+    image: vfarcic/devops-toolkit-series:4.1.0
     host: devops-toolkit.127.0.0.1.nip.io

@@ -1,0 +1,10 @@
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: app
+spec:
+  crossplane:
+    version: ">=v1.5"
+  # dependsOn:
+  # - provider: crossplane/provider-kubernetes
+  #   version: "latest"

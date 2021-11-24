@@ -168,7 +168,7 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
-      fromFieldPath: spec.parameters.host
+      fromFieldPath: spec.forProvider.manifest.spec.rules[0].host
       toFieldPath: status.host
     readinessChecks:
       - type: None
