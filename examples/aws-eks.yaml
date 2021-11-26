@@ -11,5 +11,5 @@ spec:
       provider: aws
       cluster: eks
   parameters:
-    nodeSize: small
+    nodeSize: medium
     minNodeCount: 3
