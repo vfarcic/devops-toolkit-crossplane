@@ -17,7 +17,7 @@ spec:
   resources:
   - name: resourcegroup
     base:
-      apiVersion: resource.azure.tf.crossplane.io/v1alpha1
+      apiVersion: azure.jet.crossplane.io/v1alpha1
       kind: ResourceGroup
       spec:
         forProvider:
@@ -29,13 +29,13 @@ spec:
       toFieldPath: spec.forProvider.name
   - name: aks
     base:
-      apiVersion: kubernetes.azure.tf.crossplane.io/v1alpha1
+      apiVersion: containerservice.azure.jet.crossplane.io/v1alpha1
       kind: KubernetesCluster
       spec:
         forProvider:
           location: eastus
           dnsPrefix: dot
-          kubernetesVersion: "1.20.7"
+          kubernetesVersion: "1.21.2"
           defaultNodePool:
           - maxCount: 10
             enableAutoScaling: true
