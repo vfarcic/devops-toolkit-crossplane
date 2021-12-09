@@ -70,13 +70,13 @@ spec:
           medium: Standard_D4_v2
           large: Standard_D16_v3
     - type: ToCompositeFieldPath
-      fromFieldPath: spec.id
+      fromFieldPath: metadata.name
       toFieldPath: status.clusterName
     - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions[1].status
+      fromFieldPath: status.conditions[0].status
       toFieldPath: status.controlPlaneStatus
     - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions[1].status
+      fromFieldPath: status.conditions[0].status
       toFieldPath: status.nodePoolStatus
     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
