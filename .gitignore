@@ -5,3 +5,4 @@
 /gcp-creds.json
 kubeconfig*.yaml
 /tmp/*
+*.xpkg
