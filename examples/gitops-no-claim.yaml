@@ -1,0 +1,12 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-gitops-no-claim
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-gitops-no-claim
+  compositionRef:
+    name: gitops-argo-cd
+  parameters:
+    

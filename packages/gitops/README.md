@@ -1,7 +1,7 @@
 ```bash
 kubectl crossplane build configuration \
-    --name k8s
+    --name gitops
 
 kubectl crossplane push configuration \
-    vfarcic/crossplane-k8s:v0.1.8
+    vfarcic/crossplane-gitops:v0.1.0
 ```

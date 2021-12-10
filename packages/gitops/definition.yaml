@@ -1,0 +1,54 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: compositeclusters.devopstoolkitseries.com
+spec:
+  connectionSecretKeys:
+  - kubeconfig
+  defaultCompositionRef:
+    name: gitops-argo-cd
+  group: devopstoolkitseries.com
+  names:
+    kind: GitOps
+    plural: gitops
+  claimNames:
+    kind: GitOpsClaim
+    plural: gitopsclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID of this Cluster that other objects will use to refer to it.
+              parameters:
+                type: object
+                properties:
+                  kubeConfig:
+                    type: object
+                    properties:
+                      secretName:
+                        description: The name of the secret with KubeConfig
+                        type: string
+                      secretNamespace:
+                        description: The Namespace with the secret with KubeConfig
+                        type: string
+                    required:
+                    - secretName
+                    - secretNamespace
+                  gitOpsRepo:
+                    description: The repository with GitOps manifests used by Argo CD
+                    type: string
+                    default: "https://github.com/vfarcic/devops-toolkit-crossplane"
+                required:
+                - kubeConfig
+            required:
+            - id
+            - parameters
