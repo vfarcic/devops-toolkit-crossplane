@@ -1,5 +1,5 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
-kind: CompositeCluster
+kind: GitOps
 metadata:
   name: a-team-gitops-no-claim
   labels:
@@ -9,4 +9,6 @@ spec:
   compositionRef:
     name: gitops-argo-cd
   parameters:
-    
+    kubeConfig:
+      secretName: azure-creds
+      secretNamespace: crossplane-system

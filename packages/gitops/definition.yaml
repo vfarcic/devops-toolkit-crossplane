@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: compositeclusters.devopstoolkitseries.com
+  name: gitops.devopstoolkitseries.com
 spec:
   connectionSecretKeys:
   - kubeconfig
@@ -40,9 +40,9 @@ spec:
                       secretNamespace:
                         description: The Namespace with the secret with KubeConfig
                         type: string
+                        default: crossplane-system
                     required:
                     - secretName
-                    - secretNamespace
                   gitOpsRepo:
                     description: The repository with GitOps manifests used by Argo CD
                     type: string

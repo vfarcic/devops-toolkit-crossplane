@@ -25,15 +25,10 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
       toFieldPath: spec.credentials.secretRef.namespace
-      # TODO: Refactor
-    - fromFieldPath: spec.id
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
       toFieldPath: spec.credentials.secretRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-ekscluster"
     readinessChecks:
       - type: None
   - name: argocd
@@ -78,15 +73,10 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
       toFieldPath: spec.credentials.secretRef.namespace
-      # TODO: Refactor
-    - fromFieldPath: spec.id
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
       toFieldPath: spec.credentials.secretRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-ekscluster"
     readinessChecks:
       - type: None
   - name: argocd-project
