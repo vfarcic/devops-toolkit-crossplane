@@ -3,7 +3,7 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-civo
+  name: crossplane-provider-civo
 spec:
   package: crossplane/provider-civo:main
 
@@ -12,7 +12,7 @@ spec:
 apiVersion: civo.crossplane.io/v1alpha1
 kind: ProviderConfig
 metadata:
-  name: provider-civo
+  name: crossplane-provider-civo
 spec:
   region: nyc1
   credentials:

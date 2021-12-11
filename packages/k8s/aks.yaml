@@ -47,7 +47,7 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.name
-    - fromFieldPath: metadata.uid
+    - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
         - type: string

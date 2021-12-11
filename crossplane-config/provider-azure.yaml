@@ -3,6 +3,6 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-jet-azure
+  name: crossplane-provider-jet-azure
 spec:
   package: crossplane/provider-jet-azure:v0.4.0

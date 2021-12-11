@@ -3,7 +3,7 @@ kind: App
 metadata:
   name: devops-toolkit
   labels:
-    cluster-owner: vfarcic
+    app-owner: vfarcic
 spec:
   id: devops-toolkit
   compositionRef:

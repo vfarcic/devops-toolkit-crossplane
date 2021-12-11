@@ -1,13 +1,14 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
-kind: GitOps
+kind: GitOpsClaim
 metadata:
-  name: a-team-gitops-no-claim
+  name: a-team
   labels:
     cluster-owner: vfarcic
 spec:
-  id: a-team-gitops-no-claim
-  compositionRef:
-    name: gitops-argo-cd
+  id: a-team
+  compositionSelector:
+    matchLabels:
+      provider: argo
   parameters:
     kubeConfig:
       secretName: a-team-eks-ekscluster
