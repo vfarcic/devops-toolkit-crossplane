@@ -13,4 +13,23 @@ spec:
   parameters:
     nodeSize: small
     minNodeCount: 3
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: GitOpsClaim
+metadata:
+  name: a-team
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team
+  compositionSelector:
+    matchLabels:
+      # Values: argo, flux
+      provider: argo
+  parameters:
+    kubeConfig:
+      secretName: a-team-eks-ekscluster
+      secretNamespace: crossplane-system
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
