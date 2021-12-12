@@ -1,15 +1,15 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: a-team-eks
+  name: a-team-aks
   labels:
     cluster-owner: vfarcic
 spec:
-  id: a-team-eks
+  id: ateamaks
   compositionSelector:
     matchLabels:
-      provider: aws
-      cluster: eks
+      provider: azure
+      cluster: aks
   parameters:
     nodeSize: small
     minNodeCount: 3
@@ -29,6 +29,7 @@ spec:
       provider: argo
   parameters:
     kubeConfig:
-      secretName: a-team-eks-ekscluster
+      secretName: ateamaks-akscluster
       secretNamespace: crossplane-system
+      secretKey: attribute.kube_config_raw
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git

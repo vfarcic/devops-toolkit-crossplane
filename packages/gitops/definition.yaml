@@ -41,6 +41,10 @@ spec:
                         description: The Namespace with the secret with KubeConfig
                         type: string
                         default: crossplane-system
+                      secretKey:
+                        description: The key that contains kubeconfig
+                        type: string
+                        default: kubeconfig
                     required:
                     - secretName
                   gitOpsRepo:

@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: gitops-argo-cd
+  name: gitops-flux
   labels:
-    provider: argo
+    provider: flux
 spec:
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
@@ -29,8 +29,6 @@ spec:
       toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.parameters.kubeConfig.secretName
       toFieldPath: spec.credentials.secretRef.name
-    - fromFieldPath: spec.parameters.kubeConfig.secretKey
-      toFieldPath: spec.credentials.secretRef.key
     readinessChecks:
       - type: None
   - name: argocd
@@ -79,8 +77,6 @@ spec:
       toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.parameters.kubeConfig.secretName
       toFieldPath: spec.credentials.secretRef.name
-    - fromFieldPath: spec.parameters.kubeConfig.secretKey
-      toFieldPath: spec.credentials.secretRef.key
     readinessChecks:
       - type: None
   - name: argocd-project

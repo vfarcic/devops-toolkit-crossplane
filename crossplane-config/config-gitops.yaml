@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-gitops
 spec:
-  package: vfarcic/crossplane-gitops:v0.1.3
+  package: vfarcic/crossplane-gitops:v0.1.4
