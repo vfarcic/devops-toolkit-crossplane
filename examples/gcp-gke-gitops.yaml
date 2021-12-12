@@ -3,18 +3,18 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: a-team-aks
+  name: a-team-gke
   labels:
     cluster-owner: vfarcic
 spec:
-  id: ateamaks
+  id: a-team-gke
   compositionSelector:
     matchLabels:
-      provider: azure
-      cluster: aks
+      provider: google
+      cluster: gke
   parameters:
     nodeSize: small
-    minNodeCount: 3
+    minNodeCount: 1
 
 ---
 
@@ -31,7 +31,6 @@ spec:
       provider: argo
   parameters:
     kubeConfig:
-      secretName: ateamaks-akscluster
+      secretName: a-team-eks-gkecluster
       secretNamespace: crossplane-system
-      secretKey: attribute.kube_config_raw
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
