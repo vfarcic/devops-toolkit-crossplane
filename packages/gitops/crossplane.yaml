@@ -7,4 +7,4 @@ spec:
     version: ">=v1.5"
   dependsOn:
   - provider: crossplane/provider-helm
-    version: ">=v0.5"
+    version: ">=v0.9"

@@ -28,9 +28,9 @@ spec:
   id: a-team-gitops
   compositionSelector:
     matchLabels:
-      provider: argo
+      provider: argo-gcp
   parameters:
     kubeConfig:
-      secretName: a-team-eks-gkecluster
+      secretName: a-team-gke-gkecluster
       secretNamespace: crossplane-system
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git

@@ -103,6 +103,13 @@ spec:
           source: Secret
           secretRef:
             key: kubeconfig
+        identity:
+          type: GoogleApplicationCredentials
+          source: Secret
+          secretRef:
+            name: gcp-creds
+            namespace: crossplane-system
+            key: creds
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -167,6 +174,13 @@ spec:
           source: Secret
           secretRef:
             key: kubeconfig
+        identity:
+          type: GoogleApplicationCredentials
+          source: Secret
+          secretRef:
+            name: gcp-creds
+            namespace: crossplane-system
+            key: creds
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name

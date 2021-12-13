@@ -1,0 +1,173 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gitops-argo-cd-gcp
+  labels:
+    provider: argo-gcp
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: GitOps
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: helm
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            key: kubeconfig
+        identity:
+          type: GoogleApplicationCredentials
+          source: Secret
+          secretRef:
+            name: gcp-creds
+            namespace: crossplane-system
+            key: creds
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.parameters.kubeConfig.secretName
+      toFieldPath: spec.credentials.secretRef.name
+    - fromFieldPath: spec.parameters.kubeConfig.secretKey
+      toFieldPath: spec.credentials.secretRef.key
+    readinessChecks:
+      - type: None
+  - name: argocd
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: argocd
+          chart:
+            name: argo-cd
+            repository: https://argoproj.github.io/argo-helm
+            version: "3.26.3"
+          set:
+          - name: server.extraArgs
+            value: "{--insecure}"
+          - name: controller.args.appResyncPeriod
+            value: "30"
+          - name: configs.secret.argocdServerAdminPassword
+            value: "$2a$10$m3eTlEdRen0nS86c5Zph5u/bDFQMcWZYdG3NVdiyaACCqoxLJaz16"
+          - name: configs.secret.argocdServerAdminPasswordMtime
+            value: "2021-11-08T15:04:05Z"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: kubernetes
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            key: kubeconfig
+        identity:
+          type: GoogleApplicationCredentials
+          source: Secret
+          secretRef:
+            name: gcp-creds
+            namespace: crossplane-system
+            key: creds
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.parameters.kubeConfig.secretName
+      toFieldPath: spec.credentials.secretRef.name
+    - fromFieldPath: spec.parameters.kubeConfig.secretKey
+      toFieldPath: spec.credentials.secretRef.key
+    readinessChecks:
+      - type: None
+  - name: argocd-project
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: AppProject
+            metadata:
+              name: production
+              namespace: argocd
+              finalizers:
+                - resources-finalizer.argocd.argoproj.io
+            spec:
+              description: Production project
+              sourceRepos:
+              - '*'
+              destinations:
+              - namespace: '*'
+                server: '*'
+              clusterResourceWhitelist:
+              - group: '*'
+                kind: '*'
+              namespaceResourceWhitelist:
+              - group: '*'
+                kind: '*'
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd-project"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: argocd-app
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: Application
+            metadata:
+              name: production-apps
+              namespace: argocd
+              finalizers:
+                - resources-finalizer.argocd.argoproj.io
+            spec:
+              project: production
+              source:
+                targetRevision: HEAD
+                path: apps
+              destination:
+                server: https://kubernetes.default.svc
+                namespace: production
+              syncPolicy:
+                automated:
+                  selfHeal: true
+                  prune: true
+                  allowEmpty: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd-app"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.gitOpsRepo
+      toFieldPath: spec.forProvider.manifest.spec.source.repoURL
