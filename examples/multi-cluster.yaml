@@ -43,7 +43,7 @@ metadata:
   labels:
     cluster-owner: vfarcic
 spec:
-  id: management
+  id: production-01
   compositionSelector:
     matchLabels:
       provider: aws
@@ -61,7 +61,7 @@ metadata:
   labels:
     cluster-owner: vfarcic
 spec:
-  id: management
+  id: production-02
   compositionSelector:
     matchLabels:
       provider: azure

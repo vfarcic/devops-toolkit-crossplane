@@ -40,7 +40,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: "%s-ekscluster"
+            fmt: "%s-cluster"
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
       transforms:
@@ -464,7 +464,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: "%s-ekscluster"
+            fmt: "%s-cluster"
     readinessChecks:
       - type: None
   - name: crossplane
@@ -528,7 +528,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: "%s-ekscluster"
+            fmt: "%s-cluster"
     readinessChecks:
       - type: None
   - name: ns-prod

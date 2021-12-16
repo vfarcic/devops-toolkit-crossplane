@@ -9,7 +9,7 @@ spec:
   - provider: crossplane/provider-aws
     version: ">=v0.20"
   - provider: crossplane/provider-gcp
-    version: ">=v0.18"
+    version: ">=v0.19"
   - provider: crossplane/provider-jet-azure
     version: ">=v0.4"
   - provider: crossplane/provider-helm
