@@ -20,22 +20,24 @@ spec:
       apiVersion: cluster.civo.crossplane.io/v1alpha1
       kind: CivoKubernetes
       spec:
-        instances: 1
-        size: g3.k3s.small
+        pools:
+        - id: 8382e422-dcdd-461f-afb4-2ab67f171c3e
+          count: 1
+          size: g3.k3s.small
         connectionDetails:
           connectionSecretNamePrefix: cluster-civo
           connectionSecretNamespace: crossplane-system
         providerConfigRef:
-          name: provider-civo
+          name: crossplane-provider-civo
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
     - fromFieldPath: spec.id
       toFieldPath: spec.name
     - fromFieldPath: spec.parameters.minNodeCount
-      toFieldPath: spec.instances
+      toFieldPath: spec.pools[0].count
     - fromFieldPath: spec.parameters.nodeSize
-      toFieldPath: spec.size
+      toFieldPath: spec.pools[0].size
       transforms:
         - type: map
           map:

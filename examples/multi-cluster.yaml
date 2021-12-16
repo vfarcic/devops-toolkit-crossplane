@@ -1,0 +1,71 @@
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: management
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: management
+  compositionSelector:
+    matchLabels:
+      provider: google
+      cluster: gke
+  parameters:
+    nodeSize: medium
+    minNodeCount: 2
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: dev
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: dev
+  compositionSelector:
+    matchLabels:
+      provider: civo
+      cluster: ck
+  parameters:
+    nodeSize: medium
+    minNodeCount: 1
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: production-01
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: management
+  compositionSelector:
+    matchLabels:
+      provider: aws
+      cluster: eks
+  parameters:
+    nodeSize: medium
+    minNodeCount: 3
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: production-02
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: management
+  compositionSelector:
+    matchLabels:
+      provider: azure
+      cluster: aks
+  parameters:
+    nodeSize: medium
+    minNodeCount: 3
