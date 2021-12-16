@@ -14,7 +14,7 @@ spec:
       cluster: gke
   parameters:
     nodeSize: medium
-    minNodeCount: 2
+    minNodeCount: 1
 
 ---
 
@@ -39,33 +39,33 @@ spec:
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: production-01
+  name: production01
   labels:
     cluster-owner: vfarcic
 spec:
-  id: production-01
+  id: production01
   compositionSelector:
     matchLabels:
-      provider: aws
-      cluster: eks
+      provider: azure
+      cluster: aks
   parameters:
     nodeSize: medium
-    minNodeCount: 3
+    minNodeCount: 1
 
 ---
 
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: production-02
+  name: production02
   labels:
     cluster-owner: vfarcic
 spec:
-  id: production-02
+  id: production02
   compositionSelector:
     matchLabels:
-      provider: azure
-      cluster: aks
+      provider: aws
+      cluster: eks
   parameters:
     nodeSize: medium
     minNodeCount: 3

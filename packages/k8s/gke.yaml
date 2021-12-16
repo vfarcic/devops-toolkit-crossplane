@@ -31,7 +31,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-gkecluster"
+          fmt: "%s-cluster"
     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.parameters.version
@@ -120,7 +120,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: "%s-gkecluster"
+            fmt: "%s-cluster"
     readinessChecks:
       - type: None
   - name: crossplane
@@ -191,7 +191,7 @@ spec:
       transforms:
         - type: string
           string:
-            fmt: "%s-gkecluster"
+            fmt: "%s-cluster"
     readinessChecks:
       - type: None
   - name: ns-prod
