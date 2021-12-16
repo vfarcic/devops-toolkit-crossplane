@@ -32,7 +32,7 @@ spec:
       cluster: ck
   parameters:
     nodeSize: medium
-    minNodeCount: 1
+    minNodeCount: 3
 
 ---
 
@@ -50,7 +50,7 @@ spec:
       cluster: aks
   parameters:
     nodeSize: medium
-    minNodeCount: 1
+    minNodeCount: 3
 
 ---
 
