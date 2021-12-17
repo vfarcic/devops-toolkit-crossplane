@@ -111,8 +111,8 @@ spec:
       matchString: ACTIVE
   - name: iamrole-controlplane
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRole
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: Role
       spec:
         forProvider:
           assumeRolePolicyDocument: |
@@ -147,8 +147,8 @@ spec:
             fmt: "%s-controlplane"
   - name: iamrole-nodegroup
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRole
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: Role
       spec:
         forProvider:
           assumeRolePolicyDocument: |
@@ -183,8 +183,8 @@ spec:
             fmt: "%s-nodegroup"
   - name: iamattachment-controlplane
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
@@ -205,8 +205,8 @@ spec:
             fmt: "%s-controlplane"
   - name: iamattachment-service
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
@@ -227,8 +227,8 @@ spec:
             fmt: "%s-controlplane"
   - name: iamattachment-worker
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
@@ -249,8 +249,8 @@ spec:
             fmt: "%s-nodegroup"
   - name: iamattachment-cni
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
@@ -271,8 +271,8 @@ spec:
             fmt: "%s-nodegroup"
   - name: iamattachment-registry
     base:
-      apiVersion: identity.aws.crossplane.io/v1beta1
-      kind: IAMRolePolicyAttachment
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: RolePolicyAttachment
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
