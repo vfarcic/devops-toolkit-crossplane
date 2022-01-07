@@ -71,8 +71,8 @@ spec:
 {{- range .Values.roles }}
 ---
 
-apiVersion: identity.aws.crossplane.io/v1beta1
-kind: IAMRole
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: Role
 metadata:
   name: {{ $root.Chart.Name }}-{{ .name }}
   labels:
@@ -105,8 +105,8 @@ spec:
 {{- range .Values.policiyAttachments }}
 ---
 
-apiVersion: identity.aws.crossplane.io/v1beta1
-kind: IAMRolePolicyAttachment
+apiVersion: iam.aws.crossplane.io/v1beta1
+kind: RolePolicyAttachment
 metadata:
   name: {{ $root.Chart.Name }}-{{ .name }}
   labels:
