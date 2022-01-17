@@ -1,0 +1,10 @@
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: sql
+spec:
+  crossplane:
+    version: ">=v1.6"
+  dependsOn:
+  - provider: crossplane/provider-gcp
+    version: v0.19.0

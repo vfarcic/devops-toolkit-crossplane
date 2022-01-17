@@ -1,0 +1,167 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: google-postgres
+  labels:
+    provider: google
+    db: postgres
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeSQL
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: sql
+    base:
+      apiVersion: database.gcp.crossplane.io/v1beta1
+      kind: CloudSQLInstance
+      spec:
+        forProvider:
+          region: us-east1
+          instanceType: CLOUD_SQL_INSTANCE
+          settings:
+            availabilityType: REGIONAL
+            tier: db-custom-2-7680
+        writeConnectionSecretToRef:
+          namespace: crossplane-system
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.databaseVersion
+      transforms:
+      - type: string
+        string:
+          fmt: POSTGRES_%s
+    - fromFieldPath: spec.parameters.size
+      toFieldPath: spec.settings.tier
+      transforms:
+      - type: map
+        map:
+          small: db-custom-1-3840
+          medium: db-custom-16-61440
+          large: db-custom-64-245760
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-sql"
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.state
+      matchString: RUNNABLE
+
+
+---
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: google-mysql
+  labels:
+    provider: google
+    db: mysql
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeSQL
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: sql
+    base:
+      apiVersion: database.gcp.crossplane.io/v1beta1
+      kind: CloudSQLInstance
+      spec:
+        forProvider:
+          region: us-east1
+          instanceType: CLOUD_SQL_INSTANCE
+          settings:
+            availabilityType: REGIONAL
+            tier: db-custom-2-7680
+            backupConfiguration:
+              enabled: true
+              binaryLogEnabled: true
+            ipConfiguration:
+              ipv4Enabled: true
+              authorizedNetworks:
+              - name: all
+                value: 0.0.0.0/0
+        writeConnectionSecretToRef:
+          namespace: crossplane-system
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.databaseVersion
+      transforms:
+      - type: string
+        string:
+          fmt: MYSQL_%s
+    - fromFieldPath: spec.parameters.size
+      toFieldPath: spec.settings.tier
+      transforms:
+      - type: map
+        map:
+          small: db-custom-1-3840
+          medium: db-custom-16-61440
+          large: db-custom-64-245760
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-sql"
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.state
+      matchString: RUNNABLE
+    connectionDetails:
+    - fromConnectionSecretKey: username
+    - fromConnectionSecretKey: password
+    - fromConnectionSecretKey: publicIP
+  - name: sql-config
+    base:
+      apiVersion: mysql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: MySQLConnectionSecret
+          connectionSecretRef:
+            namespace: crossplane-system
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.credentials.connectionSecretRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-sql"
+    readinessChecks:
+      - type: None
+  - name: sql-db
+    base:
+      apiVersion: mysql.sql.crossplane.io/v1alpha1
+      kind: Database
+      metadata:
+        name: dot
+      spec: {}
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    readinessChecks:
+      - type: None
