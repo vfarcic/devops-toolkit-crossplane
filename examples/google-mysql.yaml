@@ -1,9 +1,9 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
 metadata:
-  name: a-team-mysql-01
+  name: a-team-mysql-04
 spec:
-  id: a-team-mysql-01
+  id: a-team-mysql-04
   compositionSelector:
     matchLabels:
       provider: google
