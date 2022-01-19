@@ -3,5 +3,5 @@ kubectl crossplane build configuration \
     --name sql
 
 kubectl crossplane push configuration \
-    vfarcic/crossplane-sql:v0.1.2
+    vfarcic/crossplane-sql:v0.1.3
 ```
