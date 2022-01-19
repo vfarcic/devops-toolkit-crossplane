@@ -6,6 +6,7 @@ metadata:
     provider: google
     db: mysql
 spec:
+  writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
     kind: CompositeSQL
@@ -33,6 +34,8 @@ spec:
               authorizedNetworks:
               - name: all
                 value: 0.0.0.0/0
+        writeConnectionSecretToRef:
+          namespace: crossplane-system
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -63,7 +66,8 @@ spec:
       fieldPath: status.atProvider.state
       matchString: RUNNABLE
     connectionDetails:
-    - name: port
+    - type: FromValue
+      name: port
       value: "3306"
   - name: sql-config
     base:
@@ -72,6 +76,8 @@ spec:
       spec:
         credentials:
           source: MySQLConnectionSecret
+          connectionSecretRef:
+            namespace: crossplane-system
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
