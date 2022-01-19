@@ -1,13 +1,13 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
 metadata:
-  name: a-team-mysql
+  name: a-team-postgres
 spec:
-  id: a-team-mysql
+  id: a-team-postgres
   compositionSelector:
     matchLabels:
       provider: google
-      db: mysql
+      db: postgres
   parameters:
-    version: "8_0"
+    version: "9_6"
     size: small

@@ -12,6 +12,11 @@ spec:
   claimNames:
     kind: SQLClaim
     plural: sqlclaims
+  connectionSecretKeys:
+  - username
+  - password
+  - endpoint
+  - port
   versions:
   - name: v1alpha1
     served: true
