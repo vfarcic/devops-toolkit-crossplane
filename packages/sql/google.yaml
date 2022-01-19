@@ -191,12 +191,10 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.id
+    - fromFieldPath: spec.writeConnectionSecretToRef.name
       toFieldPath: spec.credentials.connectionSecretRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-sql"
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.connectionSecretRef.namespace
     readinessChecks:
       - type: None
   - name: sql-db
