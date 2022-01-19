@@ -11,3 +11,5 @@ spec:
   parameters:
     version: "8_0"
     size: small
+  writeConnectionSecretToRef:
+    name: a-team-mysql

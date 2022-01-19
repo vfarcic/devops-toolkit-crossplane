@@ -11,3 +11,5 @@ spec:
   parameters:
     version: "9_6"
     size: small
+  writeConnectionSecretToRef:
+    name: a-team-postgres

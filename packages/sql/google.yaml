@@ -52,8 +52,6 @@ spec:
           small: db-custom-1-3840
           medium: db-custom-16-61440
           large: db-custom-64-245760
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
@@ -71,6 +69,7 @@ spec:
     - type: FromValue
       name: port
       value: "5432"
+# TODO: Uncomment and finish
   # - name: sql-config
   #   base:
   #     apiVersion: mysql.sql.crossplane.io/v1alpha1
@@ -83,8 +82,6 @@ spec:
   #   patches:
   #   - fromFieldPath: spec.id
   #     toFieldPath: metadata.name
-  #   - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-  #     toFieldPath: spec.credentials.secretRef.namespace
   #   - fromFieldPath: spec.id
   #     toFieldPath: spec.credentials.connectionSecretRef.name
   #     transforms:
@@ -165,8 +162,6 @@ spec:
           small: db-custom-1-3840
           medium: db-custom-16-61440
           large: db-custom-64-245760
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
@@ -196,8 +191,6 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.connectionSecretRef.name
       transforms:
