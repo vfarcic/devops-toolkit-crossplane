@@ -22,12 +22,25 @@ func main() {
 }
 
 func root(w http.ResponseWriter, req *http.Request) {
-	log.Println("Not yet implemented...")
 }
 
 func addVideo(w http.ResponseWriter, req *http.Request) {
 	log.Println("Adding a video...")
-	db, err := sql.Open("mysql", "root:OSAldwySWcXNxxUCCMlXlXUjU05@tcp(35.229.106.29:3306)/sql-demo?tls=false")
+	dbName := os.Getenv("DB_NAME")
+	dbUser := os.Getenv("DB_USERNAME")
+	dbPass := os.Getenv("DB_PASSWORD")
+	dbEndpoint := os.Getenv("DB_ENDPOINT")
+	dbPort := os.Getenv("DB_PORT")
+	dbUri := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?tls=false",
+		dbUser,
+		dbPass,
+		dbEndpoint,
+		dbPort,
+		dbName,
+	)
+	log.Println(dbUri)
+	db, err := sql.Open("mysql", dbUri)
 	if err != nil {
 		panic(err.Error())
 	}
