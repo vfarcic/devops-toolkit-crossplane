@@ -1,0 +1,37 @@
+{{- if .Values.schema }}
+---
+
+apiVersion: databases.schemahero.io/v1alpha4
+kind: Database
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  immediateDeploy: true
+  connection:
+    mysql:
+      uri:
+        value: "{{ .Values.schema.user }}:{{ .Values.schema.password }}@tcp({{ .Values.schema.endpoint }}:{{ .Values.schema.port }})/{{ .Chart.Name }}?tls=false"
+
+---
+
+apiVersion: schemas.schemahero.io/v1alpha4
+kind: Table
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  database: {{ .Chart.Name }}
+  name: videos
+  schema:
+    mysql:
+      primaryKey:
+      - id
+      columns:
+      - name: id
+        type: varchar(20)
+        constraints:
+          notNull: true
+      - name: name
+        type: varchar(150)
+      - name: url
+        type: varchar(50)
+{{- end }}

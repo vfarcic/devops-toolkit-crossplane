@@ -1,0 +1,7 @@
+schema:
+  enabled: true
+  user: root
+  password: root
+  endpoint: 1.2.3.4
+  port: 3306
+image: vfarcic/sql-demo:0.1.1

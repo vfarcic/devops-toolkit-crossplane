@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sql-demo
+description: I'm too lazy to think of something
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
