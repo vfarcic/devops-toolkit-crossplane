@@ -17,7 +17,7 @@ spec:
 ---
 
 apiVersion: devopstoolkitseries.com/v1alpha1
-kind: SQL
+kind: CompositeSQL
 metadata:
   name: silly-demo
 spec:
