@@ -3,9 +3,9 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: App
 metadata:
-  name: silly-demo
+  name: silly-sql-demo
 spec:
-  id: silly-demo
+  id: silly-sql-demo
   compositionRef:
     name: app-backend-db
   parameters:
@@ -19,9 +19,9 @@ spec:
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: CompositeSQL
 metadata:
-  name: silly-demo
+  name: silly-sql-demo
 spec:
-  id: silly-demo
+  id: silly-sql-demo
   compositionRef:
     name: google-mysql
   parameters:
