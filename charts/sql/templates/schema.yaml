@@ -1,4 +1,3 @@
-{{- if .Values.schema }}
 ---
 
 apiVersion: databases.schemahero.io/v1alpha4
@@ -34,4 +33,3 @@ spec:
         type: varchar(150)
       - name: url
         type: varchar(50)
-{{- end }}

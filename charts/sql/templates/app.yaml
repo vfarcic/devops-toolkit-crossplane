@@ -1,3 +1,5 @@
+{{- if .Values.crossplaneApp }}
+{{- else }}
 ---
 
 apiVersion: apps/v1
@@ -99,3 +101,4 @@ spec:
             port:
               number: 8080
     host: {{ .Values.ingress.host }}
+{{- end }}

@@ -1,0 +1,21 @@
+{{- if .Values.crossplaneApp }}
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app-owner: vfarcic
+spec:
+  id: {{ .Chart.Name }}
+  compositionSelector:
+    matchLabels:
+      type: backend-db
+  parameters:
+    namespace: a-team
+    image: {{ .Values.image }}
+    port: 8080
+    host: {{ .Values.ingress.host }}
+
+{{- end }}

@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-app
 spec:
-  package: vfarcic/crossplane-app:v0.1.1
+  package: vfarcic/crossplane-app:v0.1.3

@@ -163,6 +163,8 @@ spec:
       toFieldPath: spec.forProvider.manifest.metadata.labels.app
     - fromFieldPath: spec.parameters.host
       toFieldPath: spec.forProvider.manifest.spec.rules[0].host
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.name
     - fromFieldPath: spec.parameters.port
       toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.port.number
     - fromFieldPath: spec.id
