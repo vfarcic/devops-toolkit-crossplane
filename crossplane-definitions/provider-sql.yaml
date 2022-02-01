@@ -1,6 +1,0 @@
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: crossplane-provider-sql
-spec:
-  package: crossplane/provider-sql:master

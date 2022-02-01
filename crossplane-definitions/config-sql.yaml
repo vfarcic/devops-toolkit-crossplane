@@ -1,8 +1,0 @@
----
-
-apiVersion: pkg.crossplane.io/v1
-kind: Configuration
-metadata:
-  name: crossplane-sql
-spec:
-  package: vfarcic/crossplane-sql:v0.1.14
