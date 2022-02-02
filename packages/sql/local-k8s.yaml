@@ -1,0 +1,67 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: local-k8s-postgresql
+  labels:
+    provider: local-k8s
+    db: postgresql
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeSQL
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: helm
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: InjectedIdentity
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    readinessChecks:
+      - type: None
+  - name: server
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          chart:
+            name: postgresql
+            repository: https://charts.bitnami.com/bitnami
+            version: "10.16.2"
+          set:
+          - name: postgresqlPassword
+            value: postgres
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-postgresql"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.namespace
+      toFieldPath: spec.forProvider.namespace
+    connectionDetails:
+    - type: FromValue
+      name: username
+      value: postgres
+    - type: FromValue
+      name: password
+      value: postgres # I was too lazy. You should NOT do this!!!
+    - type: FromFieldPath
+      name: endpoint
+      value: metadata.name
+    - type: FromValue
+      name: port
+      value: "5432"

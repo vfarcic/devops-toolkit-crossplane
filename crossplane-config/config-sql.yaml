@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-sql
 spec:
-  package: vfarcic/crossplane-sql:v0.1.14
+  package: vfarcic/crossplane-sql:v0.2.6
