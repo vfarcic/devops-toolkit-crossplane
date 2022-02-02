@@ -9,7 +9,7 @@ spec:
   writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
-    kind: CompositeSQL
+    kind: SQL
   patchSets:
   - name: metadata
     patches:
@@ -58,10 +58,10 @@ spec:
       value: postgres
     - type: FromValue
       name: password
-      value: postgres # I was too lazy. You should NOT do this!!!
+      value: postgres # I'm doing this only because it's for dev envs!!!
     - type: FromFieldPath
+      fromFieldPath: metadata.name
       name: endpoint
-      value: metadata.name
     - type: FromValue
       name: port
       value: "5432"

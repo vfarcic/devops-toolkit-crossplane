@@ -1,14 +1,14 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: compositesqls.devopstoolkitseries.com
+  name: sqls.devopstoolkitseries.com
 spec:
   defaultCompositionRef:
     name: google-postgres
   group: devopstoolkitseries.com
   names:
-    kind: CompositeSQL
-    plural: compositesqls
+    kind: SQL
+    plural: sqls
   claimNames:
     kind: SQLClaim
     plural: sqlclaims

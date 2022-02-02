@@ -9,7 +9,7 @@ spec:
   writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
-    kind: CompositeSQL
+    kind: SQL
   patchSets:
   - name: metadata
     patches:
