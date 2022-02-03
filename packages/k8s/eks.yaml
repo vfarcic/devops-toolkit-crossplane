@@ -666,6 +666,28 @@ spec:
             fmt: "%s-k8s-provider"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+  - name: sql-provider
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: provider-sql
+            spec:
+              package: crossplane/provider-sql:master
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-sql-provider"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
   - name: config-app
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
