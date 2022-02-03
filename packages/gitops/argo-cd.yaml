@@ -211,7 +211,7 @@ spec:
               project: dev
               source:
                 targetRevision: HEAD
-                path: apps
+                path: apps-dev
               destination:
                 server: https://kubernetes.default.svc
                 namespace: dev
