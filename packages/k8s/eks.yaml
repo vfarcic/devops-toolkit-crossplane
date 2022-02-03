@@ -678,7 +678,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: vfarcic/crossplane-app:v0.1.1
+              package: vfarcic/crossplane-app:v0.1.3
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -686,5 +686,27 @@ spec:
         - type: string
           string:
             fmt: "%s-config-app"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: config-sql
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Configuration
+            metadata:
+              name: crossplane-sql
+            spec:
+              package: vfarcic/crossplane-sql:v0.2.16
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-config-sql"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
