@@ -157,3 +157,77 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     - fromFieldPath: spec.parameters.gitOpsRepo
       toFieldPath: spec.forProvider.manifest.spec.source.repoURL
+  - name: argocd-project-dev
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: AppProject
+            metadata:
+              name: dev
+              namespace: argocd
+              finalizers:
+                - resources-finalizer.argocd.argoproj.io
+            spec:
+              description: Dev project
+              sourceRepos:
+              - '*'
+              destinations:
+              - namespace: '*'
+                server: '*'
+              clusterResourceWhitelist:
+              - group: '*'
+                kind: '*'
+              namespaceResourceWhitelist:
+              - group: '*'
+                kind: '*'
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd-project-dev"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: argocd-app-dev
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: Application
+            metadata:
+              name: dev-apps
+              namespace: argocd
+              finalizers:
+                - resources-finalizer.argocd.argoproj.io
+            spec:
+              project: dev
+              source:
+                targetRevision: HEAD
+                path: apps
+              destination:
+                server: https://kubernetes.default.svc
+                namespace: dev
+              syncPolicy:
+                automated:
+                  selfHeal: true
+                  prune: true
+                  allowEmpty: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-argocd-app-dev"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.gitOpsRepo
+      toFieldPath: spec.forProvider.manifest.spec.source.repoURL
