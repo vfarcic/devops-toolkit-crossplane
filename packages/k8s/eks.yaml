@@ -688,30 +688,6 @@ spec:
             fmt: "%s-helm-provider-cc"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  # - name: helm-provider
-  #   base:
-  #     apiVersion: kubernetes.crossplane.io/v1alpha1
-  #     kind: Object
-  #     spec:
-  #       forProvider:
-  #         manifest:
-  #           apiVersion: pkg.crossplane.io/v1
-  #           kind: Provider
-  #           metadata:
-  #             name: provider-helm
-  #           spec:
-  #             package: crossplane/provider-helm:v0.9.0
-  #             controllerConfigRef:
-  #               name: provider-kubernetes
-  #   patches:
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: "%s-helm-provider"
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.providerConfigRef.name
   - name: sql-provider
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -778,17 +754,3 @@ spec:
             fmt: "%s-config-sql"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-
-
-
-export SA=$(kubectl \
-    --namespace crossplane-system \
-    get serviceaccount \
-    --output name \
-    | grep provider-helm \
-    | sed -e 's|serviceaccount\/|crossplane-system:|g')
-
-kubectl create clusterrolebinding \
-    provider-helm-admin-binding \
-    --clusterrole cluster-admin \
-    --serviceaccount="${SA}"
