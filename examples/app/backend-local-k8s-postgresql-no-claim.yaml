@@ -28,3 +28,6 @@ spec:
     version: "13.4"
     size: small
     namespace: dev
+  writeConnectionSecretToRef:
+    name: silly-demo-dev
+    namespace: dev
