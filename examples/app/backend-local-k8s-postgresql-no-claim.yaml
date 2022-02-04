@@ -3,7 +3,7 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: App
 metadata:
-  name: silly-demo
+  name: silly-demo-dev
 spec:
   id: silly-demo-dev
   compositionRef:
@@ -19,7 +19,7 @@ spec:
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQL
 metadata:
-  name: silly-demo
+  name: silly-demo-dev
 spec:
   id: silly-demo-dev
   compositionRef:
