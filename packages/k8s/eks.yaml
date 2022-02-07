@@ -445,6 +445,22 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+  - name: aws
+    base:
+      apiVersion: aws.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            namespace: crossplane-system
+            name: aws-creds
+            key: creds
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    readinessChecks:
+      - type: None
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -666,28 +682,6 @@ spec:
             fmt: "%s-k8s-provider"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  # - name: helm-provider-cc
-  #   base:
-  #     apiVersion: kubernetes.crossplane.io/v1alpha1
-  #     kind: Object
-  #     spec:
-  #       forProvider:
-  #         manifest:
-  #           apiVersion: pkg.crossplane.io/v1alpha1
-  #           kind: ControllerConfig
-  #           metadata:
-  #             name: crossplane-provider-helm
-  #           spec:
-  #             serviceAccountName: provider-kubernetes
-  #   patches:
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #       - type: string
-  #         string:
-  #           fmt: "%s-helm-provider-cc"
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.providerConfigRef.name
   - name: helm-provider
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
