@@ -550,7 +550,7 @@ spec:
           string:
             fmt: "%s-ns-prod"
     - fromFieldPath: spec.id
-      toFieldPath: spec.1Ref.name
+      toFieldPath: spec.providerConfigRef.name
   - name: ns-dev
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
