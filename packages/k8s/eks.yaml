@@ -540,6 +540,8 @@ spec:
           manifest:
             apiVersion: aws.crossplane.io/v1beta1
             kind: ProviderConfig
+            metadata:
+              name: default
             spec:
               credentials:
                 source: Secret
@@ -547,15 +549,6 @@ spec:
                   namespace: crossplane-system
                   name: aws-creds
                   key: creds
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-aws-pc"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: ns-prod
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
