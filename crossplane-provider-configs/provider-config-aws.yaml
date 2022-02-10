@@ -1,14 +1,13 @@
 ---
 
-apiVersion: gcp.crossplane.io/v1beta1
+apiVersion: aws.crossplane.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: default
 spec:
-  projectID: devops-toolkit-20220209170019
   credentials:
     source: Secret
     secretRef:
       namespace: crossplane-system
-      name: gcp-creds
+      name: aws-creds
       key: creds
