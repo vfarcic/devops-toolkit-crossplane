@@ -61,6 +61,8 @@ spec:
       matchString: ACTIVE
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
   - name: eksnodegroup
     base:
       apiVersion: eks.aws.crossplane.io/v1alpha1
@@ -323,6 +325,8 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    readinessChecks:
+    - type: None
   - name: subnet-nodepool-1a
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1

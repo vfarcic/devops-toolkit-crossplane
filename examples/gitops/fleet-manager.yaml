@@ -1,0 +1,17 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: GitOpsClaim
+metadata:
+  name: a-team-gitops
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-gitops
+  compositionSelector:
+    matchLabels:
+      provider: fleet
+      initiate-by: manager
+  parameters:
+    kubeConfig:
+      secretName: a-team-eks-ekscluster
+      secretNamespace: crossplane-system
+    gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git

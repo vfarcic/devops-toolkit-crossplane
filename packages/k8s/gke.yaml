@@ -44,6 +44,8 @@ spec:
       toFieldPath: status.controlPlaneStatus
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
     readinessChecks:
     - type: MatchString
       fieldPath: "status.atProvider.status"

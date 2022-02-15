@@ -3,5 +3,5 @@ kubectl crossplane build configuration \
     --name gitops
 
 kubectl crossplane push configuration \
-    vfarcic/crossplane-gitops:v0.1.12
+    vfarcic/crossplane-gitops:v0.2.0
 ```

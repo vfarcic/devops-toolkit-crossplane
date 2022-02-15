@@ -1,0 +1,56 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: gitops-fleet
+  labels:
+    provider: fleet
+    initiate-by: manager
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: GitOps
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  # - name: kubernetes
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: ProviderConfig
+  #     spec:
+  #       credentials:
+  #         source: Secret
+  #         secretRef:
+  #           key: kubeconfig
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #   - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
+  #     toFieldPath: spec.credentials.secretRef.namespace
+  #   - fromFieldPath: spec.parameters.kubeConfig.secretName
+  #     toFieldPath: spec.credentials.secretRef.name
+  #   - fromFieldPath: spec.parameters.kubeConfig.secretKey
+  #     toFieldPath: spec.credentials.secretRef.key
+  #   readinessChecks:
+  #     - type: None
+  - name: ns-xxx
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: xxx
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-ns-xxx"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
