@@ -44,6 +44,13 @@ spec:
             small: g3.k3s.small
             medium: g3.k3s.medium
             large: g3.k3s.xlarge
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: status.clusterName
+    connectionDetails:
+    - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
