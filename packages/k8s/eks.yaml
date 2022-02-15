@@ -61,8 +61,6 @@ spec:
       matchString: ACTIVE
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
-    - fromConnectionSecretKey: kubeconfig
-      name: value
   - name: eksnodegroup
     base:
       apiVersion: eks.aws.crossplane.io/v1alpha1

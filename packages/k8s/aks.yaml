@@ -86,8 +86,6 @@ spec:
       matchString: Succeeded
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
-    - fromConnectionSecretKey: kubeconfig
-      name: value
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
