@@ -60,7 +60,7 @@ spec:
       fieldPath: status.atProvider.status
       matchString: ACTIVE
     connectionDetails:
-      - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
   - name: eksnodegroup
     base:
       apiVersion: eks.aws.crossplane.io/v1alpha1
@@ -462,11 +462,11 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-cluster"
+      - type: string
+        string:
+          fmt: "%s-cluster"
     readinessChecks:
-      - type: None
+    - type: None
   - name: crossplane
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -483,9 +483,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-crossplane"
+      - type: string
+        string:
+          fmt: "%s-crossplane"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: prometheus
@@ -504,9 +504,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-prometheus"
+      - type: string
+        string:
+          fmt: "%s-prometheus"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: kubernetes
@@ -530,7 +530,7 @@ spec:
           string:
             fmt: "%s-cluster"
     readinessChecks:
-      - type: None
+    - type: None
   - name: aws-pc
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -553,9 +553,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-aws-pc"
+      - type: string
+        string:
+          fmt: "%s-aws-pc"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: ns-prod
@@ -573,9 +573,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-ns-prod"
+      - type: string
+        string:
+          fmt: "%s-ns-prod"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: ns-dev
@@ -593,9 +593,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-ns-dev"
+      - type: string
+        string:
+          fmt: "%s-ns-dev"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-sa
@@ -614,9 +614,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-k8s-provider-sa"
+      - type: string
+        string:
+          fmt: "%s-k8s-provider-sa"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-crd
@@ -642,9 +642,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-k8s-provider-crb"
+      - type: string
+        string:
+          fmt: "%s-k8s-provider-crb"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-cc
@@ -664,9 +664,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-k8s-provider-cc"
+      - type: string
+        string:
+          fmt: "%s-k8s-provider-cc"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider
@@ -688,9 +688,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-k8s-provider"
+      - type: string
+        string:
+          fmt: "%s-k8s-provider"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: helm-provider
@@ -712,9 +712,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-helm-provider"
+      - type: string
+        string:
+          fmt: "%s-helm-provider"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: sql-provider
@@ -734,9 +734,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-sql-provider"
+      - type: string
+        string:
+          fmt: "%s-sql-provider"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: config-app
@@ -756,9 +756,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-config-app"
+      - type: string
+        string:
+          fmt: "%s-config-app"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: config-sql
@@ -778,8 +778,8 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-config-sql"
+      - type: string
+        string:
+          fmt: "%s-config-sql"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
