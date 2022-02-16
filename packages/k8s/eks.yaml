@@ -75,8 +75,7 @@ spec:
           nodeRoleSelector:
             matchControllerRef: true
           subnetSelector:
-            matchLabels:
-              access: public
+            matchControllerRef: true
           scalingConfig:
             minSize: 1
             maxSize: 10

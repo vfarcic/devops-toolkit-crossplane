@@ -14,43 +14,49 @@ spec:
     patches:
     - fromFieldPath: metadata.labels
   resources:
-  # - name: kubernetes
-  #   base:
-  #     apiVersion: kubernetes.crossplane.io/v1alpha1
-  #     kind: ProviderConfig
-  #     spec:
-  #       credentials:
-  #         source: Secret
-  #         secretRef:
-  #           key: kubeconfig
-  #   patches:
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #   - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
-  #     toFieldPath: spec.credentials.secretRef.namespace
-  #   - fromFieldPath: spec.parameters.kubeConfig.secretName
-  #     toFieldPath: spec.credentials.secretRef.name
-  #   - fromFieldPath: spec.parameters.kubeConfig.secretKey
-  #     toFieldPath: spec.credentials.secretRef.key
-  #   readinessChecks:
-  #     - type: None
-  - name: ns-xxx
+  - name: kubernetes
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
+      kind: ProviderConfig
       spec:
-        forProvider:
-          manifest:
-            apiVersion: v1
-            kind: Namespace
-            metadata:
-              name: xxx
+        credentials:
+          source: InjectedIdentity
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
       - type: string
         string:
-          fmt: "%s-ns-xxx"
+          fmt: "gitops-%s"
+    readinessChecks:
+      - type: None
+  - name: cluster
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: fleet.cattle.io/v1alpha1
+            kind: Cluster
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "gitops-%s-cluster"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "gitops-%s"
+    - fromFieldPath: spec.parameters.kubeConfig.secretNamespace
+      toFieldPath: spec.forProvider.manifest.metadata.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.labels.cluster
+    - fromFieldPath: spec.parameters.environment
+      toFieldPath: spec.forProvider.manifest.metadata.labels.env
+    - fromFieldPath: spec.parameters.kubeConfig.secretName
+      toFieldPath: spec.forProvider.manifest.spec.kubeConfigSecret

@@ -47,6 +47,10 @@ spec:
                         default: kubeconfig
                     required:
                     - secretName
+                  environment:
+                    description: The environment (e.g., production)
+                    type: string
+                    default: production
                   gitOpsRepo:
                     description: The repository with GitOps manifests used by Argo CD
                     type: string
