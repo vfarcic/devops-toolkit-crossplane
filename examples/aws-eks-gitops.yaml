@@ -31,6 +31,6 @@ spec:
       provider: argo
   parameters:
     kubeConfig:
-      secretName: a-team-eks-ekscluster
+      secretName: a-team-eks-cluster
       secretNamespace: crossplane-system
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
