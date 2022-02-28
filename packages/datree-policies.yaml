@@ -1,0 +1,27 @@
+apiVersion: v1
+customRules:
+- identifier: K8S_ID_REQUIRED
+  name: Ensure `allocatedStorage` is correct
+  defaultMessageOnFailure: The `spec.forProvider.allocatedStorage` value must be between `1000` and `5000`
+  schema:
+    if:
+      properties:
+        kind:
+          enum:
+          - RDSInstance
+    then:
+      properties:
+        spec:
+          properties:
+            forProviders:
+              properties:
+                allocatedStorage:
+                  minimum: 1000
+                  maximum: 5000
+              required:
+                - allocatedStorage
+policies:
+  - name: crossplane
+    rules:
+      - identifier: AWS_RDSINSTANCE_ALLOCATEDSTORAGE
+        messageOnFailure: The `spec.forProvider.allocatedStorage` value must be between `1000` and `5000`
