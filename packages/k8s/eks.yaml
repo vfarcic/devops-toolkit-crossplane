@@ -776,7 +776,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: vfarcic/crossplane-sql:v0.2.17
+              package: vfarcic/crossplane-sql:v0.2.18
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
