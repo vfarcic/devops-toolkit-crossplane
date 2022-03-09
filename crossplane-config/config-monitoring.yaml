@@ -1,0 +1,8 @@
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: crossplane-monitoring
+spec:
+  package: vfarcic/crossplane-monitoring:v0.0.37

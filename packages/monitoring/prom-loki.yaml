@@ -1,0 +1,127 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: prom-loki
+  labels:
+    monitor: prometheus
+    alert: alert-manager
+    dashboard: grafana
+    log: loki
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: Monitoring
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: helm
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: InjectedIdentity
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    readinessChecks:
+      - type: None
+  - name: prometheus
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          chart:
+            name: prometheus
+            repository: https://prometheus-community.github.io/helm-charts
+            version: "15.5.3"
+          set:
+          - name: server.ingress.enabled
+            value: "true"
+          - name: server.ingress.hosts[0]
+          - name: alertmanager.ingress.enabled
+            value: "true"
+          - name: alertmanager.ingress.hosts[0]
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-prometheus"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.namespace
+      toFieldPath: spec.forProvider.namespace
+    - fromFieldPath: spec.parameters.monitor.host
+      toFieldPath: spec.forProvider.set[1].value
+    - fromFieldPath: spec.parameters.alert.host
+      toFieldPath: spec.forProvider.set[3].value
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.forProvider.set[1].value
+      toFieldPath: status.monitorHost
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.forProvider.set[3].value
+      toFieldPath: status.alertHost
+  - name: grafana
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          chart:
+            name: grafana
+            repository: https://grafana.github.io/helm-charts
+            version: "6.23.0"
+          set:
+          - name: ingress.enabled
+            value: "true"
+          - name: ingress.hosts[0]
+          values:
+            datasources:
+              datasources.yaml:
+                apiVersion: 1
+                datasources:
+                - name: Prometheus
+                  type: prometheus
+                  url: http://monitoring-prometheus-server
+                  isDefault: true
+            dashboardProviders:
+              dashboardproviders.yaml:
+                apiVersion: 1
+                providers:
+                - name: default
+                  orgId: 1
+                  folder: ""
+                  type: file
+                  disableDeletion: false
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/default
+            dashboards:
+              default:
+                prometheus-cluster:
+                  gnetId: 6417
+                  revision: 1
+                  datasource: Prometheus
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-grafana"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.namespace
+      toFieldPath: spec.forProvider.namespace
+    - fromFieldPath: spec.parameters.dashboard.host
+      toFieldPath: spec.forProvider.set[1].value
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.forProvider.set[1].value
+      toFieldPath: status.dashboardHost

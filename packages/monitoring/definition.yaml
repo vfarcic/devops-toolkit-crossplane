@@ -1,0 +1,79 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: monitorings.devopstoolkitseries.com
+spec:
+  defaultCompositionRef:
+    name: prom-loki
+  group: devopstoolkitseries.com
+  names:
+    kind: Monitoring
+    plural: monitorings
+  claimNames:
+    kind: MonitoringClaim
+    plural: monitoringclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID that other objects will use to refer to it.
+                default: monitoring
+              parameters:
+                type: object
+                properties:
+                  namespace:
+                    description: The namespace
+                    type: string
+                    default: monitoring
+                  monitor:
+                    type: object
+                    properties:
+                      host:
+                        description: The host address of the monitoring application
+                        type: string
+                        default: monitor.acme.com
+                  alert:
+                    type: object
+                    properties:
+                      host:
+                        description: The host address of the alerting application
+                        type: string
+                        default: alert.acme.com
+                  dashboard:
+                    type: object
+                    properties:
+                      host:
+                        description: The host address of the dashboard application
+                        type: string
+                        default: dashboard.acme.com
+          status:
+            type: object
+            properties:
+              monitorHost:
+                description: The host address of the monitoring application
+                type: string
+              alertHost:
+                description: The host address of the monitoring application
+                type: string
+              dashboardHost:
+                description: The host address of the dashboard application
+                type: string
+    additionalPrinterColumns:
+    - name: monitorHost
+      type: string
+      jsonPath: ".status.monitorHost"
+    - name: alertHost
+      type: string
+      jsonPath: ".status.alertHost"
+    - name: dashboardHost
+      type: string
+      jsonPath: ".status.dashboardHost"

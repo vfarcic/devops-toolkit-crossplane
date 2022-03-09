@@ -30,7 +30,7 @@ spec:
                 type: object
                 properties:
                   namespace:
-                    description: The container image of the application
+                    description: The namespace
                     type: string
                     default: production
                   image:
