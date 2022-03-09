@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-monitoring
 spec:
-  package: vfarcic/crossplane-monitoring:v0.0.37
+  package: vfarcic/crossplane-monitoring:v0.0.39

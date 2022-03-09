@@ -2,8 +2,6 @@ apiVersion: devopstoolkitseries.com/v1alpha1
 kind: Monitoring
 metadata:
   name: monitoring
-  labels:
-    app-owner: vfarcic
 spec:
   compositionRef:
     name: prom-loki

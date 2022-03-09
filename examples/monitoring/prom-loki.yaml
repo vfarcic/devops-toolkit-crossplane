@@ -1,0 +1,18 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: MonitoringClaim
+metadata:
+  name: monitoring
+spec:
+  compositionSelector:
+    matchLabels:
+      monitor: prometheus
+      alert: alert-manager
+      dashboard: grafana
+      log: loki
+  parameters:
+    monitor:
+      host: monitor.127.0.0.1.nip.io
+    alert:
+      host: alert.127.0.0.1.nip.io
+    dashboard:
+      host: dashboard.127.0.0.1.nip.io
