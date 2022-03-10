@@ -491,27 +491,6 @@ spec:
           fmt: "%s-crossplane"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: prometheus
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: Release
-      spec:
-        rollbackLimit: 3
-        forProvider:
-          namespace: prometheus
-          chart:
-            name: prometheus
-            repository: https://prometheus-community.github.io/helm-charts
-            version: "14.9.2"
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-prometheus"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: kubernetes
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
