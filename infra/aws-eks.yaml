@@ -10,7 +10,7 @@ spec:
     name: cluster-aws
   parameters:
     nodeSize: small
-    minNodeCount: 3
+    minNodeCount: 5
 
 ---
 
