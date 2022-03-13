@@ -312,3 +312,47 @@ spec:
             fmt: "%s-config-app"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+  - name: config-monitoring
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Configuration
+            metadata:
+              name: crossplane-monitoring
+            spec:
+              package: vfarcic/crossplane-monitoring:v0.0.39
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-config-monitoring"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: config-sql
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Configuration
+            metadata:
+              name: crossplane-sql
+            spec:
+              package: vfarcic/crossplane-sql:v0.2.18
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-config-sql"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
