@@ -513,6 +513,28 @@ spec:
             fmt: "%s-cluster"
     readinessChecks:
     - type: None
+  - name: aws-p
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-aws
+            spec:
+              package: crossplane/provider-aws:v0.24.1
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-aws-p"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
   - name: aws-pc
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
