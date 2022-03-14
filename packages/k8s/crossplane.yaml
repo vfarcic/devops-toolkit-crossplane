@@ -4,7 +4,7 @@ metadata:
   name: k8s
 spec:
   crossplane:
-    version: ">=v1.6"
+    version: ">=v1.5"
   dependsOn:
   # - provider: crossplane/provider-aws
   #   version: ">=v0.23.0"
