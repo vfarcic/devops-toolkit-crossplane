@@ -1,0 +1,33 @@
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: App
+metadata:
+  name: silly-demo-dev
+spec:
+  id: silly-demo-dev
+  compositionRef:
+    name: app-backend-db
+  parameters:
+    namespace: dev
+    image: vfarcic/sql-demo:0.1.10
+    port: 8080
+    host: dev.devops-toolkit.127.0.0.1.nip.io
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  name: silly-demo-dev
+spec:
+  id: silly-demo-dev
+  compositionRef:
+    name: local-k8s-postgresql
+  parameters:
+    version: "13.4"
+    size: small
+    namespace: dev
+  writeConnectionSecretToRef:
+    name: silly-demo-dev
+    namespace: dev
