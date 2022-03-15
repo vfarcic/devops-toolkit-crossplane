@@ -1,0 +1,14 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: Monitoring
+metadata:
+  name: monitoring
+spec:
+  compositionRef:
+    name: prom-loki
+  parameters:
+    monitor:
+      host: monitor.54.157.77.235.nip.io
+    alert:
+      host: alert.54.157.77.235.nip.io
+    dashboard:
+      host: dashboard.54.157.77.235.nip.io
