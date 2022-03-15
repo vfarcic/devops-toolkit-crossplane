@@ -9,7 +9,7 @@ spec:
   compositionRef:
     name: cluster-aws
   parameters:
-    nodeSize: small
+    nodeSize: medium
     minNodeCount: 3
 
 ---
