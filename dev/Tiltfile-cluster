@@ -1,0 +1,4 @@
+allow_k8s_contexts(k8s_context())
+
+local("vcluster --namespace vfarcic create vfarcic --expose --upgrade")
+local("vcluster --namespace vfarcic connect vfarcic")
