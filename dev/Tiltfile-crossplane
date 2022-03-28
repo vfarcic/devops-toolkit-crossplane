@@ -1,0 +1,46 @@
+allow_k8s_contexts(k8s_context())
+
+load('ext://helm_remote', 'helm_remote')
+load('ext://secret', 'secret_create_generic')
+
+helm_remote(
+    "crossplane",
+    repo_url="https://charts.crossplane.io/stable",
+    namespace="crossplane-system",
+    create_namespace="true",
+)
+
+secret_create_generic(
+    "aws-creds",
+    namespace="crossplane-system",
+    from_file="aws-creds.conf",
+    secret_type="generic",
+)
+
+k8s_yaml([
+    "crossplane/config-sql.yaml",
+    "crossplane/config-app.yaml",
+    "crossplane/provider-sql.yaml",
+    "crossplane/provider-kubernetes-incluster.yaml",
+    "crossplane/provider-aws.yaml",
+    "crossplane/provider-config-aws.yaml",
+])
+
+sa = local("kubectl --namespace crossplane-system get serviceaccount --output name | grep provider-helm | sed -e 's|serviceaccount/||g'")
+
+crb = """
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-helm-admin-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: {}
+  namespace: crossplane-system
+""".format(sa)
+
+k8s_yaml(blob(crb))
