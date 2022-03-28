@@ -3,6 +3,6 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: crossplane-sql
+  name: crossplane-app
 spec:
-  package: vfarcic/crossplane-sql:v0.2.31
+  package: vfarcic/crossplane-app:v0.1.3

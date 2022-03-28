@@ -308,7 +308,7 @@ spec:
             metadata:
               name: provider-sql
             spec:
-              package: crossplane/provider-sql:master
+              package: crossplane/provider-sql:v0.4.1
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
