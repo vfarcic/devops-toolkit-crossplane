@@ -1,0 +1,13 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team-dok
+spec:
+  id: a-team-dok
+  compositionSelector:
+    matchLabels:
+      provider: digital-ocean
+      cluster: dok
+  parameters:
+    nodeSize: small
+    minNodeCount: 3

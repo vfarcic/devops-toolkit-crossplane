@@ -20,11 +20,14 @@ spec:
       apiVersion: kubernetes.do.crossplane.io/v1alpha1
       kind: DOKubernetesCluster
       spec:
+        providerConfigRef:
+          name: crossplane-provider-do
         forProvider:
           region: nyc1
           highlyAvailable: true
+          autoUpgrade: false
           nodePools:
-            count: 1
+          - count: 1
             autoScale: true
             minNodes: 1
             maxNodes: 20
