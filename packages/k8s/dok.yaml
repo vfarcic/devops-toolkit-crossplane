@@ -1,0 +1,466 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cluster-dok
+  labels:
+    provider: digital-ocean
+    cluster: dok
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeCluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: dokcluster
+    base:
+      apiVersion: kubernetes.do.crossplane.io/v1alpha1
+      kind: DOKubernetesCluster
+      spec:
+        forProvider:
+          region: nyc1
+          highlyAvailable: true
+          nodePools:
+            count: 1
+            autoScale: true
+            minNodes: 1
+            maxNodes: 20
+          version: "1.22.7-do.0"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.version
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-cluster"
+    - fromFieldPath: spec.parameters.nodeSize
+      toFieldPath: spec.forProvider.nodePools[0].size
+      transforms:
+        - type: map
+          map:
+            small: s-2vcpu-4gb
+            medium: s-4vcpu-8gb
+            large: s-8vcpu-16gb
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.nodePools[0].count
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.nodePools[0].minNodes
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.nodePools[0].name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodes"
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.status
+      toFieldPath: status.controlPlaneStatus
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+    connectionDetails:
+    - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
+  # - name: helm
+  #   base:
+  #     apiVersion: helm.crossplane.io/v1beta1
+  #     kind: ProviderConfig
+  #     spec:
+  #       credentials:
+  #         source: Secret
+  #         secretRef:
+  #           key: kubeconfig
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #   - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+  #     toFieldPath: spec.credentials.secretRef.namespace
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.credentials.secretRef.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-cluster"
+  #   readinessChecks:
+  #   - type: None
+  # - name: ingress
+  #   base:
+  #     apiVersion: helm.crossplane.io/v1beta1
+  #     kind: Release
+  #     spec:
+  #       rollbackLimit: 3
+  #       forProvider:
+  #         namespace: ingress-nginx
+  #         chart:
+  #           name: ingress-nginx
+  #           repository: https://kubernetes.github.io/ingress-nginx
+  #           version: "4.0.18"
+  #         values:
+  #           controller:
+  #             ingressClassResource:
+  #               default: true
+  #             annotations:
+  #               service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+  #               service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+  #               service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-ingress"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: crossplane
+  #   base:
+  #     apiVersion: helm.crossplane.io/v1beta1
+  #     kind: Release
+  #     spec:
+  #       rollbackLimit: 3
+  #       forProvider:
+  #         namespace: crossplane-system
+  #         chart:
+  #           name: crossplane
+  #           repository: https://charts.crossplane.io/stable
+  #           version: "1.6.0"
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-crossplane"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: kubernetes
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: ProviderConfig
+  #     spec:
+  #       credentials:
+  #         source: Secret
+  #         secretRef:
+  #           key: kubeconfig
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #   - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+  #     toFieldPath: spec.credentials.secretRef.namespace
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.credentials.secretRef.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: "%s-cluster"
+  #   readinessChecks:
+  #   - type: None
+  # - name: aws-p
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Provider
+  #           metadata:
+  #             name: crossplane-provider-aws
+  #           spec:
+  #             package: crossplane/provider-aws:v0.24.1
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-aws-p"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: aws-pc
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: aws.crossplane.io/v1beta1
+  #           kind: ProviderConfig
+  #           metadata:
+  #             name: default
+  #           spec:
+  #             credentials:
+  #               source: Secret
+  #               secretRef:
+  #                 namespace: crossplane-system
+  #                 name: aws-creds
+  #                 key: creds
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-aws-pc"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: ns-prod
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: v1
+  #           kind: Namespace
+  #           metadata:
+  #             name: production
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-ns-prod"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: ns-dev
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: v1
+  #           kind: Namespace
+  #           metadata:
+  #             name: dev
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-ns-dev"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: k8s-provider-sa
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: v1
+  #           kind: ServiceAccount
+  #           metadata:
+  #             name: provider-kubernetes
+  #             namespace: crossplane-system
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-k8s-provider-sa"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: k8s-provider-crd
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: rbac.authorization.k8s.io/v1
+  #           kind: ClusterRoleBinding
+  #           metadata:
+  #             name: provider-kubernetes
+  #           subjects:
+  #           - kind: ServiceAccount
+  #             name: provider-kubernetes
+  #             namespace: crossplane-system
+  #           roleRef:
+  #             kind: ClusterRole
+  #             name: cluster-admin
+  #             apiGroup: rbac.authorization.k8s.io
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-k8s-provider-crb"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: k8s-provider-cc
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1alpha1
+  #           kind: ControllerConfig
+  #           metadata:
+  #             name: provider-kubernetes
+  #           spec:
+  #             serviceAccountName: provider-kubernetes
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-k8s-provider-cc"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: k8s-provider
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Provider
+  #           metadata:
+  #             name: crossplane-provider-kubernetes
+  #           spec:
+  #             package: crossplane/provider-kubernetes:main
+  #             controllerConfigRef:
+  #               name: provider-kubernetes
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-k8s-provider"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: helm-provider
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Provider
+  #           metadata:
+  #             name: crossplane-provider-helm
+  #           spec:
+  #             package: crossplane/provider-helm:v0.9.0
+  #             controllerConfigRef:
+  #               name: provider-kubernetes
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-helm-provider"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: sql-provider
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Provider
+  #           metadata:
+  #             name: provider-sql
+  #           spec:
+  #             package: crossplane/provider-sql:v0.4.1
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-sql-provider"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: config-app
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Configuration
+  #           metadata:
+  #             name: crossplane-app
+  #           spec:
+  #             package: vfarcic/crossplane-app:v0.1.3
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-config-app"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: config-monitoring
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Configuration
+  #           metadata:
+  #             name: crossplane-monitoring
+  #           spec:
+  #             package: vfarcic/crossplane-monitoring:v0.0.39
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-config-monitoring"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  # - name: config-sql
+  #   base:
+  #     apiVersion: kubernetes.crossplane.io/v1alpha1
+  #     kind: Object
+  #     spec:
+  #       forProvider:
+  #         manifest:
+  #           apiVersion: pkg.crossplane.io/v1
+  #           kind: Configuration
+  #           metadata:
+  #             name: crossplane-sql
+  #           spec:
+  #             package: vfarcic/crossplane-sql:v0.2.18
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #     transforms:
+  #     - type: string
+  #       string:
+  #         fmt: "%s-config-sql"
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
