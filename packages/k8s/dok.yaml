@@ -19,19 +19,25 @@ spec:
     base:
       apiVersion: kubernetes.do.crossplane.io/v1alpha1
       kind: DOKubernetesCluster
+      metadata:
+        name: example-cluster
       spec:
         providerConfigRef:
           name: crossplane-provider-do
         forProvider:
           region: nyc1
-          highlyAvailable: true
-          autoUpgrade: false
+          version: "1.22.7-do.0"
           nodePools:
           - count: 1
             autoScale: true
             minNodes: 1
             maxNodes: 20
-          version: "1.22.7-do.0"
+          maintenancePolicy:
+            startTime: "00:00"
+            day: wednesday
+          highlyAvailable: true
+          autoUpgrade: false
+          surgeUpgrade: false
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -65,8 +71,11 @@ spec:
       fromFieldPath: metadata.name
       toFieldPath: status.clusterName
     - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.status
+      fromFieldPath: status.State
       toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.State
+      toFieldPath: status.nodePoolStatus
     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
     readinessChecks:

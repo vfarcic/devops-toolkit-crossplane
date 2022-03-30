@@ -1,9 +1,9 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: a-team-dok
+  name: management
 spec:
-  id: a-team-dok
+  id: management
   compositionSelector:
     matchLabels:
       provider: digital-ocean
@@ -11,3 +11,5 @@ spec:
   parameters:
     nodeSize: small
     minNodeCount: 3
+  writeConnectionSecretToRef:
+    name: management
