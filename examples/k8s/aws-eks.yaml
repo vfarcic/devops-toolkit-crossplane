@@ -2,8 +2,6 @@ apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
   name: a-team-eks
-  labels:
-    cluster-owner: vfarcic
 spec:
   id: a-team-eks
   compositionSelector:
@@ -13,3 +11,5 @@ spec:
   parameters:
     nodeSize: medium
     minNodeCount: 3
+  writeConnectionSecretToRef:
+    name: a-team-eks
