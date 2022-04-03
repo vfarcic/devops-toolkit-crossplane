@@ -19,17 +19,34 @@ helm upgrade --install \
 # Replace `[...]` with your Equinix API token
 export EQUINIX_API_TOKEN=[...]
 
-# Replace `[...]` with your Equinix Project ID token
-export EQUINIX_PROJECT_ID=[...]
+# # Replace `[...]` with your Equinix Project ID token
+# export EQUINIX_PROJECT_ID=[...]
+
+# Switch to https://github.com/crossplane-contrib/provider-tf-equinix
+
+# echo "{
+#   \"apiKey\":\"$EQUINIX_API_TOKEN\",
+#   \"projectID\":\"$EQUINIX_PROJECT_ID\"
+# }" >equinix-creds.conf
 
 echo "{
-  \"apiKey\":\"$EQUINIX_API_TOKEN\",
-  \"projectID\":\"$EQUINIX_PROJECT_ID\"
+  \"auth_token\": \"$EQUINIX_API_TOKEN\",
+  \"max_retries\": \"10\",
+  \"max_retry_wait_seconds\": \"30\"
 }" >equinix-creds.conf
 
 kubectl --namespace crossplane-system \
     create secret generic equinix-creds \
     --from-file creds=./equinix-creds.conf
+
+# echo "
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: crossplane-provider-equinix-metal
+# spec:
+#   package: registry.upbound.io/equinix/provider-equinix-metal:v0.0.11
+# " | kubectl apply --filename -
 
 echo "
 apiVersion: pkg.crossplane.io/v1
@@ -37,25 +54,39 @@ kind: Provider
 metadata:
   name: crossplane-provider-equinix-metal
 spec:
-  package: registry.upbound.io/equinix/provider-equinix-metal:v0.0.11
+  package: crossplane/provider-tf-equinix-metal:v0.2.2
 " | kubectl apply --filename -
 
 kubectl get pkgrev
 
 # Wait until all the packages are healthy
 
+# echo "
+# apiVersion: metal.equinix.com/v1beta1
+# kind: ProviderConfig
+# metadata:
+#   name: default
+# spec:
+#   projectID: $PROJECT_ID
+#   credentials:
+#     source: Secret
+#     secretRef:
+#       namespace: crossplane-system
+#       name: equinix-creds
+#       key: creds
+# " | kubectl apply --filename -
+
 echo "
-apiVersion: metal.equinix.com/v1beta1
+apiVersion: equinixmetal.jet.crossplane.io/v1alpha1
 kind: ProviderConfig
 metadata:
   name: default
 spec:
-  projectID: $PROJECT_ID
   credentials:
     source: Secret
     secretRef:
-      namespace: crossplane-system
       name: equinix-creds
+      namespace: crossplane-system
       key: creds
 " | kubectl apply --filename -
 
@@ -69,42 +100,92 @@ TODO: Create an XRD
 TODO: Switch to an XRC
 
 ```bash
+# echo "
+# apiVersion: server.metal.equinix.com/v1alpha2
+# kind: Device
+# metadata:
+#   name: cp-01
+# spec:
+#   forProvider:
+#     hostname: cp-01
+#     plan: c3.small.x86
+#     metro: sv
+#     operatingSystem: ubuntu_20_04
+#     billingCycle: hourly
+#     locked: false
+#     networkType: hybrid
+#   writeConnectionSecretToRef:
+#     name: equinix-cp-01
+#     namespace: crossplane-system
+
+# ---
+
+# apiVersion: server.metal.equinix.com/v1alpha2
+# kind: Device
+# metadata:
+#   name: worker-01
+# spec:
+#   forProvider:
+#     hostname: worker-01
+#     plan: c3.small.x86
+#     metro: sv
+#     operatingSystem: ubuntu_20_04
+#     billingCycle: hourly
+#     locked: false
+#     networkType: hybrid
+#   writeConnectionSecretToRef:
+#     name: equinix-worker-01
+#     namespace: crossplane-system
+# " | kubectl --namespace a-team apply --filename -
+
 echo "
-apiVersion: server.metal.equinix.com/v1alpha2
+apiVersion: project.equinixmetal.jet.crossplane.io/v1alpha1
+kind: Project
+metadata:
+ name: devops-toolkit
+spec:
+ forProvider:
+   name: devops-toolkit
+
+---
+
+apiVersion: device.equinixmetal.jet.crossplane.io/v1alpha1
 kind: Device
 metadata:
   name: cp-01
 spec:
   forProvider:
+    projectIdRef:
+      name: devops-toolkit
+    metro: ny
     hostname: cp-01
     plan: c3.small.x86
-    metro: sv
     operatingSystem: ubuntu_20_04
     billingCycle: hourly
-    locked: false
-    networkType: hybrid
+    tags:
+    - crossplane
   writeConnectionSecretToRef:
     name: equinix-cp-01
     namespace: crossplane-system
 
 ---
 
-apiVersion: server.metal.equinix.com/v1alpha2
-kind: Device
-metadata:
-  name: worker-01
-spec:
-  forProvider:
-    hostname: worker-01
-    plan: c3.small.x86
-    metro: sv
-    operatingSystem: ubuntu_20_04
-    billingCycle: hourly
-    locked: false
-    networkType: hybrid
-  writeConnectionSecretToRef:
-    name: equinix-worker-01
-    namespace: crossplane-system
+# apiVersion: server.metal.equinix.com/v1alpha2
+# kind: Device
+# metadata:
+#   name: worker-01
+# spec:
+#   forProvider:
+#     projectIdRef:
+#       name: devops-toolkit
+#     metro: ny
+#     hostname: worker-01
+#     plan: c3.small.x86
+#     operatingSystem: ubuntu_20_04
+#     billingCycle: hourly
+#   writeConnectionSecretToRef:
+#     name: equinix-worker-01
+#     namespace: crossplane-system
 " | kubectl --namespace a-team apply --filename -
 
 kubectl get managed
@@ -123,7 +204,6 @@ k0sctl init > k0sctl.yaml
 # Replace `address` entries in `k0sctl.yaml`
 
 k0sctl apply --config k0sctl.yaml
-
 ```
 
 TODO: LB
