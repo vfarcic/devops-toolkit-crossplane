@@ -2,6 +2,8 @@ apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
   name: compositeclusters.devopstoolkitseries.com
+  labels:
+    idp: "true"
 spec:
   connectionSecretKeys:
   - kubeconfig
@@ -31,6 +33,7 @@ spec:
                 description: ID of this Cluster that other objects can refer.
               parameters:
                 type: object
+                description: Parameters used to customize the cluster
                 properties:
                   version:
                     description: The Kubernetes version for the cluster.
