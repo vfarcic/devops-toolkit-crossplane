@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 var explainCmd = &cobra.Command{
@@ -27,28 +26,6 @@ var explainCmd = &cobra.Command{
 		explain(api, parameter)
 	},
 }
-
-type (
-	Compositions struct {
-		Items []Composition
-	}
-
-	Composition struct {
-		Metadata struct {
-			Name string
-			// Labels interface{}
-			Labels map[string]string
-		}
-		Spec struct {
-			CompositeTypeRef CompositeTypeRef `yaml:"compositeTypeRef"`
-		}
-	}
-
-	CompositeTypeRef struct {
-		ApiVersion string `yaml:"apiVersion"`
-		Kind       string
-	}
-)
 
 func init() {
 	rootCmd.AddCommand(explainCmd)
@@ -79,35 +56,29 @@ func explain(api, parameter string) {
 	}
 	if parameter == "compositionRef" {
 		expectedApiVersion, expectedKind := getApiVersionKind(api)
-		outputString += getCompositions(api, expectedApiVersion, expectedKind, false)
+		outputString += getCompositionsOutput(expectedApiVersion, expectedKind, false)
 	}
 	if parameter == "compositionSelector.matchLabels" {
 		expectedApiVersion, expectedKind := getApiVersionKind(api)
-		outputString += getCompositions(api, expectedApiVersion, expectedKind, true)
+		outputString += getCompositionsOutput(expectedApiVersion, expectedKind, true)
 	}
 	fmt.Println(outputString)
 }
 
-func getCompositions(api, expectedApiVersion, expectedKind string, hasLabels bool) string {
-	yamlOutput, err := exec.Command("kubectl", "get", "compositions.apiextensions.crossplane.io", "-o", "yaml").Output()
-	if err != nil {
-		os.Stderr.WriteString(err.Error())
-	}
-	output := "AVAILABLE COMPOSITIONS:"
+func getCompositionsOutput(expectedApiVersion, expectedKind string, hasLabels bool) string {
+	output := "\nAVAILABLE COMPOSITIONS:"
 	if hasLabels {
-		output = "AVAILABLE LABELS:"
+		output = "\nAVAILABLE LABELS:"
 	}
-	compositions := Compositions{}
-	yaml.Unmarshal([]byte(string(yamlOutput)), &compositions)
+	compositions := getCompositions(expectedApiVersion, expectedKind)
+	println(len(compositions.Items))
 	for _, composition := range compositions.Items {
-		if strings.HasPrefix(string(composition.Spec.CompositeTypeRef.ApiVersion), expectedApiVersion) && composition.Spec.CompositeTypeRef.Kind == expectedKind {
-			output += "\n\n   " + composition.Metadata.Name
-			if hasLabels {
-				output += ":"
-			}
-			for key, value := range composition.Metadata.Labels {
-				output += "\n      " + key + ": " + value
-			}
+		output += "\n\n   " + composition.Metadata.Name
+		if hasLabels {
+			output += ":"
+		}
+		for key, value := range composition.Metadata.Labels {
+			output += "\n      " + key + ": " + value
 		}
 	}
 	return output
@@ -122,25 +93,3 @@ func getApiVersionKind(api string) (apiVersion, kind string) {
 	kind = string(kindBytes)
 	return apiVersion, kind
 }
-
-// AVAILABLE LABELS:
-
-//    cluster-azure:
-//       cluster = aks
-//       provider = azure
-
-//    cluster-civo:
-//       cluster = ck
-//       provider = civo
-
-//    cluster-dok:
-//       cluster = dok
-//       provider = digital-ocean
-
-//    cluster-aws:
-//       cluster = eks
-//       provider = aws
-
-//    cluster-google:
-//       cluster = gke
-//       provider = google

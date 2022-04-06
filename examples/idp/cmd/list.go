@@ -3,13 +3,10 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"os"
-	"os/exec"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/lensesio/tableprinter"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 var listCmd = &cobra.Command{
@@ -20,42 +17,15 @@ var listCmd = &cobra.Command{
   # Show spec of the compositecluster resource
   kubectl idp list`,
 	Run: func(cmd *cobra.Command, args []string) {
-		list()
+		listXrds()
 	},
 }
-
-type (
-	tableRow struct {
-		API       string `header:"API"`
-		Name      string `header:"Name"`
-		ClaimName string `header:"Claim"`
-	}
-
-	XRDs struct {
-		Items []XRD
-	}
-
-	XRD struct {
-		Metadata struct {
-			Name string
-		}
-		Spec struct {
-			ClaimNames KindPlural `yaml:"claimNames"`
-			Names      KindPlural
-		}
-	}
-
-	KindPlural struct {
-		Kind   string
-		Plural string
-	}
-)
 
 func init() {
 	rootCmd.AddCommand(listCmd)
 }
 
-func list() XRDs {
+func listXrds() XRDs {
 	xrds := getXrds()
 	table := []tableRow{}
 	for _, xrd := range xrds.Items {
@@ -73,15 +43,5 @@ func list() XRDs {
 	style := lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder())
 	fmt.Println(style.Render(buf.String()))
-	return xrds
-}
-
-func getXrds() XRDs {
-	output, err := exec.Command("kubectl", "get", "compositeresourcedefinitions.apiextensions.crossplane.io", "-o", "yaml").Output()
-	if err != nil {
-		os.Stderr.WriteString(err.Error())
-	}
-	xrds := XRDs{}
-	yaml.Unmarshal([]byte(string(output)), &xrds)
 	return xrds
 }
