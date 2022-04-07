@@ -169,6 +169,7 @@ TODO:
 * kubectl apply
 * Push to Git
 * See all running claims, compositions, and managed resources
+* Add to krew
 * Sleep
 		
 The End`
