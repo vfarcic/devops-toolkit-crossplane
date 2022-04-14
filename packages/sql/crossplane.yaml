@@ -4,10 +4,10 @@ metadata:
   name: sql
 spec:
   crossplane:
-    version: ">=v1.6"
+    version: ">=v1.5.1"
   dependsOn:
-  # - provider: crossplane/provider-sql
-  #   version: ">=v0.4.1"
+  - provider: crossplane/provider-sql
+    version: ">=v0.4.1"
   - provider: crossplane/provider-helm
     version: ">=v0.9.0"
   # - provider: crossplane/provider-gcp
