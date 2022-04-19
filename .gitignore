@@ -1,6 +1,7 @@
 /creds
 /aws-creds.conf
 /azure-creds.json
+/equinix-creds.conf
 /kubeconfig.yaml
 /gcp-creds.json
 kubeconfig*.yaml

@@ -1,0 +1,25 @@
+apiVersion: project.equinixmetal.jet.crossplane.io/v1alpha1
+kind: Project
+metadata:
+ name: devops-toolkit
+spec:
+ forProvider:
+   name: devops-toolkit
+
+---
+
+apiVersion: device.equinixmetal.jet.crossplane.io/v1alpha1
+kind: Device
+metadata:
+  name: my-vm
+spec:
+  forProvider:
+    projectIdRef:
+      name: devops-toolkit
+    metro: ny
+    hostname: my-vm
+    plan: c3.small.x86
+    operatingSystem: ubuntu_20_04
+    billingCycle: hourly
+    tags:
+    - crossplane
