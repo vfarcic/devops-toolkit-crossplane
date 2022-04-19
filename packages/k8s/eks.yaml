@@ -22,7 +22,7 @@ spec:
       spec:
         forProvider:
           region: us-east-1
-          version: "1.21"
+          version: "1.22"
           roleArnSelector:
             matchControllerRef: true
           resourcesVpcConfig:
