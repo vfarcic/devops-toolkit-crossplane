@@ -1,0 +1,14 @@
+---
+
+apiVersion: civo.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: crossplane-provider-civo
+spec:
+  region: nyc1
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: upbound-system
+      name: civo-creds
+      key: credentials
