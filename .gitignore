@@ -1,5 +1,5 @@
 /creds
-/aws-creds.conf
+/aws-creds*.conf
 /azure-creds.json
 /equinix-creds.conf
 /kubeconfig.yaml
@@ -7,3 +7,4 @@
 kubeconfig*.yaml
 /tmp/*
 *.xpkg
+/vault-keys.json
