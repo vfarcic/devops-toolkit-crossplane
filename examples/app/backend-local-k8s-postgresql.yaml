@@ -9,6 +9,7 @@ spec:
   compositionSelector:
     matchLabels:
       type: backend-db
+      location: local
   parameters:
     namespace: a-team
     image: vfarcic/sql-demo:0.1.10

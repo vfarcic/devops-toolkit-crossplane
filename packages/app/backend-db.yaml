@@ -4,6 +4,7 @@ metadata:
   name: app-backend-db
   labels:
     type: backend-db
+    location: local
 spec:
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1

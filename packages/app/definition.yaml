@@ -43,6 +43,19 @@ spec:
                   host:
                     description: The host address of the application
                     type: string
+                  dbSecret:
+                    type: object
+                    properties:
+                      name:
+                        description: The name of the Secret with DB authentication (used only with compositions with the label location=remote).
+                        type: string
+                      namespace:
+                        description: The Namespace with the Secret with DB authentication (used only with compositions with the label location=remote).
+                        type: string
+                  kubernetesProviderConfigName:
+                    description: The name of the Kubernetes provider config (used only with compositions with the label location=remote).
+                    type: string
+                    default: default
                 required:
                 - image
             required:

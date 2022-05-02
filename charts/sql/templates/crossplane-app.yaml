@@ -12,6 +12,7 @@ spec:
   compositionSelector:
     matchLabels:
       type: backend-db
+      location: local
   parameters:
     namespace: a-team
     image: {{ .Values.image }}
