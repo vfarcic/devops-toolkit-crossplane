@@ -1,0 +1,16 @@
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQL
+metadata:
+  name: silly-demo-db
+spec:
+  id: silly-demo-db
+  compositionRef:
+    name: aws-postgresql
+  parameters:
+    version: "13.4"
+    size: small
+  writeConnectionSecretToRef:
+    name: silly-demo-db
+    namespace: upbound-system
+
