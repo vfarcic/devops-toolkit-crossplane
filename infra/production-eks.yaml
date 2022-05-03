@@ -1,0 +1,11 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-eks
+spec:
+  id: a-team-eks
+  compositionRef:
+    name: cluster-aws
+  parameters:
+    nodeSize: medium
+    minNodeCount: 3

@@ -74,7 +74,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-app-deployment"
+          fmt: "%s-deployment"
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.manifest.metadata.name
     - fromFieldPath: spec.parameters.namespace
@@ -107,168 +107,168 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:
     - type: None
-  # - name: service
-  #   base:
-  #     apiVersion: kubernetes.crossplane.io/v1alpha1
-  #     kind: Object
-  #     spec:
-  #       forProvider:
-  #         manifest:
-  #           apiVersion: v1
-  #           kind: Service
-  #           metadata:
-  #             name: # patched
-  #             namespace: # patched
-  #           spec:
-  #             type: ClusterIP
-  #             ports:
-  #             - port: 80
-  #               targetPort: 80
-  #               protocol: TCP
-  #               name: http
-  #   patches:
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: "%s-app-service"
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.metadata.name
-  #   - fromFieldPath: spec.parameters.namespace
-  #     toFieldPath: spec.forProvider.manifest.metadata.namespace
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.metadata.labels.app
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.spec.selector.app
-  #   - fromFieldPath: spec.parameters.port
-  #     toFieldPath: spec.forProvider.manifest.spec.ports[0].port
-  #   - fromFieldPath: spec.parameters.port
-  #     toFieldPath: spec.forProvider.manifest.spec.ports[0].targetPort
-  #   - fromFieldPath: spec.parameters.kubernetesProviderConfigName
-  #     toFieldPath: spec.providerConfigRef.name
-  #   readinessChecks:
-  #   - type: None
-  # - name: ingress
-  #   base:
-  #     apiVersion: kubernetes.crossplane.io/v1alpha1
-  #     kind: Object
-  #     spec:
-  #       forProvider:
-  #         manifest:
-  #           apiVersion: networking.k8s.io/v1
-  #           kind: Ingress
-  #           metadata:
-  #             name: # patched
-  #             namespace: # patched
-  #             annotations:
-  #               ingress.kubernetes.io/ssl-redirect: "false"
-  #           spec:
-  #             rules:
-  #             - http:
-  #                 paths:
-  #                 - path: /
-  #                   pathType: ImplementationSpecific
-  #                   backend:
-  #                     service:
-  #                       name: devops-toolkit
-  #                       port:
-  #                         number: 80
-  #               host: devopstoolkitseries.com
-  #   patches:
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: "%s-app-ingress"
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.metadata.name
-  #   - fromFieldPath: spec.parameters.namespace
-  #     toFieldPath: spec.forProvider.manifest.metadata.namespace
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.metadata.labels.app
-  #   - fromFieldPath: spec.parameters.host
-  #     toFieldPath: spec.forProvider.manifest.spec.rules[0].host
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.name
-  #   - fromFieldPath: spec.parameters.port
-  #     toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.port.number
-  #   - fromFieldPath: spec.parameters.kubernetesProviderConfigName
-  #     toFieldPath: spec.providerConfigRef.name
-  #   - type: ToCompositeFieldPath
-  #     fromFieldPath: spec.forProvider.manifest.spec.rules[0].host
-  #     toFieldPath: status.host
-  # - name: secret
-  #   base:
-  #     apiVersion: kubernetes.crossplane.io/v1alpha1
-  #     kind: Object
-  #     spec:
-  #       references:
-  #       - patchesFrom:
-  #           apiVersion: v1
-  #           kind: Secret
-  #           name: # patched
-  #           namespace: # patched
-  #           fieldPath: data.endpoint
-  #         toFieldPath: data.endpoint
-  #       - patchesFrom:
-  #           apiVersion: v1
-  #           kind: Secret
-  #           name: # patched
-  #           namespace: # patched
-  #           fieldPath: data.password
-  #         toFieldPath: data.password
-  #       - patchesFrom:
-  #           apiVersion: v1
-  #           kind: Secret
-  #           name: # patched
-  #           namespace: # patched
-  #           fieldPath: data.port
-  #         toFieldPath: data.port
-  #       - patchesFrom:
-  #           apiVersion: v1
-  #           kind: Secret
-  #           name: # patched
-  #           namespace: # patched
-  #           fieldPath: data.username
-  #         toFieldPath: data.username
-  #       forProvider:
-  #         manifest:
-  #           apiVersion: v1
-  #           kind: Secret
-  #           metadata:
-  #             name: # patched
-  #             namespace: # patched
-  #   patches:
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: metadata.name
-  #     transforms:
-  #     - type: string
-  #       string:
-  #         fmt: "%s-app-secret"
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.metadata.name
-  #   - fromFieldPath: spec.parameters.namespace
-  #     toFieldPath: spec.forProvider.manifest.metadata.namespace
-  #   - fromFieldPath: spec.id
-  #     toFieldPath: spec.forProvider.manifest.metadata.labels.app
-  #   - fromFieldPath: spec.parameters.kubernetesProviderConfigName
-  #     toFieldPath: spec.providerConfigRef.name
-  #   - fromFieldPath: spec.parameters.dbSecret.name
-  #     toFieldPath: spec.references[0].patchesFrom.name
-  #   - fromFieldPath: spec.parameters.dbSecret.namespace
-  #     toFieldPath: spec.references[0].patchesFrom.namespace
-  #   - fromFieldPath: spec.parameters.dbSecret.name
-  #     toFieldPath: spec.references[1].patchesFrom.name
-  #   - fromFieldPath: spec.parameters.dbSecret.namespace
-  #     toFieldPath: spec.references[1].patchesFrom.namespace
-  #   - fromFieldPath: spec.parameters.dbSecret.name
-  #     toFieldPath: spec.references[2].patchesFrom.name
-  #   - fromFieldPath: spec.parameters.dbSecret.namespace
-  #     toFieldPath: spec.references[2].patchesFrom.namespace
-  #   - fromFieldPath: spec.parameters.dbSecret.name
-  #     toFieldPath: spec.references[3].patchesFrom.name
-  #   - fromFieldPath: spec.parameters.dbSecret.namespace
-  #     toFieldPath: spec.references[3].patchesFrom.namespace
+  - name: service
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Service
+            metadata:
+              name: # patched
+              namespace: # patched
+            spec:
+              type: ClusterIP
+              ports:
+              - port: 80
+                targetPort: 80
+                protocol: TCP
+                name: http
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-service"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.name
+    - fromFieldPath: spec.parameters.namespace
+      toFieldPath: spec.forProvider.manifest.metadata.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.labels.app
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.spec.selector.app
+    - fromFieldPath: spec.parameters.port
+      toFieldPath: spec.forProvider.manifest.spec.ports[0].port
+    - fromFieldPath: spec.parameters.port
+      toFieldPath: spec.forProvider.manifest.spec.ports[0].targetPort
+    - fromFieldPath: spec.parameters.kubernetesProviderConfigName
+      toFieldPath: spec.providerConfigRef.name
+    readinessChecks:
+    - type: None
+  - name: ingress
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            metadata:
+              name: # patched
+              namespace: # patched
+              annotations:
+                ingress.kubernetes.io/ssl-redirect: "false"
+            spec:
+              rules:
+              - http:
+                  paths:
+                  - path: /
+                    pathType: ImplementationSpecific
+                    backend:
+                      service:
+                        name: devops-toolkit
+                        port:
+                          number: 80
+                host: devopstoolkitseries.com
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-ingress"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.name
+    - fromFieldPath: spec.parameters.namespace
+      toFieldPath: spec.forProvider.manifest.metadata.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.labels.app
+    - fromFieldPath: spec.parameters.host
+      toFieldPath: spec.forProvider.manifest.spec.rules[0].host
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.name
+    - fromFieldPath: spec.parameters.port
+      toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.port.number
+    - fromFieldPath: spec.parameters.kubernetesProviderConfigName
+      toFieldPath: spec.providerConfigRef.name
+    - type: ToCompositeFieldPath
+      fromFieldPath: spec.forProvider.manifest.spec.rules[0].host
+      toFieldPath: status.host
+  - name: secret
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        references:
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.endpoint
+          toFieldPath: data.endpoint
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.password
+          toFieldPath: data.password
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.port
+          toFieldPath: data.port
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.username
+          toFieldPath: data.username
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              name: # patched
+              namespace: # patched
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-secret"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.name
+    - fromFieldPath: spec.parameters.namespace
+      toFieldPath: spec.forProvider.manifest.metadata.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.labels.app
+    - fromFieldPath: spec.parameters.kubernetesProviderConfigName
+      toFieldPath: spec.providerConfigRef.name
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[0].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[0].patchesFrom.namespace
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[1].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[1].patchesFrom.namespace
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[2].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[2].patchesFrom.namespace
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[3].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[3].patchesFrom.namespace
   
