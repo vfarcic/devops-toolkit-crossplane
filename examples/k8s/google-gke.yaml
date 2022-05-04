@@ -2,8 +2,6 @@ apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
   name: a-team-gke
-  labels:
-    cluster-owner: vfarcic
 spec:
   id: a-team-gke
   compositionSelector:
@@ -11,5 +9,7 @@ spec:
       provider: google
       cluster: gke
   parameters:
-    nodeSize: small
-    minNodeCount: 1
+    nodeSize: medium
+    minNodeCount: 3
+  writeConnectionSecretToRef:
+    name: a-team-gke

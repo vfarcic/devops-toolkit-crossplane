@@ -1,0 +1,21 @@
+---
+
+apiVersion: gcp.crossplane.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: default
+spec:
+  projectID: devops-toolkit-20220504193957
+  credentials:
+    source: Secret
+    secretRef:
+      namespace: upbound-system
+      name: gcp-creds
+      key: creds
+  identity:
+    type: GoogleApplicationCredentials
+    source: Secret
+    secretRef:
+      name: gcp-credentials
+      namespace: crossplane-system
+      key: credentials.json

@@ -1,7 +1,7 @@
 ## Common
 
 ```bash
-export VERSION=v0.4.14
+export VERSION=v0.4.16
 ```
 
 ## Publish To Docker Hub

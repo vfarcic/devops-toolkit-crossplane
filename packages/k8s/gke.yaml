@@ -23,6 +23,9 @@ spec:
         forProvider:
           location: us-east1
           initialClusterVersion: latest
+          # masterAuth:
+          #   clientCertificateConfig:
+          #     issueClientCertificate: true
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
