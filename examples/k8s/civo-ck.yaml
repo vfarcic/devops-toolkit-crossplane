@@ -13,3 +13,5 @@ spec:
   parameters:
     nodeSize: small
     minNodeCount: 1
+  writeConnectionSecretToRef:
+    name: a-team-civo

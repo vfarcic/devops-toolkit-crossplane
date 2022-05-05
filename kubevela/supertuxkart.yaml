@@ -1,0 +1,264 @@
+---
+
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: aws-dbparametergroup
+spec:
+  workload:
+    type: dbparametergroup.rds.aws.crossplane.io
+    definition:
+      apiVersion: rds.aws.crossplane.io/v1alpha1
+      kind: DBParameterGroup
+  schematic:
+    cue:
+      template: |
+        output: {
+          apiVersion: "rds.aws.crossplane.io/v1alpha1"
+          kind: "DBParameterGroup"
+          metadata:{
+            name: context.name
+          }
+          spec: {
+            forProvider: {
+              region: parameter.region
+              dbParameterGroupFamily: parameter.dbParameterGroupFamily
+              description: "example"
+              parameters: [{
+                parameterName: parameter.parameterName
+                parameterValue: parameter.parameterValue
+                applyMethod: parameter.applyMethod
+              }]
+            }
+            providerConfigRef: name: "default"
+          }
+        }
+        parameter: {
+          region: string
+          dbParameterGroupFamily: string
+          parameterName: string
+          parameterValue: string
+          applyMethod: string
+        }
+
+---
+
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: aws-dbinstance
+spec:
+  workload:
+    type: dbinstances.rds.aws.crossplane.io
+    definition:
+      apiVersion: rds.aws.crossplane.io/v1alpha1
+      kind: DBInstance
+  childResourceKinds:
+    - apiVersion: rds.aws.crossplane.io/v1alpha1
+      kind: DBInstance
+    - apiVersion: v1
+      kind: Secret
+  schematic:
+    cue:
+      template: |
+        output: {
+          apiVersion: "rds.aws.crossplane.io/v1alpha1"
+          kind: "DBInstance"
+          metadata:{
+            name: "example-dbinstance"
+          }
+          spec: {
+            forProvider: {
+              region: parameter.region
+              allocatedStorage: 20
+              autoMinorVersionUpgrade: true
+              autogeneratePassword: true
+              backupRetentionPeriod: 14
+              dbInstanceClass: "db.t2.micro"
+              dbName: "example"
+              engine: "postgres"
+              engineVersion: "12.9"
+              masterUsername: "adminuser"
+              masterUserPasswordSecretRef: {
+                key: "password"
+                name: "example-dbinstance"
+                namespace: "crossplane-system"
+              }
+              preferredBackupWindow: "7:00-8:00"
+              preferredMaintenanceWindow: "Sat:8:00-Sat:11:00"
+              publiclyAccessible: false
+              skipFinalSnapshot: true
+              storageEncrypted: false
+              storageType: "gp2"
+              dbParameterGroupName: parameter.dbParameterGroupName
+              applyImmediately: true
+            }
+            writeConnectionSecretToRef: {
+              name: "example-dbinstance-out"
+              namespace: "default"
+            }
+            providerConfigRef: name: "default"
+          }
+        }
+        outputs: secret: {
+          apiVersion: "v1"
+          kind: "Secret"
+          metadata: {
+              name: "example-dbinstance"
+              namespace: "crossplane-system"
+          }
+          type: "Opaque"
+          data: password: "dGVzdFBhc3N3b3JkITEyMw=="
+        }
+        parameter: {
+          region: string
+          dbParameterGroupName: string
+        }
+
+---
+
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: gameservice
+spec:
+  workload:
+    type: fleets.agones.dev
+    definition:
+      apiVersion: agones.dev/v1
+      kind: Fleet
+  childResourceKinds:
+    - apiVersion: agones.dev/v1
+      kind: Fleet
+    - apiVersion: v1
+      kind: Service
+  schematic:
+    cue:
+      template: |
+        output: {
+          apiVersion: "agones.dev/v1"
+          kind: "Fleet"
+          metadata: {
+            name: context.name
+          }
+          spec: {
+            replicas: 2
+            strategy: {
+              type: "Recreate"
+            }
+            template: {
+              spec: {
+                ports: [{
+                  name: "default"
+                  containerPort: 8080
+                }]
+                health: {
+                  initialDelaySeconds: 30
+                  periodSeconds: 60
+                }
+                template: {
+                  spec: {
+                    containers: [{
+                      name: context.name
+                      image: parameter.image
+                    }]
+                  }
+                }
+              }
+            }
+          }
+        }
+        outputs: service: {
+          apiVersion: "v1"
+          kind:       "Service"
+          metadata: {
+            name: parameter.serviceName
+          }
+          spec: {
+            type: "NodePort"
+            ports: [{
+              protocol: "UDP"
+              port: 8080
+              nodePort: parameter.servicePort
+            }]
+            selector: {
+              "agones.dev/role": "gameserver"
+            }
+          }
+        }
+        parameter: {
+          image: string
+          serviceName: string
+          servicePort: int
+        }
+
+---
+
+apiVersion: core.oam.dev/v1beta1
+kind: ComponentDefinition
+metadata:
+  name: fleetautoscaling
+spec:
+  workload:
+    type: fleetautoscalers.autoscaling.agones.dev
+    definition:
+      apiVersion: autoscaling.agones.dev/v1
+      kind: FleetAutoscaler
+  schematic:
+    cue:
+      template: |
+        output: {
+          apiVersion: "autoscaling.agones.dev/v1"
+          kind: "FleetAutoscaler"
+          metadata: {
+            name: "fleetautoscaler"
+          }
+          spec: {
+            fleetName: parameter.fleetName
+            policy: {
+              type: "Buffer"
+              buffer: {
+                bufferSize: 2
+                minReplicas: 4
+                maxReplicas: 6
+              }
+            }
+          }
+        }
+        parameter: {
+          fleetName: string
+        }
+
+---
+
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: supertuxkart-app
+spec:
+  components:
+    - name: example-parametergroup
+      type: aws-dbparametergroup
+      properties:
+        region: us-east-1
+        dbParameterGroupFamily: postgres12
+        parameterName: application_name
+        parameterValue: example
+        applyMethod: immediate
+    - name: example-dbinstance
+      type: aws-dbinstance
+      dependsOn:
+        - example-parametergroup
+      properties:
+        region: us-east-1
+        dbParameterGroupName: example-parametergroup
+    - name: supertuxkart
+      type: gameservice
+      properties:
+        image: gcr.io/agones-images/supertuxkart-example:0.4
+        serviceName: supertuxkart
+        servicePort: 30080
+    - name: supertuxkart-autoscaling
+      type: fleetautoscaling
+      properties:
+        fleetName: supertuxkart

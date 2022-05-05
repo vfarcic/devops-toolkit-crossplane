@@ -305,7 +305,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: vfarcic/crossplane-app:v0.1.1
+              package: vfarcic/crossplane-app:v0.2.6
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
