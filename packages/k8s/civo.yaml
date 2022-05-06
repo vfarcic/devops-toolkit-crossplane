@@ -260,7 +260,7 @@ spec:
             metadata:
               name: crossplane-provider-kubernetes
             spec:
-              package: crossplane/provider-kubernetes:main
+              package: crossplane/provider-kubernetes:v0.3.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
