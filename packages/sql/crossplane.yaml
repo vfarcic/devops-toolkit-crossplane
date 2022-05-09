@@ -1,7 +1,7 @@
 apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: sql
+  name: dot-sql
 spec:
   crossplane:
     version: ">=v1.5.1"

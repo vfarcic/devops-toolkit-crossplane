@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-app
 spec:
-  package: vfarcic/crossplane-app:v0.2.6
+  package: xpkg.upbound.io/devops-toolkit/dot-application:v0.2.7

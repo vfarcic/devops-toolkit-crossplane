@@ -1,7 +1,7 @@
 apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: k8s
+  name: dot-kubernetes
 spec:
   crossplane:
     version: ">=v1.5"

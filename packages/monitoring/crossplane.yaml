@@ -1,7 +1,7 @@
 apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: monitoring
+  name: dot-monitoring
 spec:
   crossplane:
     version: ">=v1.5"

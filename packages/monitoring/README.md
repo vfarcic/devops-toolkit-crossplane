@@ -1,9 +1,21 @@
-## Publish
+## Publish To Upbound
 
 ```bash
-kubectl crossplane build configuration \
-    --name monitoring
+export VERSION=v0.0.40
 
-kubectl crossplane push configuration \
-    vfarcic/crossplane-monitoring:v0.0.39
+# Replace `[...]` with the Upbound Cloud account
+export UP_ACCOUNT=[...]
+
+# Replace `[...]` with the Upbound Cloud token
+export UP_TOKEN=[...]
+
+# Create `dot-monitoring` repository
+
+up login
+
+up xpkg build --name monitoring.xpkg
+
+up xpkg push \
+    --package monitoring.xpkg \
+    xpkg.upbound.io/$UP_ACCOUNT/dot-monitoring:$VERSION
 ```

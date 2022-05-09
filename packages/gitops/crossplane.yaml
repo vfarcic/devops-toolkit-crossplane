@@ -1,7 +1,7 @@
 apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: gitops
+  name: dot-gitops
 spec:
   crossplane:
     version: ">=v1.5"
