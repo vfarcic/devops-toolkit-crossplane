@@ -9,6 +9,7 @@ spec:
   compositionSelector:
     matchLabels:
       type: backend
+      location: local
   parameters:
     namespace: production
     image: vfarcic/silly-demo:1.0.2

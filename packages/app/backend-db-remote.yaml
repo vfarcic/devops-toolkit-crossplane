@@ -210,36 +210,29 @@ spec:
             kind: Secret
             name: # patched
             namespace: # patched
-            fieldPath: data
-          toFieldPath: data
-        # - patchesFrom:
-        #     apiVersion: v1
-        #     kind: Secret
-        #     name: # patched
-        #     namespace: # patched
-        #     fieldPath: data.endpoint
-        #   toFieldPath: data.endpoint
-        # - patchesFrom:
-        #     apiVersion: v1
-        #     kind: Secret
-        #     name: # patched
-        #     namespace: # patched
-        #     fieldPath: data.password
-        #   toFieldPath: data.password
-        # - patchesFrom:
-        #     apiVersion: v1
-        #     kind: Secret
-        #     name: # patched
-        #     namespace: # patched
-        #     fieldPath: data.port
-        #   toFieldPath: data.port
-        # - patchesFrom:
-        #     apiVersion: v1
-        #     kind: Secret
-        #     name: # patched
-        #     namespace: # patched
-        #     fieldPath: data.username
-        #   toFieldPath: data.username
+            fieldPath: data.endpoint
+          toFieldPath: data.endpoint
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.password
+          toFieldPath: data.password
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.port
+          toFieldPath: data.port
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            name: # patched
+            namespace: # patched
+            fieldPath: data.username
+          toFieldPath: data.username
         forProvider:
           manifest:
             apiVersion: v1
@@ -268,20 +261,16 @@ spec:
       toFieldPath: spec.references[0].patchesFrom.name
     - fromFieldPath: spec.parameters.dbSecret.namespace
       toFieldPath: spec.references[0].patchesFrom.namespace
-    # - fromFieldPath: spec.parameters.dbSecret.name
-    #   toFieldPath: spec.references[0].patchesFrom.name
-    # - fromFieldPath: spec.parameters.dbSecret.namespace
-    #   toFieldPath: spec.references[0].patchesFrom.namespace
-    # - fromFieldPath: spec.parameters.dbSecret.name
-    #   toFieldPath: spec.references[1].patchesFrom.name
-    # - fromFieldPath: spec.parameters.dbSecret.namespace
-    #   toFieldPath: spec.references[1].patchesFrom.namespace
-    # - fromFieldPath: spec.parameters.dbSecret.name
-    #   toFieldPath: spec.references[2].patchesFrom.name
-    # - fromFieldPath: spec.parameters.dbSecret.namespace
-    #   toFieldPath: spec.references[2].patchesFrom.namespace
-    # - fromFieldPath: spec.parameters.dbSecret.name
-    #   toFieldPath: spec.references[3].patchesFrom.name
-    # - fromFieldPath: spec.parameters.dbSecret.namespace
-    #   toFieldPath: spec.references[3].patchesFrom.namespace
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[1].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[1].patchesFrom.namespace
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[2].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[2].patchesFrom.namespace
+    - fromFieldPath: spec.parameters.dbSecret.name
+      toFieldPath: spec.references[3].patchesFrom.name
+    - fromFieldPath: spec.parameters.dbSecret.namespace
+      toFieldPath: spec.references[3].patchesFrom.namespace
   

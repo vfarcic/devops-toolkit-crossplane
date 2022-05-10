@@ -9,7 +9,7 @@ spec:
       provider: civo
       cluster: ck
   parameters:
-    nodeSize: small
-    minNodeCount: 1
+    nodeSize: medium
+    minNodeCount: 3
   writeConnectionSecretToRef:
     name: a-team-civo

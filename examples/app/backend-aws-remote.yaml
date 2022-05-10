@@ -1,0 +1,18 @@
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: silly-demo-app
+spec:
+  id: silly-demo-app
+  compositionSelector:
+    matchLabels:
+      type: backend
+      location: remote
+  parameters:
+    namespace: production
+    image: vfarcic/sql-demo:0.1.10
+    port: 8080
+    host: devops-toolkit.127.0.0.1.nip.io
+    kubernetesProviderConfigName: a-team-eks

@@ -1,22 +1,8 @@
-## Common
-
-```bash
-export VERSION=v0.2.7
-```
-
-## Publish To Docker Hub
-
-```bash
-kubectl crossplane build configuration \
-    --name app
-
-kubectl crossplane push configuration \
-    vfarcic/crossplane-app:$VERSION
-```
-
 ## Publish To Upbound
 
 ```bash
+export VERSION=v0.3.2
+
 # Replace `[...]` with the Upbound Cloud account
 export UP_ACCOUNT=[...]
 

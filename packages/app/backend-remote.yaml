@@ -1,10 +1,10 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: app-backend
+  name: app-backend-remote
   labels:
     type: backend
-    location: local
+    location: remote
 spec:
   compositeTypeRef:
     apiVersion: devopstoolkitseries.com/v1alpha1
@@ -14,18 +14,6 @@ spec:
     patches:
     - fromFieldPath: metadata.labels
   resources:
-  - name: kubernetes
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: ProviderConfig
-      spec:
-        credentials:
-          source: InjectedIdentity
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    readinessChecks:
-      - type: None
   - name: deployment
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -82,7 +70,7 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].livenessProbe.httpGet.port
     - fromFieldPath: spec.parameters.port
       toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].readinessProbe.httpGet.port
-    - fromFieldPath: spec.id
+    - fromFieldPath: spec.parameters.kubernetesProviderConfigName
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:
       - type: None
@@ -121,7 +109,7 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.ports[0].port
     - fromFieldPath: spec.parameters.port
       toFieldPath: spec.forProvider.manifest.spec.ports[0].targetPort
-    - fromFieldPath: spec.id
+    - fromFieldPath: spec.parameters.kubernetesProviderConfigName
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:
       - type: None
@@ -168,7 +156,7 @@ spec:
       toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.name
     - fromFieldPath: spec.parameters.port
       toFieldPath: spec.forProvider.manifest.spec.rules[0].http.paths[0].backend.service.port.number
-    - fromFieldPath: spec.id
+    - fromFieldPath: spec.parameters.kubernetesProviderConfigName
       toFieldPath: spec.providerConfigRef.name
     - type: ToCompositeFieldPath
       fromFieldPath: spec.forProvider.manifest.spec.rules[0].host
