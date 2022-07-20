@@ -1,0 +1,48 @@
+---
+
+apiVersion: ec2.aws.crossplane.io/v1alpha1
+kind: Instance
+metadata:
+  name: dot
+  labels:
+    app: dot
+spec:
+  forProvider:
+    imageId: ami-052efd3df9dad4825
+    region: us-east-1
+    instanceType: t2.micro
+    subnetIdSelector:
+      matchLabels:
+        app: dot
+
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: VPC
+metadata:
+  name: dot
+  labels:
+    app: dot
+spec:
+  forProvider:
+    region: us-east-1
+    cidrBlock: 10.0.0.0/16
+    enableDnsSupport: true
+
+---
+
+apiVersion: ec2.aws.crossplane.io/v1beta1
+kind: Subnet
+metadata:
+  name: dot
+  labels:
+    app: dot
+spec:
+  forProvider:
+    region: us-east-1
+    availabilityZone: us-east-1a
+    cidrBlock: 10.0.0.0/24
+    vpcIdSelector:
+      matchLabels:
+        app: dot
+    mapPublicIPOnLaunch: true
