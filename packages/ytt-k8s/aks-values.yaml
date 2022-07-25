@@ -1,0 +1,4 @@
+kubeconfig:
+  key: attribute.kube_config_raw
+aws:
+  version: "1.22"

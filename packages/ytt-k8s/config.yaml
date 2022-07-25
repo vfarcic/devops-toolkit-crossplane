@@ -1,9 +1,0 @@
-#! config.yml
-#@ load("@ytt:data", "data")
-#@ load("@ytt:library", "library")
-#@ load("@ytt:template", "template")
-
-#@ aws_lib = library.get("aws")
-#@ eks = aws_lib.with_data_values(data.values.aws)
-
---- #@ template.replace(eks.eval())

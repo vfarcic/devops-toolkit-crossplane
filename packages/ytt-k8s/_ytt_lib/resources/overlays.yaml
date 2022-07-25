@@ -15,7 +15,7 @@ spec:
         credentials:
           source: Secret
           secretRef:
-            key: kubeconfig
+            key: #@ data.values.kubeconfig.key
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -87,7 +87,7 @@ spec:
         credentials:
           source: Secret
           secretRef:
-            key: kubeconfig
+            key: #@ data.values.kubeconfig.key
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name

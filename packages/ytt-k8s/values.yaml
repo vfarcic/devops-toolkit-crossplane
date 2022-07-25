@@ -1,7 +1,0 @@
-#@data/values-schema
-
----
-
-eks:
-  aws:
-    version: "1.22.xxx"
