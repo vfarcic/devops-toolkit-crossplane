@@ -1,0 +1,6 @@
+#@data/values-schema
+
+---
+
+aws:
+  version: "1.22"

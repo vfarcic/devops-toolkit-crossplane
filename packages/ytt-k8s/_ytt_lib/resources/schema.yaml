@@ -1,0 +1,92 @@
+#@data/values-schema
+
+---
+
+aws:
+  version: "1.24"
+  roles:
+    controlplane:
+      assumeRolePolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Effect": "Allow",
+                  "Principal": {
+                      "Service": [
+                          "eks.amazonaws.com"
+                      ]
+                  },
+                  "Action": [
+                      "sts:AssumeRole"
+                  ]
+              }
+          ]
+        }
+    nodegroup:
+      assumeRolePolicyDocument: |
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Effect": "Allow",
+                  "Principal": {
+                      "Service": [
+                          "ec2.amazonaws.com"
+                      ]
+                  },
+                  "Action": [
+                      "sts:AssumeRole"
+                  ]
+              }
+          ]
+        }
+  iamAttachements:
+    controlplane:
+      policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+      roleSelector: controlplane
+    service:
+      policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+      roleSelector: controlplane
+    worker:
+      policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+      roleSelector: nodegroup
+    cni:
+      policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+      roleSelector: nodegroup
+    registry:
+      policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+      roleSelector: nodegroup
+  subnets:
+    1a:
+      cidrBlock: 10.0.0.0/24
+    1b:
+      cidrBlock: 10.0.1.0/24
+    1c:
+      cidrBlock: 10.0.2.0/24
+charts:
+  nginxIngress:
+    version: "4.2.0"
+  crossplane:
+    version: "1.9.0"
+providers:
+  kubernetes:
+    version: "v0.3.0"
+    package: crossplane/provider-kubernetes:v0.3.0
+    controllerConfigRef:
+      name: provider-kubernetes
+  helm:
+    version: "v0.10.0"
+    package: crossplane/provider-helm:v0.10.0
+    controllerConfigRef:
+      name: provider-kubernetes
+  sql:
+    version: "v0.5.0"
+    package: crossplane/provider-sql:v0.5.0
+configurations:
+  app:
+    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6"
+  monitoring:
+    package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40"
+  sql:
+    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3"

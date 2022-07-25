@@ -1,0 +1,310 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:struct", "struct")
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cluster-aws
+  labels:
+    provider: aws
+    cluster: eks
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeCluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: ekscluster
+    base:
+      apiVersion: eks.aws.crossplane.io/v1beta1
+      kind: Cluster
+      spec:
+        forProvider:
+          region: us-east-1
+          version: #@ data.values.aws.version
+          roleArnSelector:
+            matchControllerRef: true
+          resourcesVpcConfig:
+            endpointPrivateAccess: true
+            endpointPublicAccess: true
+            subnetIdSelector:
+              matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.version
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cluster'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-controlplane'
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.status
+      toFieldPath: status.controlPlaneStatus
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+    connectionDetails:
+    - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
+  - name: eksnodegroup
+    base:
+      apiVersion: eks.aws.crossplane.io/v1alpha1
+      kind: NodeGroup
+      spec:
+        forProvider:
+          region: us-east-1
+          clusterNameSelector:
+            matchControllerRef: true
+          nodeRoleSelector:
+            matchControllerRef: true
+          subnetSelector:
+            matchControllerRef: true
+          scalingConfig:
+            minSize: 1
+            maxSize: 10
+            desiredSize: 1
+          instanceTypes:
+          - t3.small
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.nodeSize
+      toFieldPath: spec.forProvider.instanceTypes[0]
+      transforms:
+      - type: map
+        map:
+          small: t3.small
+          medium: t3.medium
+          large: t3.large
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.nodeRoleSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.scalingConfig.minSize
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.scalingConfig.desiredSize
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.status
+      toFieldPath: status.nodePoolStatus
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+#@ for role in data.values.aws.roles:
+  - name: #@ 'iamrole-' + role
+    base:
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: Role
+      spec:
+        forProvider:
+          assumeRolePolicyDocument: #@ data.values.aws.roles[role]['assumeRolePolicyDocument']
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: #@ '%s-' + role
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.labels.role
+      transforms:
+      - type: string
+        string:
+          fmt: #@ '%s-' + role
+#@ end
+#@ for att in data.values.aws.iamAttachements:
+  - name: #@ 'iamattachment-' + att
+    base:
+      apiVersion: iam.aws.crossplane.io/v1beta1
+      kind: RolePolicyAttachment
+      spec:
+        forProvider:
+          policyArn: #@ data.values.aws.iamAttachements[att]['policyArn']
+          roleNameSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: #@ '%s-' + att
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      transforms:
+      - type: string
+        string:
+          fmt: #@ '%s-' + data.values.aws.iamAttachements[att]['roleSelector']
+#@ end
+  - name: vpc-nodepool
+    base:
+      apiVersion: ec2.aws.crossplane.io/v1beta1
+      kind: VPC
+      spec:
+        forProvider:
+          region: us-east-1
+          cidrBlock: 10.0.0.0/16
+          enableDnsSupport: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: sg-nodepool
+    base:
+      apiVersion: ec2.aws.crossplane.io/v1beta1
+      kind: SecurityGroup
+      spec:
+        forProvider:
+          description: Cluster communication with worker nodes
+          groupName: devops-catalog
+          region: us-east-1
+          vpcIdSelector:
+            matchControllerRef: true
+          egress:
+          - fromPort: 0
+            toPort: 0
+            ipProtocol: "-1"
+            ipRanges:
+            - cidrIp: "0.0.0.0/0"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    readinessChecks:
+    - type: None
+#@ for subnet in data.values.aws.subnets:
+  - name: #@ "subnet-nodepool-" + subnet
+    base:
+      apiVersion: ec2.aws.crossplane.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: #@ "us-east-" + subnet
+          access: public
+      spec:
+        forProvider:
+          region: us-east-1
+          availabilityZone: #@ "us-east-" + subnet
+          cidrBlock: #@ data.values.aws.subnets[subnet]['cidrBlock']
+          vpcIdSelector:
+            matchControllerRef: true
+          mapPublicIPOnLaunch: true
+          tags:
+          - key: kubernetes.io/role/elb
+            value: "1"
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: #@ '%s-' + subnet
+#@ end
+  - name: gateway
+    base:
+      apiVersion: ec2.aws.crossplane.io/v1beta1
+      kind: InternetGateway
+      spec:
+        forProvider:
+          region: us-east-1
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: routetable
+    base:
+      apiVersion: ec2.aws.crossplane.io/v1beta1
+      kind: RouteTable
+      spec:
+        forProvider:
+          region: us-east-1
+          vpcIdSelector:
+            matchControllerRef: true
+          routes:
+          - destinationCidrBlock: 0.0.0.0/0
+            gatewayIdSelector:
+              matchControllerRef: true
+          associations:
+#@ for subnet in data.values.aws.subnets:
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: #@ "us-east-" + subnet
+                access: public
+#@ end
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: aws-p
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-aws
+            spec:
+              package: crossplane/provider-aws:v0.24.1
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-aws-p'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: aws-pc
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: aws.crossplane.io/v1beta1
+            kind: ProviderConfig
+            metadata:
+              name: default
+            spec:
+              credentials:
+                source: Secret
+                secretRef:
+                  namespace: crossplane-system
+                  name: aws-creds
+                  key: creds
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-aws-pc'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+

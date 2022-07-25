@@ -38,15 +38,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-cluster"
+      - type: string
+        string:
+          fmt: '%s-cluster'
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-controlplane"
+      - type: string
+        string:
+          fmt: '%s-controlplane'
     - type: ToCompositeFieldPath
       fromFieldPath: metadata.name
       toFieldPath: status.clusterName
@@ -88,17 +88,17 @@ spec:
     - fromFieldPath: spec.parameters.nodeSize
       toFieldPath: spec.forProvider.instanceTypes[0]
       transforms:
-        - type: map
-          map:
-            small: t3.small
-            medium: t3.medium
-            large: t3.large
+      - type: map
+        map:
+          small: t3.small
+          medium: t3.medium
+          large: t3.large
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.nodeRoleSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-nodegroup"
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
     - fromFieldPath: spec.parameters.minNodeCount
       toFieldPath: spec.forProvider.scalingConfig.minSize
     - fromFieldPath: spec.parameters.minNodeCount
@@ -137,15 +137,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-controlplane"
+      - type: string
+        string:
+          fmt: '%s-controlplane'
     - fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-controlplane"
+      - type: string
+        string:
+          fmt: '%s-controlplane'
   - name: iamrole-nodegroup
     base:
       apiVersion: iam.aws.crossplane.io/v1beta1
@@ -173,15 +173,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-nodegroup"
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
     - fromFieldPath: spec.id
       toFieldPath: metadata.labels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-nodegroup"
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
   - name: iamattachment-controlplane
     base:
       apiVersion: iam.aws.crossplane.io/v1beta1
@@ -195,15 +195,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-controlplane"
+      - type: string
+        string:
+          fmt: '%s-controlplane'
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-controlplane"
+      - type: string
+        string:
+          fmt: '%s-controlplane'
   - name: iamattachment-service
     base:
       apiVersion: iam.aws.crossplane.io/v1beta1
@@ -217,15 +217,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-service"
+      - type: string
+        string:
+          fmt: '%s-service'
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-controlplane"
+      - type: string
+        string:
+          fmt: '%s-controlplane'
   - name: iamattachment-worker
     base:
       apiVersion: iam.aws.crossplane.io/v1beta1
@@ -239,15 +239,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-worker"
+      - type: string
+        string:
+          fmt: '%s-worker'
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-nodegroup"
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
   - name: iamattachment-cni
     base:
       apiVersion: iam.aws.crossplane.io/v1beta1
@@ -261,15 +261,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-cni"
+      - type: string
+        string:
+          fmt: '%s-cni'
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-nodegroup"
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
   - name: iamattachment-registry
     base:
       apiVersion: iam.aws.crossplane.io/v1beta1
@@ -283,15 +283,15 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-registry"
+      - type: string
+        string:
+          fmt: '%s-registry'
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
       transforms:
-        - type: string
-          string:
-            fmt: "%s-nodegroup"
+      - type: string
+        string:
+          fmt: '%s-nodegroup'
   - name: vpc-nodepool
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1
@@ -349,9 +349,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-1a"
+      - type: string
+        string:
+          fmt: '%s-1a'
   - name: subnet-nodepool-1b
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1
@@ -375,9 +375,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-1b"
+      - type: string
+        string:
+          fmt: '%s-1b'
   - name: subnet-nodepool-1c
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1
@@ -401,9 +401,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-1c"
+      - type: string
+        string:
+          fmt: '%s-1c'
   - name: gateway
     base:
       apiVersion: ec2.aws.crossplane.io/v1beta1
@@ -426,122 +426,28 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           routes:
-            - destinationCidrBlock: 0.0.0.0/0
-              gatewayIdSelector:
-                matchControllerRef: true
+          - destinationCidrBlock: 0.0.0.0/0
+            gatewayIdSelector:
+              matchControllerRef: true
           associations:
-            - subnetIdSelector:
-                matchControllerRef: true
-                matchLabels:
-                  zone: us-east-1a
-                  access: public
-            - subnetIdSelector:
-                matchControllerRef: true
-                matchLabels:
-                  zone: us-east-1b
-                  access: public
-            - subnetIdSelector:
-                matchControllerRef: true
-                matchLabels:
-                  zone: us-east-1c
-                  access: public
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-east-1a
+                access: public
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-east-1b
+                access: public
+          - subnetIdSelector:
+              matchControllerRef: true
+              matchLabels:
+                zone: us-east-1c
+                access: public
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-  - name: helm
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: ProviderConfig
-      spec:
-        credentials:
-          source: Secret
-          secretRef:
-            key: kubeconfig
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
-    - fromFieldPath: spec.id
-      toFieldPath: spec.credentials.secretRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-cluster"
-    readinessChecks:
-    - type: None
-  - name: ingress
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: Release
-      spec:
-        rollbackLimit: 3
-        forProvider:
-          namespace: ingress-nginx
-          chart:
-            name: ingress-nginx
-            repository: https://kubernetes.github.io/ingress-nginx
-            version: "4.0.18"
-          values:
-            controller:
-              ingressClassResource:
-                default: true
-              annotations:
-                service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
-                service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
-                service.beta.kubernetes.io/aws-load-balancer-type: nlb
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-ingress"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
-  - name: crossplane
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: Release
-      spec:
-        rollbackLimit: 3
-        forProvider:
-          namespace: crossplane-system
-          chart:
-            name: crossplane
-            repository: https://charts.crossplane.io/stable
-            version: "1.6.0"
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-crossplane"
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
-  - name: kubernetes
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: ProviderConfig
-      spec:
-        credentials:
-          source: Secret
-          secretRef:
-            key: kubeconfig
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
-    - fromFieldPath: spec.id
-      toFieldPath: spec.credentials.secretRef.name
-      transforms:
-        - type: string
-          string:
-            fmt: "%s-cluster"
-    readinessChecks:
-    - type: None
   - name: aws-p
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -561,7 +467,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-aws-p"
+          fmt: '%s-aws-p'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: aws-pc
@@ -588,9 +494,103 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-aws-pc"
+          fmt: '%s-aws-pc'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+  - name: helm
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            key: kubeconfig
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.credentials.secretRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cluster'
+    readinessChecks:
+    - type: None
+  - name: ingress
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: ingress-nginx
+          chart:
+            name: ingress-nginx
+            repository: https://kubernetes.github.io/ingress-nginx
+            version: "4.0.18"
+          values:
+            controller:
+              ingressClassResource:
+                default: true
+              annotations:
+                service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+                service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+                service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ingress'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: crossplane
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: crossplane-system
+          chart:
+            name: crossplane
+            repository: https://charts.crossplane.io/stable
+            version: '1.6.0'
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-crossplane'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: kubernetes
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: Secret
+          secretRef:
+            key: kubeconfig
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.credentials.secretRef.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.credentials.secretRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-cluster'
+    readinessChecks:
+    - type: None
   - name: ns-prod
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
@@ -608,7 +608,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-ns-prod"
+          fmt: '%s-ns-prod'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: ns-dev
@@ -628,7 +628,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-ns-dev"
+          fmt: '%s-ns-dev'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-sa
@@ -649,7 +649,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-k8s-provider-sa"
+          fmt: '%s-k8s-provider-sa'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-crd
@@ -677,7 +677,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-k8s-provider-crb"
+          fmt: '%s-k8s-provider-crb'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-cc
@@ -699,7 +699,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-k8s-provider-cc"
+          fmt: '%s-k8s-provider-cc'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider
@@ -723,7 +723,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-k8s-provider"
+          fmt: '%s-k8s-provider'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: helm-provider
@@ -747,7 +747,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-helm-provider"
+          fmt: '%s-helm-provider'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: sql-provider
@@ -769,7 +769,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-sql-provider"
+          fmt: '%s-sql-provider'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: config-app
@@ -791,7 +791,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-config-app"
+          fmt: '%s-config-app'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: config-monitoring
@@ -813,7 +813,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-config-monitoring"
+          fmt: '%s-config-monitoring'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: config-sql
@@ -835,6 +835,6 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: "%s-config-sql"
+          fmt: '%s-config-sql'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
