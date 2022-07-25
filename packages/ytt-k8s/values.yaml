@@ -2,5 +2,6 @@
 
 ---
 
-aws:
-  version: "1.22"
+eks:
+  aws:
+    version: "1.22"
