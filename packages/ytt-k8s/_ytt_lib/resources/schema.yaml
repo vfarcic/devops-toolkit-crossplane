@@ -2,8 +2,41 @@
 
 ---
 
+charts:
+  nginxIngress:
+    version: "4.2.0"
+  crossplane:
+    version: "1.9.0"
+providers:
+  kubernetes:
+    version: "v0.3.0"
+    package: crossplane/provider-kubernetes:v0.3.0
+    controllerConfigRef:
+      name: provider-kubernetes
+  helm:
+    version: "v0.10.0"
+    package: crossplane/provider-helm:v0.10.0
+    controllerConfigRef:
+      name: provider-kubernetes
+  sql:
+    version: "v0.5.0"
+    package: crossplane/provider-sql:v0.5.0
+configurations:
+  app:
+    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6"
+  monitoring:
+    package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40"
+  sql:
+    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3"
+namespaces:
+  prod:
+    name: production
+  dev:
+    name: dev
+azure:
+  version: "1.23.5"
 aws:
-  version: "1.24"
+  version: "1.22"
   roles:
     controlplane:
       assumeRolePolicyDocument: |
@@ -64,29 +97,3 @@ aws:
       cidrBlock: 10.0.1.0/24
     1c:
       cidrBlock: 10.0.2.0/24
-charts:
-  nginxIngress:
-    version: "4.2.0"
-  crossplane:
-    version: "1.9.0"
-providers:
-  kubernetes:
-    version: "v0.3.0"
-    package: crossplane/provider-kubernetes:v0.3.0
-    controllerConfigRef:
-      name: provider-kubernetes
-  helm:
-    version: "v0.10.0"
-    package: crossplane/provider-helm:v0.10.0
-    controllerConfigRef:
-      name: provider-kubernetes
-  sql:
-    version: "v0.5.0"
-    package: crossplane/provider-sql:v0.5.0
-configurations:
-  app:
-    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6"
-  monitoring:
-    package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40"
-  sql:
-    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3"

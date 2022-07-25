@@ -2,6 +2,8 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:struct", "struct")
 
+---
+
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
