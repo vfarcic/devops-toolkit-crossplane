@@ -1,0 +1,94 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:struct", "struct")
+
+---
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cluster-dok
+  labels:
+    provider: digital-ocean
+    cluster: dok
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeCluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: dokcluster
+    base:
+      apiVersion: kubernetes.do.crossplane.io/v1alpha1
+      kind: DOKubernetesCluster
+      metadata:
+        name: example-cluster
+      spec:
+        providerConfigRef:
+          name: crossplane-provider-do
+        forProvider:
+          region: nyc1
+          version: #@ data.values.do.version
+          nodePools:
+          - count: 1
+            autoScale: true
+            minNodes: 1
+            maxNodes: 20
+          maintenancePolicy:
+            startTime: "00:00"
+            day: wednesday
+          highlyAvailable: true
+          autoUpgrade: false
+          surgeUpgrade: false
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.version
+    - fromFieldPath: spec.id
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-cluster"
+    - fromFieldPath: spec.parameters.nodeSize
+      toFieldPath: spec.forProvider.nodePools[0].size
+      transforms:
+        - type: map
+          map:
+            small: s-2vcpu-4gb
+            medium: s-4vcpu-8gb
+            large: s-8vcpu-16gb
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.nodePools[0].count
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.forProvider.nodePools[0].minNodes
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.nodePools[0].name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-nodes"
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.State
+      toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.State
+      toFieldPath: status.nodePoolStatus
+    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
+    readinessChecks:
+    - type: MatchString
+      fieldPath: status.atProvider.status
+      matchString: ACTIVE
+    connectionDetails:
+    - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value

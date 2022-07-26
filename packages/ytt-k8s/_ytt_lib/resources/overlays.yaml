@@ -16,6 +16,12 @@ spec:
           source: Secret
           secretRef:
             key: #@ data.values.kubeconfig.key
+        #@ if data.values.identity.enabled:
+        identity:
+          type: #@ data.values.identity.type
+          source: Secret
+          secretRef: #@ data.values.identity.secretRef
+        #@ end
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -26,7 +32,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-cluster'
+          fmt: #@ data.values.kubeconfig.secret
     readinessChecks:
     - type: None
   - name: ingress
@@ -88,6 +94,12 @@ spec:
           source: Secret
           secretRef:
             key: #@ data.values.kubeconfig.key
+        #@ if data.values.identity.enabled:
+        identity:
+          type: #@ data.values.identity.type
+          source: Secret
+          secretRef: #@ data.values.identity.secretRef
+        #@ end
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -98,7 +110,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-cluster'
+          fmt: #@ data.values.kubeconfig.secret
     readinessChecks:
     - type: None
 #@ for ns in data.values.namespaces:

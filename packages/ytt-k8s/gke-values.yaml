@@ -1,0 +1,9 @@
+google:
+  version: latest
+identity:
+  enabled: true
+  type: GoogleApplicationCredentials
+  secretRef:
+    name: gcp-creds
+    namespace: crossplane-system
+    key: creds

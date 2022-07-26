@@ -1,0 +1,2 @@
+kubeconfig:
+  secret: "cluster-civo-%s"

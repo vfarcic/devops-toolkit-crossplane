@@ -1,2 +1,2 @@
-azure:
-  version: "1.23.5"
+aws:
+  version: "1.22"

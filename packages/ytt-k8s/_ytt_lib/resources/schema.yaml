@@ -3,6 +3,7 @@
 ---
 
 kubeconfig:
+  secret: "%s-cluster"
   key: kubeconfig
 charts:
   nginxIngress:
@@ -35,6 +36,13 @@ namespaces:
     name: production
   dev:
     name: dev
+identity:
+  enabled: false
+  type: ""
+  secretRef:
+    name: ""
+    namespace: crossplane-system
+    key: creds
 azure:
   version: "1.23.5"
 aws:
@@ -99,3 +107,7 @@ aws:
       cidrBlock: 10.0.1.0/24
     1c:
       cidrBlock: 10.0.2.0/24
+do:
+  version: "1.22.7-do.0"
+google:
+  version: latest

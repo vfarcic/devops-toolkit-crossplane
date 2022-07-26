@@ -23,9 +23,6 @@ spec:
         forProvider:
           location: us-east1
           initialClusterVersion: latest
-          # masterAuth:
-          #   clientCertificateConfig:
-          #     issueClientCertificate: true
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -51,8 +48,8 @@ spec:
       name: value
     readinessChecks:
     - type: MatchString
-      fieldPath: "status.atProvider.status"
-      matchString: "RUNNING"
+      fieldPath: status.atProvider.status
+      matchString: RUNNING
   - name: nodepool
     base:
       apiVersion: container.gcp.crossplane.io/v1beta1
@@ -123,9 +120,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-cluster"
+      - type: string
+        string:
+          fmt: "%s-cluster"
     readinessChecks:
       - type: None
   - name: crossplane
@@ -144,9 +141,9 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-crossplane"
+      - type: string
+        string:
+          fmt: "%s-crossplane"
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: kubernetes
@@ -173,11 +170,11 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
       transforms:
-        - type: string
-          string:
-            fmt: "%s-cluster"
+      - type: string
+        string:
+          fmt: "%s-cluster"
     readinessChecks:
-      - type: None
+    - type: None
   - name: ns-prod
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1

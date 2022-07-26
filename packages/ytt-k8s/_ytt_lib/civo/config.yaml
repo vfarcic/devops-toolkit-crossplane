@@ -1,0 +1,59 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:struct", "struct")
+
+---
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: cluster-civo
+  labels:
+    provider: civo
+    cluster: ck
+spec:
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: CompositeCluster
+  writeConnectionSecretsToNamespace: crossplane-system
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: civocluster
+    base:
+      apiVersion: cluster.civo.crossplane.io/v1alpha1
+      kind: CivoKubernetes
+      spec:
+        pools:
+        - id: 8382e422-dcdd-461f-afb4-2ab67f171c3e
+          count: 1
+          size: g3.k3s.small
+        connectionDetails:
+          connectionSecretNamePrefix: cluster-civo
+          connectionSecretNamespace: crossplane-system
+        providerConfigRef:
+          name: crossplane-provider-civo
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.name
+    - fromFieldPath: spec.parameters.minNodeCount
+      toFieldPath: spec.pools[0].count
+    - fromFieldPath: spec.parameters.nodeSize
+      toFieldPath: spec.pools[0].size
+      transforms:
+        - type: map
+          map:
+            small: g3.k3s.small
+            medium: g3.k3s.medium
+            large: g3.k3s.xlarge
+    - type: ToCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: status.clusterName
+    connectionDetails:
+    - fromConnectionSecretKey: kubeconfig
+    - fromConnectionSecretKey: kubeconfig
+      name: value
