@@ -1,0 +1,25 @@
+---
+
+apiVersion: database.gcp.crossplane.io/v1beta1
+kind: CloudSQLInstance
+metadata:
+  name: my-db
+spec:
+  forProvider:
+    region: us-east1
+    instanceType: CLOUD_SQL_INSTANCE
+    databaseVersion: POSTGRES_13
+    settings:
+      availabilityType: REGIONAL
+      tier: db-custom-1-3840
+      backupConfiguration:
+        enabled: true
+        binaryLogEnabled: false
+      ipConfiguration:
+        ipv4Enabled: true
+        authorizedNetworks:
+        - name: all
+          value: 0.0.0.0/0
+  writeConnectionSecretToRef:
+    namespace: crossplane-system
+    name: my-db-sql

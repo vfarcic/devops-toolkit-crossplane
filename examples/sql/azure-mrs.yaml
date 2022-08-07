@@ -1,0 +1,27 @@
+---
+
+apiVersion: azure.jet.crossplane.io/v1alpha2
+kind: ResourceGroup
+metadata:
+  name: my-db
+spec:
+  forProvider:
+    location: eastus
+
+---
+
+apiVersion: dbforpostgresql.azure.jet.crossplane.io/v1alpha2
+kind: Server
+metadata:
+  name: my-db
+spec:
+  forProvider:
+    location: eastus
+    resourceGroupNameRef:
+      name: my-db
+    storageMb: 5120
+    autoGrowEnabled: true
+    version: "11"
+    skuName: B_Gen5_2
+    sslEnforcementEnabled: true
+    administratorLogin: admin
