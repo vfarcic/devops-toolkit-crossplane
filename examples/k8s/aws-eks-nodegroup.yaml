@@ -1,0 +1,22 @@
+---
+
+apiVersion: eks.aws.crossplane.io/v1alpha1
+kind: NodeGroup
+metadata:
+  name: a-team-eks-2
+spec:
+  forProvider:
+    region: us-east-1
+    clusterName: a-team-eks
+    nodeRoleRef:
+      name: a-team-eks-nodegroup
+    subnetRefs:
+      - name: a-team-eks-1a
+      - name: a-team-eks-1b
+      - name: a-team-eks-1c
+    scalingConfig:
+      minSize: 1
+      maxSize: 10
+      desiredSize: 1
+    instanceTypes:
+    - t3.medium

@@ -72,6 +72,7 @@ spec:
           region: us-east-1
           clusterNameSelector:
             matchControllerRef: true
+          # TODO: Remove
           nodeRoleSelector:
             matchControllerRef: true
           subnetSelector:
