@@ -24,4 +24,10 @@ spec:
     version: "11"
     skuName: B_Gen5_2
     sslEnforcementEnabled: true
-    administratorLogin: admin
+    administratorLogin: sqladmin
+    administratorLoginPasswordSecretRef:
+      name: my-db-creds
+      namespace: crossplane-system
+      key: password
+    publicNetworkAccessEnabled: true
+    sslMinimalTlsVersionEnforced: TLS1_2
