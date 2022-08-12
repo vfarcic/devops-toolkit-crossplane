@@ -1,0 +1,16 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQLClaim
+metadata:
+  name: my-db
+spec:
+  id: my-db
+  compositionSelector:
+    matchLabels:
+      provider: aws
+      db: postgresql
+  parameters:
+    version: "13.4"
+    size: small
+    namespace: production
+  writeConnectionSecretToRef:
+    name: my-db
