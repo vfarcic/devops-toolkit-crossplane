@@ -1,0 +1,64 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: azure-postgresql
+  labels:
+    provider: azure
+    db: postgresql
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQL
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: resourcegroup
+    base:
+      apiVersion: azure.jet.crossplane.io/v1alpha2
+      kind: ResourceGroup
+      spec:
+        forProvider:
+          location: eastus
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+  - name: server
+    base:
+      apiVersion: dbforpostgresql.azure.jet.crossplane.io/v1alpha2
+      kind: Server
+      metadata:
+        name: my-db
+      spec:
+        forProvider:
+          location: eastus
+          resourceGroupNameRef:
+            name: my-db
+          storageMb: 5120
+          autoGrowEnabled: true
+          skuName: B_Gen5_2
+          sslEnforcementEnabled: true
+          administratorLogin: sqladmin
+          administratorLoginPasswordSecretRef:
+            name: my-db-creds
+            namespace: crossplane-system
+            key: password
+          publicNetworkAccessEnabled: true
+          sslMinimalTlsVersionEnforced: TLS1_2
+    patches:
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.version
+    - fromFieldPath: spec.parameters.size
+      toFieldPath: spec.forProvider.skuName
+      transforms:
+      - type: map
+        map:
+          small: B_Gen5_2
+          medium: B_Gen5_4
+          large: B_Gen5_8
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.engineVersion
