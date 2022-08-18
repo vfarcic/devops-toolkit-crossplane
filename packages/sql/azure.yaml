@@ -31,25 +31,24 @@ spec:
     base:
       apiVersion: dbforpostgresql.azure.jet.crossplane.io/v1alpha2
       kind: Server
-      metadata:
-        name: my-db
       spec:
         forProvider:
           location: eastus
-          resourceGroupNameRef:
-            name: my-db
+          resourceGroupNameSelector:
+            matchControllerRef: true
           storageMb: 5120
           autoGrowEnabled: true
           skuName: B_Gen5_2
           sslEnforcementEnabled: true
           administratorLogin: sqladmin
           administratorLoginPasswordSecretRef:
-            name: my-db-creds
             namespace: crossplane-system
             key: password
           publicNetworkAccessEnabled: true
           sslMinimalTlsVersionEnforced: TLS1_2
     patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.version
     - fromFieldPath: spec.parameters.size
@@ -62,3 +61,9 @@ spec:
           large: B_Gen5_8
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.engineVersion
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.administratorLoginPasswordSecretRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-creds'
