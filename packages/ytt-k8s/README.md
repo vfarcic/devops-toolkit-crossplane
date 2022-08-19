@@ -19,4 +19,7 @@ ytt --file _ytt_lib/resources --file _ytt_lib/do --data-values-file dok-values.y
 
 ## Google Cloud GKE
 
-ytt --file _ytt_lib/resources --file _ytt_lib/google --data-values-file gke-values.yaml
+ytt --file _ytt_lib/resources \
+    --file _ytt_lib/google \
+    --data-values-file gke-values.yaml \
+    | tee ../k8s/gke.yaml

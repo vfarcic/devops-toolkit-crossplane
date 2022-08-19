@@ -29,9 +29,6 @@ spec:
         forProvider:
           location: us-east1
           initialClusterVersion: #@ data.values.google.version
-          #! masterAuth:
-          #!   clientCertificateConfig:
-          #!     issueClientCertificate: true
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
