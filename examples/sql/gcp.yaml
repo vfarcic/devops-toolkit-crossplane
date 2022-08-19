@@ -3,13 +3,13 @@ kind: SQLClaim
 metadata:
   name: my-db
 spec:
-  id: dot20220819001304
+  id: my-db
   compositionSelector:
     matchLabels:
-      provider: azure
+      provider: google
       db: postgresql
   parameters:
-    version: "11"
+    version: "13"
     size: small
   writeConnectionSecretToRef:
     name: my-db

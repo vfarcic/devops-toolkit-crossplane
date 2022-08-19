@@ -23,7 +23,7 @@ spec:
   resources:
   - name: resourcegroup
     base:
-      apiVersion: azure.jet.crossplane.io/v1alpha1
+      apiVersion: azure.jet.crossplane.io/v1alpha2
       kind: ResourceGroup
       spec:
         forProvider:
@@ -35,7 +35,7 @@ spec:
       toFieldPath: spec.forProvider.name
   - name: aks
     base:
-      apiVersion: containerservice.azure.jet.crossplane.io/v1alpha1
+      apiVersion: containerservice.azure.jet.crossplane.io/v1alpha2
       kind: KubernetesCluster
       spec:
         forProvider:
@@ -78,18 +78,14 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: metadata.name
       toFieldPath: status.clusterName
-    #! - type: ToCompositeFieldPath
-    #!   fromFieldPath: status.conditions[0].status
-    #!   toFieldPath: status.controlPlaneStatus
-    #! - type: ToCompositeFieldPath
-    #!   fromFieldPath: status.conditions[0].status
-    #!   toFieldPath: status.nodePoolStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[0].status
+      toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[0].status
+      toFieldPath: status.nodePoolStatus
     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.conditions.status
-      matchString: Succeeded
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig

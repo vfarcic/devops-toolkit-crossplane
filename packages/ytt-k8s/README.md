@@ -4,7 +4,10 @@ ytt --file _ytt_lib/resources --file _ytt_lib/aws --data-values-file eks-values.
 
 ## Azure AKS
 
-ytt --file _ytt_lib/resources --file _ytt_lib/azure --data-values-file aks-values.yaml
+ytt --file _ytt_lib/resources \
+    --file _ytt_lib/azure \
+    --data-values-file aks-values.yaml \
+    | tee ../k8s/aks.yaml
 
 ## Civo CK
 

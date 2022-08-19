@@ -17,7 +17,7 @@ spec:
   resources:
   - name: resourcegroup
     base:
-      apiVersion: azure.jet.crossplane.io/v1alpha1
+      apiVersion: azure.jet.crossplane.io/v1alpha2
       kind: ResourceGroup
       spec:
         forProvider:
@@ -29,13 +29,13 @@ spec:
       toFieldPath: spec.forProvider.name
   - name: aks
     base:
-      apiVersion: containerservice.azure.jet.crossplane.io/v1alpha1
+      apiVersion: containerservice.azure.jet.crossplane.io/v1alpha2
       kind: KubernetesCluster
       spec:
         forProvider:
           location: eastus
           dnsPrefix: dot
-          kubernetesVersion: "1.23.5"
+          kubernetesVersion: 1.23.5
           defaultNodePool:
           - maxCount: 10
             enableAutoScaling: true
@@ -72,12 +72,14 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: metadata.name
       toFieldPath: status.clusterName
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[0].status
+      toFieldPath: status.controlPlaneStatus
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.conditions[0].status
+      toFieldPath: status.nodePoolStatus
     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.conditions.status
-      matchString: Succeeded
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
@@ -104,6 +106,35 @@ spec:
           fmt: '%s-cluster'
     readinessChecks:
     - type: None
+  - name: ingress
+    base:
+      apiVersion: helm.crossplane.io/v1beta1
+      kind: Release
+      spec:
+        rollbackLimit: 3
+        forProvider:
+          namespace: ingress-nginx
+          chart:
+            name: ingress-nginx
+            repository: https://kubernetes.github.io/ingress-nginx
+            version: 4.2.0
+          values:
+            controller:
+              ingressClassResource:
+                default: true
+              annotations:
+                service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+                service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+                service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ingress'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
   - name: crossplane
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -115,7 +146,7 @@ spec:
           chart:
             name: crossplane
             repository: https://charts.crossplane.io/stable
-            version: "1.5.0"
+            version: 1.9.0
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -165,6 +196,26 @@ spec:
       - type: string
         string:
           fmt: '%s-ns-prod'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: ns-dev
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: dev
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-ns-dev'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: k8s-provider-sa
@@ -238,7 +289,7 @@ spec:
           fmt: '%s-k8s-provider-cc'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: k8s-provider
+  - name: kubernetes-provider
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
@@ -248,7 +299,7 @@ spec:
             apiVersion: pkg.crossplane.io/v1
             kind: Provider
             metadata:
-              name: provider-kubernetes
+              name: crossplane-provider-kubernetes
             spec:
               package: crossplane/provider-kubernetes:v0.3.0
               controllerConfigRef:
@@ -259,7 +310,53 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-k8s-provider'
+          fmt: '%s-kubernetes-provider'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: helm-provider
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-helm
+            spec:
+              package: crossplane/provider-helm:v0.10.0
+              controllerConfigRef:
+                name: provider-kubernetes
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-helm-provider'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: sql-provider
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-sql
+            spec:
+              package: crossplane/provider-sql:v0.5.0
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-sql-provider'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: config-app
@@ -274,7 +371,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: vfarcic/crossplane-app:v0.2.6
+              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -296,7 +393,7 @@ spec:
             metadata:
               name: crossplane-monitoring
             spec:
-              package: vfarcic/crossplane-monitoring:v0.0.39
+              package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -318,7 +415,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: vfarcic/crossplane-sql:v0.2.18
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
