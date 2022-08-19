@@ -1,6 +1,9 @@
 ## AWS EKS
 
-ytt --file _ytt_lib/resources --file _ytt_lib/aws --data-values-file eks-values.yaml
+ytt --file _ytt_lib/resources \
+    --file _ytt_lib/aws \
+    --data-values-file eks-values.yaml \
+    | tee ../k8s/eks.yaml
 
 ## Azure AKS
 

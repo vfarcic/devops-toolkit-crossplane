@@ -72,7 +72,6 @@ spec:
           region: us-east-1
           clusterNameSelector:
             matchControllerRef: true
-          # TODO: Remove
           nodeRoleSelector:
             matchControllerRef: true
           subnetSelector:
@@ -321,7 +320,7 @@ spec:
             toPort: 0
             ipProtocol: "-1"
             ipRanges:
-            - cidrIp: "0.0.0.0/0"
+            - cidrIp: 0.0.0.0/0
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -531,7 +530,7 @@ spec:
           chart:
             name: ingress-nginx
             repository: https://kubernetes.github.io/ingress-nginx
-            version: "4.0.18"
+            version: 4.2.0
           values:
             controller:
               ingressClassResource:
@@ -560,7 +559,7 @@ spec:
           chart:
             name: crossplane
             repository: https://charts.crossplane.io/stable
-            version: '1.6.0'
+            version: 1.9.0
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -703,7 +702,7 @@ spec:
           fmt: '%s-k8s-provider-cc'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
-  - name: k8s-provider
+  - name: kubernetes-provider
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
@@ -724,7 +723,7 @@ spec:
       transforms:
       - type: string
         string:
-          fmt: '%s-k8s-provider'
+          fmt: '%s-kubernetes-provider'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
   - name: helm-provider
@@ -739,7 +738,7 @@ spec:
             metadata:
               name: crossplane-provider-helm
             spec:
-              package: crossplane/provider-helm:v0.9.0
+              package: crossplane/provider-helm:v0.10.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
@@ -761,9 +760,9 @@ spec:
             apiVersion: pkg.crossplane.io/v1
             kind: Provider
             metadata:
-              name: provider-sql
+              name: crossplane-provider-sql
             spec:
-              package: crossplane/provider-sql:v0.4.1
+              package: crossplane/provider-sql:v0.5.0
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -785,7 +784,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: vfarcic/crossplane-app:v0.2.6
+              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -807,7 +806,7 @@ spec:
             metadata:
               name: crossplane-monitoring
             spec:
-              package: vfarcic/crossplane-monitoring:v0.0.39
+              package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -829,7 +828,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: vfarcic/crossplane-sql:v0.2.18
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.1
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name

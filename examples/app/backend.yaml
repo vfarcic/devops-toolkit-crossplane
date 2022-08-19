@@ -12,5 +12,6 @@ spec:
       location: local
   parameters:
     namespace: a-team
-    image: vfarcic/silly-demo:1.0.2
+    image: vfarcic/silly-demo:1.0.8
     port: 8080
+    host: silly-demo.54.159.206.46.nip.io
