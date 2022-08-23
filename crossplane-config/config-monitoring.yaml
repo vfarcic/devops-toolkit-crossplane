@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-monitoring
 spec:
-  package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40
+  package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.41

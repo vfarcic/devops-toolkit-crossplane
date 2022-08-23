@@ -4,7 +4,7 @@ metadata:
   name: dot-application
   annotations:
     meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
-    meta.crossplane.io/source: https://github.com/vfarcic/devops-toolkit-crossplane/tree/master/packages/app
+    meta.crossplane.io/source: github.com/vfarcic/devops-toolkit-crossplane/tree/master/packages/app
     meta.crossplane.io/license: MIT
     meta.crossplane.io/description: Application types (frontend, backend, backend with a database, etc.)
     meta.crossplane.io/readme: A Configuration package that defines application types like frontend, backend, backend with a database, etc.
