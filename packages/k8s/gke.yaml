@@ -96,28 +96,6 @@ spec:
     - type: MatchString
       fieldPath: status.atProvider.status
       matchString: RUNNING
-  - name: gcp-p
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
-      spec:
-        forProvider:
-          manifest:
-            apiVersion: pkg.crossplane.io/v1
-            kind: Provider
-            metadata:
-              name: crossplane-provider-gcp
-            spec:
-              package: crossplane/provider-gcp:v0.21.0
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gcp-p'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -463,7 +441,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.2
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.3
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -471,5 +449,27 @@ spec:
       - type: string
         string:
           fmt: '%s-config-sql'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: gcp-p
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-gcp
+            spec:
+              package: crossplane/provider-gcp:v0.21.0
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcp-p'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name

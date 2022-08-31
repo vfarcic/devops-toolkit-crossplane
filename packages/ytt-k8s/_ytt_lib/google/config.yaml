@@ -102,25 +102,3 @@ spec:
     - type: MatchString
       fieldPath: status.atProvider.status
       matchString: RUNNING
-  - name: gcp-p
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
-      spec:
-        forProvider:
-          manifest:
-            apiVersion: pkg.crossplane.io/v1
-            kind: Provider
-            metadata:
-              name: crossplane-provider-gcp
-            spec:
-              package: crossplane/provider-gcp:v0.21.0
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-gcp-p'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name

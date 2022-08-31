@@ -1,2 +1,8 @@
 aws:
   version: "1.22"
+provider:
+  name: aws
+  version: v0.24.1
+  config:
+    apiVersion: aws.crossplane.io/v1beta1
+    secretName: aws-creds

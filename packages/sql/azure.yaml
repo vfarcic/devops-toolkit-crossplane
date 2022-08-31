@@ -46,9 +46,17 @@ spec:
             key: password
           publicNetworkAccessEnabled: true
           sslMinimalTlsVersionEnforced: TLS1_2
+        writeConnectionSecretToRef:
+          namespace: crossplane-system
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: metadata.uid
+      toFieldPath: spec.writeConnectionSecretToRef.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-sql"
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.version
     - fromFieldPath: spec.parameters.size
@@ -67,3 +75,8 @@ spec:
       - type: string
         string:
           fmt: '%s-creds'
+    connectionDetails:
+    - fromConnectionSecretKey: username
+    - fromConnectionSecretKey: password
+    - fromConnectionSecretKey: endpoint
+    - fromConnectionSecretKey: port

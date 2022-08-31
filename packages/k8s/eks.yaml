@@ -448,55 +448,6 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-  - name: aws-p
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
-      spec:
-        forProvider:
-          manifest:
-            apiVersion: pkg.crossplane.io/v1
-            kind: Provider
-            metadata:
-              name: crossplane-provider-aws
-            spec:
-              package: crossplane/provider-aws:v0.24.1
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-aws-p'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
-  - name: aws-pc
-    base:
-      apiVersion: kubernetes.crossplane.io/v1alpha1
-      kind: Object
-      spec:
-        forProvider:
-          manifest:
-            apiVersion: aws.crossplane.io/v1beta1
-            kind: ProviderConfig
-            metadata:
-              name: default
-            spec:
-              credentials:
-                source: Secret
-                secretRef:
-                  namespace: crossplane-system
-                  name: aws-creds
-                  key: creds
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-aws-pc'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -828,7 +779,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.2
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.3
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -836,5 +787,54 @@ spec:
       - type: string
         string:
           fmt: '%s-config-sql'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: aws-p
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-aws
+            spec:
+              package: crossplane/provider-aws:v0.24.1
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-aws-p'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: aws-pc
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: aws.crossplane.io/v1beta1
+            kind: ProviderConfig
+            metadata:
+              name: default
+            spec:
+              credentials:
+                source: Secret
+                secretRef:
+                  namespace: crossplane-system
+                  name: aws-creds
+                  key: creds
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-aws-pc'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
