@@ -11,4 +11,4 @@ metadata:
 spec:
   dependsOn:
   - provider: crossplane/provider-kubernetes
-    version: ">=v0.3.0"
+    version: ">=v0.4.0"

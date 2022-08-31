@@ -301,7 +301,7 @@ spec:
             metadata:
               name: crossplane-provider-kubernetes
             spec:
-              package: crossplane/provider-kubernetes:v0.3.0
+              package: crossplane/provider-kubernetes:v0.4.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
@@ -371,7 +371,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6
+              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.8
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -393,7 +393,7 @@ spec:
             metadata:
               name: crossplane-monitoring
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40
+              package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.41
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -415,7 +415,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.2
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name

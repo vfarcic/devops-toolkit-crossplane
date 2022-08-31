@@ -14,4 +14,4 @@ spec:
     namespace: production
     image: vfarcic/silly-demo:1.0.8
     port: 8080
-    host: silly-demo.34.148.26.229.nip.io
+    host: silly-demo.34.139.13.104.nip.io
