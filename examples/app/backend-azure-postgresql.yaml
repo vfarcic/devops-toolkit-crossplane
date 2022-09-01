@@ -13,7 +13,7 @@ spec:
     namespace: production
     image: vfarcic/sql-demo:0.1.10
     port: 8080
-    host: silly-demo.20.81.12.26.nip.io
+    host: silly-demo.40.88.17.235.nip.io
 ---
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
@@ -26,7 +26,7 @@ spec:
       provider: azure
       db: postgresql
   parameters:
-    version: "13"
+    version: "11"
     size: small
     namespace: production
   writeConnectionSecretToRef:
