@@ -1,0 +1,270 @@
+{
+  "properties": {
+    "apiVersion": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "properties": {
+        "claimRef": {
+          "properties": {
+            "apiVersion": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "namespace",
+            "name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "compositionRef": {
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "compositionRevisionRef": {
+          "description": "Alpha: This field may be deprecated or changed without notice.",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "compositionSelector": {
+          "properties": {
+            "matchLabels": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "required": [
+            "matchLabels"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "compositionUpdatePolicy": {
+          "default": "Automatic",
+          "description": "Alpha: This field may be deprecated or changed without notice.",
+          "enum": [
+            "Automatic",
+            "Manual"
+          ],
+          "type": "string"
+        },
+        "id": {
+          "description": "ID of this Cluster that other objects can refer.",
+          "type": "string"
+        },
+        "parameters": {
+          "description": "Parameters used to customize the cluster",
+          "properties": {
+            "minNodeCount": {
+              "default": 1,
+              "description": "The minimum number of nodes.",
+              "type": "integer"
+            },
+            "nodeSize": {
+              "description": "The size of the nodes; small, medium, large.",
+              "type": "string"
+            },
+            "version": {
+              "description": "The Kubernetes version for the cluster.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "nodeSize"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "publishConnectionDetailsTo": {
+          "properties": {
+            "configRef": {
+              "default": {
+                "name": "default"
+              },
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "type": "object",
+              "additionalProperties": false
+            },
+            "metadata": {
+              "properties": {
+                "annotations": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "labels": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "type": "object",
+              "additionalProperties": false
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "resourceRefs": {
+          "items": {
+            "properties": {
+              "apiVersion": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "apiVersion",
+              "kind"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
+        },
+        "writeConnectionSecretToRef": {
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "namespace"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "parameters"
+      ],
+      "type": "object",
+      "additionalProperties": false
+    },
+    "status": {
+      "properties": {
+        "clusterName": {
+          "description": "The name of the cluster.",
+          "type": "string"
+        },
+        "conditions": {
+          "description": "Conditions of the resource.",
+          "items": {
+            "properties": {
+              "lastTransitionTime": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "lastTransitionTime",
+              "reason",
+              "status",
+              "type"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
+        },
+        "connectionDetails": {
+          "properties": {
+            "lastPublishedTime": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "additionalProperties": false
+        },
+        "controlPlaneStatus": {
+          "description": "The status of the control plane.",
+          "type": "string"
+        },
+        "nodePoolStatus": {
+          "description": "The status of the node pool.",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "spec"
+  ],
+  "type": "object"
+}
