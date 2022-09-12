@@ -7,7 +7,7 @@ metadata:
     meta.crossplane.io/source: github.com/vfarcic/devops-toolkit-crossplane/tree/master/packages/k8s
     meta.crossplane.io/license: MIT
     meta.crossplane.io/description: Fully operational Kubernetes clusters in AWS (EKS), Google Cloud Platform (GKE), Azure (AKS), and CIVO (CK)
-    meta.crossplane.io/readme: A Configuration package that defines a CompositeCluster and ClusterClaim types that can be used to create an provision Kubernetes fully operational clusters in AWS (EKS), Google Cloud Platform (GKE), Azure (AKS), and CIVO (CK)
+    meta.crossplane.io/readme: A Configuration package that defines a CompositeCluster and ClusterClaim types that can be used to create and provision Kubernetes fully operational clusters in AWS (EKS), Google Cloud Platform (GKE), Azure (AKS), and CIVO (CK)
 spec:
   dependsOn:
   # - provider: crossplane/provider-aws
@@ -21,4 +21,4 @@ spec:
   - provider: crossplane/provider-helm
     version: ">=v0.9.0"
   - provider: crossplane/provider-kubernetes
-    version: ">=v0.3.0"
+    version: ">=v0.4.0"

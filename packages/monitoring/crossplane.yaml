@@ -2,6 +2,12 @@ apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
   name: dot-monitoring
+  annotations:
+    meta.crossplane.io/maintainer: Viktor Farcic (@vfarcic)
+    meta.crossplane.io/source: github.com/vfarcic/devops-toolkit-crossplane/tree/master/packages/monitoring
+    meta.crossplane.io/license: MIT
+    meta.crossplane.io/description: Monitoring tools with Prometheus, Loki, and Grafana as the first supported combination.
+    meta.crossplane.io/readme: A Configuration package that defines monitoring tools.
 spec:
   crossplane:
     version: ">=v1.5"

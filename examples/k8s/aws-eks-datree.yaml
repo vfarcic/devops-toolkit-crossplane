@@ -1,0 +1,19 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team-eks
+spec:
+  id: a-team-eks
+  parameters:
+    # nodeSize: massive
+    nodeSize: medium
+    # minNodeCount: 10
+    minNodeCount: 3
+  writeConnectionSecretToRef:
+    name: a-team-eks
+  compositionSelector:
+    matchLabels:
+      # provider: alibaba
+      # cluster: ack
+      provider: aws
+      cluster: eks

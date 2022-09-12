@@ -5,6 +5,13 @@
 kubeconfig:
   secret: "%s-cluster"
   key: kubeconfig
+provider: 
+  name: none
+  version: v0.0.0
+  config:
+    enabled: true
+    apiVersion: none
+    secretName: none
 charts:
   nginxIngress:
     version: "4.2.0"
@@ -12,8 +19,8 @@ charts:
     version: "1.9.0"
 providers:
   kubernetes:
-    version: "v0.3.0"
-    package: crossplane/provider-kubernetes:v0.3.0
+    version: "v0.4.0"
+    package: crossplane/provider-kubernetes:v0.4.0
     controllerConfigRef:
       name: provider-kubernetes
   helm:
@@ -26,11 +33,11 @@ providers:
     package: crossplane/provider-sql:v0.5.0
 configurations:
   app:
-    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6"
+    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.8"
   monitoring:
-    package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40"
+    package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.41"
   sql:
-    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.1"
+    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.3"
 namespaces:
   prod:
     name: production

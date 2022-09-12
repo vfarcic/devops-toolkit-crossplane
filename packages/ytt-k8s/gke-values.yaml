@@ -1,5 +1,10 @@
 google:
   version: latest
+provider:
+  name: gcp
+  version: v0.21.0
+  config:
+    enabled: false
 identity:
   enabled: true
   type: GoogleApplicationCredentials

@@ -327,7 +327,7 @@ spec:
             metadata:
               name: crossplane-provider-kubernetes
             spec:
-              package: crossplane/provider-kubernetes:v0.3.0
+              package: crossplane/provider-kubernetes:v0.4.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
@@ -397,7 +397,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.6
+              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.8
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -419,7 +419,7 @@ spec:
             metadata:
               name: crossplane-monitoring
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.40
+              package: xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.41
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -441,7 +441,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.3
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -449,5 +449,27 @@ spec:
       - type: string
         string:
           fmt: '%s-config-sql'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+  - name: gcp-p
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: crossplane-provider-gcp
+            spec:
+              package: crossplane/provider-gcp:v0.21.0
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-gcp-p'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name

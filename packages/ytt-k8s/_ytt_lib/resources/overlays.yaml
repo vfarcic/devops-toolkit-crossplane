@@ -258,4 +258,54 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
 #@ end
-
+  - name: #@ data.values.provider.name + "-p"
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: pkg.crossplane.io/v1
+            kind: Provider
+            metadata:
+              name: #@ "crossplane-provider-" + data.values.provider.name
+            spec:
+              package: #@ "crossplane/provider-" + data.values.provider.name + ":" + data.values.provider.version
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: #@ '%s-' + data.values.provider.name + '-p'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+#@ if data.values.provider.config.enabled:
+  - name: #@ data.values.provider.name + "-pc"
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: #@ data.values.provider.config.apiVersion
+            kind: ProviderConfig
+            metadata:
+              name: default
+            spec:
+              credentials:
+                source: Secret
+                secretRef:
+                  namespace: crossplane-system
+                  name: #@ data.values.provider.config.secretName
+                  key: creds
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: #@ "%s-" + data.values.provider.name + "-pc"
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+#@ end

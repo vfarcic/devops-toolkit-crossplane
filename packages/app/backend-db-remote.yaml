@@ -62,6 +62,7 @@ spec:
                       valueFrom:
                         secretKeyRef:
                           key: port
+                          optional: true
                     - name: DB_USERNAME
                       valueFrom:
                         secretKeyRef:

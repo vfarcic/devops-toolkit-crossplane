@@ -8,3 +8,4 @@ kubeconfig*.yaml
 /tmp/*
 *.xpkg
 /vault-keys.json
+/aws-eks.yaml

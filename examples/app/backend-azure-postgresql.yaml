@@ -1,0 +1,33 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: silly-demo
+spec:
+  id: silly-demo
+  compositionSelector:
+    matchLabels:
+      type: backend-db
+      location: local
+  parameters:
+    namespace: production
+    image: vfarcic/sql-demo:0.1.10
+    port: 8080
+    host: silly-demo.40.88.17.235.nip.io
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQLClaim
+metadata:
+  name: silly-demo
+spec:
+  id: silly-demo
+  compositionSelector:
+    matchLabels:
+      provider: azure
+      db: postgresql
+  parameters:
+    version: "11"
+    size: small
+    namespace: production
+  writeConnectionSecretToRef:
+    name: silly-demo

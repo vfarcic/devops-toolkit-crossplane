@@ -1,0 +1,140 @@
+apiVersion: v1
+customRules:
+- identifier: CONNECTION_SECRET_REQUIRED
+  name: The name of the connection secret is required
+  defaultMessageOnFailure: The `spec.writeConnectionSecretToRef.name` is required
+  schema:
+    if:
+      properties:
+        kind:
+          enum:
+          - ClusterClaim
+          - SQLClaim
+    then:
+      properties:
+        spec:
+          properties:
+            writeConnectionSecretToRef:
+              required:
+              - name
+          required:
+          - writeConnectionSecretToRef
+- identifier: MATCH_LABELS_REQUIRED
+  name: Match labels are required
+  defaultMessageOnFailure: The `spec.compositionSelector.matchLabels` is required
+  schema:
+    if:
+      properties:
+        kind:
+          enum:
+          - ClusterClaim
+          - SQLClaim
+    then:
+      properties:
+        spec:
+          properties:
+            compositionSelector:
+              required:
+              - matchLabels
+          required:
+          - compositionSelector
+- identifier: CLUSTER_CLAIM_NODE_SIZE
+  name: Ensure the node size is correct
+  defaultMessageOnFailure: The `spec.parameters.nodeSize` must be `small`, `medium`, or `large`
+  schema:
+    if:
+      properties:
+        kind:
+          enum:
+          - ClusterClaim
+    then:
+      properties:
+        spec:
+          properties:
+            parameters:
+              properties:
+                nodeSize:
+                  enum:
+                  - small
+                  - medium
+                  - big
+- identifier: CLUSTER_CLAIM_MIN_NODE_COUNT
+  name: Ensure the minimum number of nodes is within the limits
+  defaultMessageOnFailure: The `spec.parameters.minNodeCount` can NOT be greater than 3
+  schema:
+    if:
+      properties:
+        kind:
+          enum:
+          - ClusterClaim
+    then:
+      properties:
+        spec:
+          properties:
+            parameters:
+              properties:
+                minNodeCount:
+                  maximum: 3
+- identifier: CLUSTER_CLAIM_ALLOWED_LABELS
+  name: Only a specific combination of matching labels is allowed
+  defaultMessageOnFailure: |
+    The `spec.compositionSelector.matchLabels` must be one of the following values:
+    - provider: azure
+      cluster: aks
+    - provider: civo
+      cluster: ck
+    - provider: digital-ocean
+      cluster: dok
+    - provider: aws
+      cluster: eks
+    - provider: google
+      cluster: gke
+  schema:
+    if:
+      properties:
+        kind:
+          enum:
+          - ClusterClaim
+    then:
+      properties:
+        spec:
+          properties:
+            compositionSelector:
+              properties:
+                matchLabels:
+                  enum:
+                  - provider: azure
+                    cluster: aks
+                  - provider: civo
+                    cluster: ck
+                  - provider: digital-ocean
+                    cluster: dok
+                  - provider: aws
+                    cluster: eks
+                  - provider: google
+                    cluster: gke
+policies:
+- name: crossplane
+  isDefault: true
+  rules:
+  - identifier: CONNECTION_SECRET_REQUIRED
+    messageOnFailure: The `spec.writeConnectionSecretToRef.name` is required
+  - identifier: MATCH_LABELS_REQUIRED
+    messageOnFailure: The `spec.compositionSelector.matchLabels` is required
+  - identifier: CLUSTER_CLAIM_NODE_SIZE
+    messageOnFailure: The `spec.parameters.nodeSize` must be `small`, `medium`, or `large`
+  - identifier: CLUSTER_CLAIM_MIN_NODE_COUNT
+    messageOnFailure: The `spec.parameters.minNodeCount` can NOT be greater than 3
+  - identifier: CLUSTER_CLAIM_ALLOWED_LABELS
+    messageOnFailure: |
+      The `spec.compositionSelector.matchLabels` must be one of the following values:
+      - provider: azure
+        cluster: aks
+      - provider: civo
+        cluster: ck
+      - provider: digital-ocean
+        cluster: dok
+      - provider: aws
+        cluster: eks
+      - provider: google
+        cluster: gke

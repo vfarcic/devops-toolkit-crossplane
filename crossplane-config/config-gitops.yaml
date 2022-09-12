@@ -5,4 +5,4 @@ kind: Configuration
 metadata:
   name: crossplane-gitops
 spec:
-  package: xpkg.upbound.io/devops-toolkit/dot-gitops:v0.2.11
+  package: xpkg.upbound.io/devops-toolkit/dot-gitops:v0.2.12
