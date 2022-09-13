@@ -17,15 +17,15 @@ spec:
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: GitOps
 metadata:
-  name: a-team-gitops-no-claim
+  name: a-team-gitops
   labels:
     cluster-owner: vfarcic
 spec:
-  id: a-team-gitops-no-claim
+  id: a-team-gitops
   compositionRef:
     name: gitops-argo-cd
   parameters:
     kubeConfig:
-      secretName: a-team-eks-no-claim-cluster
+      secretName: a-team-eks
       secretNamespace: crossplane-system
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
