@@ -26,6 +26,6 @@ spec:
     name: gitops-argo-cd
   parameters:
     kubeConfig:
-      secretName: a-team-eks
+      secretName: a-team-eks-no-claim
       secretNamespace: crossplane-system
     gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
