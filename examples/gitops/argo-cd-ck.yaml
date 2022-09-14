@@ -1,0 +1,16 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: GitOpsClaim
+metadata:
+  name: a-team-gitops
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-gitops
+  compositionSelector:
+    matchLabels:
+      provider: argo
+  parameters:
+    kubeConfig:
+      secretName: cluster-civo-a-team-ck
+      secretNamespace: crossplane-system
+    gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
