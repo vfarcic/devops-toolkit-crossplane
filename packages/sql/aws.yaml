@@ -152,7 +152,6 @@ spec:
       spec:
         forProvider:
           description: I am too lazy to write descriptions
-          groupName: devops-catalog
           region: us-east-1
           vpcIdSelector:
             matchControllerRef: true
@@ -165,6 +164,8 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.groupName
   - name: rdsinstance
     base:
       apiVersion: database.aws.crossplane.io/v1beta1

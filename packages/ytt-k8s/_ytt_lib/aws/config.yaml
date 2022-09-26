@@ -181,7 +181,6 @@ spec:
       spec:
         forProvider:
           description: Cluster communication with worker nodes
-          groupName: devops-catalog
           region: us-east-1
           vpcIdSelector:
             matchControllerRef: true
@@ -194,6 +193,8 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.groupName
     readinessChecks:
     - type: None
 #@ for subnet in data.values.aws.subnets:
