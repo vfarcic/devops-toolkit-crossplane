@@ -17,6 +17,8 @@ charts:
     version: "4.2.0"
   crossplane:
     version: "1.9.0"
+  schemahero:
+    version: "1.1.2"
 providers:
   kubernetes:
     version: "v0.4.0"
@@ -37,7 +39,7 @@ configurations:
   monitoring:
     package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.41"
   sql:
-    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.3"
+    package: "xpkg.upbound.io/devops-toolkit/dot-sql:v0.4.5"
 namespaces:
   prod:
     name: production
