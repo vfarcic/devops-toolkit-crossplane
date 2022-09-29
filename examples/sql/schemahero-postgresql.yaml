@@ -3,10 +3,14 @@ kind: Database
 metadata:
   name: my-db
 spec:
+  immediateDeploy: true
   connection:
     postgres:
       uri:
-        value: postgresql://masteruser:eqYcptaahCZ42U8qychVhKjgVDT@my-db.cn31sgaonaq0.us-east-1.rds.amazonaws.com:5432/my-db
+        valueFrom:
+          secretKeyRef:
+            name: my-db-uri
+            key: value
 
 ---
 
