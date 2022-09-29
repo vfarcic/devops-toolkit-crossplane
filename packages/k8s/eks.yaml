@@ -839,6 +839,26 @@ spec:
           fmt: '%s-aws-pc'
     - fromFieldPath: spec.id
       toFieldPath: spec.providerConfigRef.name
+  - name: schemahero-ns
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      spec:
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: schemahero-system
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-schemahero-ns'
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
   - name: schemahero-cr
     base:
       apiVersion: kubernetes.crossplane.io/v1alpha1

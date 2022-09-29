@@ -1,7 +1,7 @@
 ## Publish To Upbound
 
 ```bash
-export VERSION=v0.5.5
+export VERSION=v0.5.7
 
 # Replace `[...]` with the Upbound Cloud account
 export UP_ACCOUNT=[...]
