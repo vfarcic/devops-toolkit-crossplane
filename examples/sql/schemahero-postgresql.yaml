@@ -17,10 +17,10 @@ spec:
 apiVersion: schemas.schemahero.io/v1alpha4
 kind: Table
 metadata:
-  name: session
+  name: videos
 spec:
   database: my-db
-  name: session
+  name: videos
   schema:
     postgres:
       primaryKey:
@@ -30,11 +30,7 @@ spec:
         type: text
         constraints:
           notNull: true
-      - name: user_id
+      - name: title
         type: text
-        constraints:
-          notNull: true
-      - name: expire_at
-        type: timestamp without time zone
         constraints:
           notNull: true
