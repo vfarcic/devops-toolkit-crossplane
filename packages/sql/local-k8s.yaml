@@ -41,6 +41,8 @@ spec:
           set:
           - name: postgresqlPassword
             value: postgres
+          - name: global.persistence.enabled
+            value: false
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
