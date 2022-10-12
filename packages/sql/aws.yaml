@@ -210,7 +210,6 @@ spec:
     - fromConnectionSecretKey: password
     - fromConnectionSecretKey: endpoint
     - fromConnectionSecretKey: port
-  # TODO: Move to ytt
   - name: sql-config
     base:
       apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -230,7 +229,6 @@ spec:
       toFieldPath: spec.credentials.connectionSecretRef.namespace
     readinessChecks:
       - type: None
-  # TODO: Move to ytt
   - name: sql-db
     base:
       apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -244,57 +242,3 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:
       - type: None
-#   - name: kubernetes
-#     base:
-#       apiVersion: kubernetes.crossplane.io/v1alpha1
-#       kind: ProviderConfig
-#       spec:
-#         credentials:
-#           source: Secret
-#           secretRef:
-#             key: kubeconfig
-#     patches:
-#     - fromFieldPath: spec.id
-#       toFieldPath: metadata.name
-#     - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-#       toFieldPath: spec.credentials.secretRef.namespace
-#     - fromFieldPath: spec.id
-#       toFieldPath: spec.credentials.secretRef.name
-#       transforms:
-#       - type: string
-#         string:
-#           fmt: '%s-sql'
-#     readinessChecks:
-#     - type: None
-
-
-#   - name: ns-dev
-#     base:
-#       apiVersion: kubernetes.crossplane.io/v1alpha1
-#       kind: Object
-#       spec:
-#         forProvider:
-#           manifest:
-#             apiVersion: v1
-#             kind: Namespace
-#             metadata:
-#               name: dev
-#     patches:
-#     - fromFieldPath: spec.id
-#       toFieldPath: metadata.name
-#       transforms:
-#       - type: string
-#         string:
-#           fmt: '%s-ns-dev'
-#     - fromFieldPath: spec.id
-#       toFieldPath: spec.providerConfigRef.name
-
-# apiVersion: databases.schemahero.io/v1alpha4
-# kind: Database
-# metadata:
-#   name: my-db
-# spec:
-#   connection:
-#     postgres:
-#       uri:
-#         value: postgresql://masteruser:eqYcptaahCZ42U8qychVhKjgVDT@my-db.cn31sgaonaq0.us-east-1.rds.amazonaws.com:5432/my-db
