@@ -1,0 +1,17 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team-aks
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: ateamaks
+  compositionSelector:
+    matchLabels:
+      provider: azure
+      cluster: aks
+  parameters:
+    nodeSize: very-large
+    minNodeCount: 3
+  writeConnectionSecretToRef:
+    name: a-team-aks

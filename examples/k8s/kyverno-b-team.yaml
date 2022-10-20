@@ -1,0 +1,24 @@
+---
+
+apiVersion: kyverno.io/v1
+kind: Policy
+metadata:
+  name: cluster
+spec:
+  validationFailureAction: enforce
+  background: true
+  rules:
+  - name: node-size
+    match:
+      any:
+      - resources:
+          kinds:
+          - ClusterClaim
+    validate:
+      message: "`spec.parameters.nodeSize` in this `Namespace` must be `small`."
+      deny:
+        conditions:
+        - key: "{{ request.object.spec.parameters.nodeSize }}"
+          operator: NotIn
+          value:
+          - small
