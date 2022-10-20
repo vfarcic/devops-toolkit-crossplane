@@ -219,6 +219,8 @@ spec:
       spec:
         credentials:
           source: PostgreSQLConnectionSecret
+          connectionSecretRef:
+            namespace: crossplane-system
         sslMode: require
     patches:
     - fromFieldPath: spec.id
