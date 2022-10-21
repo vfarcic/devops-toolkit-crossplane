@@ -3,7 +3,7 @@
 apiVersion: azure.upbound.io/v1beta1
 kind: ResourceGroup
 metadata:
-  name: vfarcic
+  name: my-db
 spec:
   forProvider:
     location: eastus
@@ -13,12 +13,12 @@ spec:
 apiVersion: dbforpostgresql.azure.upbound.io/v1beta1
 kind: Server
 metadata:
-  name: vfarcic
+  name: my-db
 spec:
   forProvider:
     location: eastus
     resourceGroupNameRef:
-      name: vfarcic
+      name: my-db
     storageMb: 5120
     autoGrowEnabled: true
     version: "11"
@@ -31,6 +31,3 @@ spec:
       key: password
     publicNetworkAccessEnabled: true
     sslMinimalTlsVersionEnforced: TLS1_2
-  writeConnectionSecretToRef:
-    namespace: crossplane-system
-    name: my-db-sql
