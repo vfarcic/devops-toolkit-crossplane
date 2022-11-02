@@ -1,0 +1,16 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: aws-creds
+  namespace: crossplane-system
+spec:
+  encryptedData:
+    creds: AgB7uMjchZ8Ww32NetDKqCdZT6NLKgczBtxXMFgOUN1tiOYf/GjHiePahilzqfjHjTBEDgiMOH/38ZoFSxE0qddivXbZV/cDMWbenH7naf5FT8JkCrom3P+ivkpJ2l+KldJ0Zj/DOFv6CPnICtIUQLL6xnXrpU86fBetou2lj06ze7FXbYF7atU3F+N+TZQ4Dw4kls5/aopat6MzdjY4JIa7OM5ZCL/QNs4pgUZF0fXFRiv89YXFkr7jB1OlFopRnGgPOqQYmPG90fWRTl2TbqgAXcl6BfCbWRdR6KxK8RBuR9u5FQ0OYfhPSLo+83egG4grthYCf9Z+uX/QqN0Q7M5XnF19ch8WPYlPMpNk67r40DihfuHoaEal8yjpRDi6n/MSp4GVd3ZzvqWU7qRtpIY3YFKBir2iasZYz+jEcMTlavneXk9rTloPyOAxnqFdQma82cULKDzqBnz0gzbPOMlRMhxrRu1eFKesJzNWDFxm904o88ek+tkt3LCVuusrAh1J2b8B5FqlhyMbnBrERgGDFwtJgLFLZ+lGnuRWiLcLvQNjJ/kZT1AELp25Y1B4CBwbmFJJswEmrYd3pyJ+siMsNHZNwmPe/IZyI/7LnLko22CdV3mrB7TYBq9mR9ev9Vc/TStAY++TmY6YfA8gOe7JZZBYnTN6B1r3x1z+rto07WoALVtkOb3j3PAskLAjWXvXSXrPhPAa9nPSlIBaqBeQNT0ehcW0N2LTVzhK+qPjaG1XwCfIUOgwG+saEJbPQnVG2vSRro+TkVkwOV5EQYBu41k5vj5DPmsVgt/b37vm05ebLLqQVu+m+z9KZL7padoCJf+Hdgv1UaCTobaMtKbeRDnvIg==
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: aws-creds
+      namespace: crossplane-system
+
