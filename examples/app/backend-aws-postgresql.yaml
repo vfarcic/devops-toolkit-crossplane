@@ -1,4 +1,5 @@
 ---
+
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: AppClaim
 metadata:
@@ -14,7 +15,9 @@ spec:
     image: vfarcic/sql-demo:0.1.10
     port: 8080
     host: silly-demo.54.159.206.46.nip.io
+
 ---
+
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: SQLClaim
 metadata:

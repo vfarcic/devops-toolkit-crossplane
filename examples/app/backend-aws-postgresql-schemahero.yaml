@@ -1,0 +1,86 @@
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: silly-demo
+spec:
+  id: silly-demo
+  compositionSelector:
+    matchLabels:
+      type: backend-db
+      location: local
+  parameters:
+    namespace: a-team
+    image: vfarcic/silly-demo:1.0.13
+    port: 8080
+    host: silly-demo.127.0.0.1.nip.io
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: SQLClaim
+metadata:
+  name: silly-demo
+spec:
+  id: silly-demo
+  compositionSelector:
+    matchLabels:
+      provider: aws
+      db: postgresql
+  parameters:
+    version: "13.4"
+    size: small
+    namespace: a-team
+  writeConnectionSecretToRef:
+    name: silly-demo
+
+---
+
+apiVersion: databases.schemahero.io/v1alpha4
+kind: Database
+metadata:
+  name: silly-demo
+spec:
+  immediateDeploy: true
+  connection:
+    postgres:
+      host:
+        valueFrom:
+          secretKeyRef:
+            name: silly-demo
+            key: endpoint
+      user:
+        value: masteruser
+      password:
+        valueFrom:
+          secretKeyRef:
+            name: silly-demo
+            key: password
+      port:
+        value: "5432"
+      dbname:
+        value: silly-demo
+
+---
+
+apiVersion: schemas.schemahero.io/v1alpha4
+kind: Table
+metadata:
+  name: videos
+spec:
+  database: silly-demo
+  name: videos
+  schema:
+    postgres:
+      primaryKey:
+      - id
+      columns:
+      - name: id
+        type: text
+        constraints:
+          notNull: true
+      - name: title
+        type: text
+        constraints:
+          notNull: true
