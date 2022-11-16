@@ -1,0 +1,16 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: civo-creds
+  namespace: crossplane-system
+spec:
+  encryptedData:
+    credentials: AgBZUC9a9RVZLYaooA9qiNiRRth1BrYAk5I2/l8ZVYz+qCfNVR0TOTqEWixz8ew+ewgXYsCZnG6vSHw0MDoPIUWDGuZ+n/PodMuIF9PLGqrRtj4Ayla+Ow9rEgxBmHImYhiQq+534ppJJB0nCCZMZRPuIY7xjtrSrhjoE9QsyNM5miruxmLdLqIzBKZzjEtqly9k3rGgIlN05GNZBRB/KMpvonIOnHg6wz5ezrydO8HJu0MsKqBsNzHVOxy19j6Ja9III/DBIbf0Dc25f446fywPWe4miBTMrHnBJI5GS32AKbWFNlyF4Hxcr3/gU+VstrxygGRvuZjqKU5NiRuNeXL5jatLWu2QEmpktTzrc9YsLTxD5gJOP9FRCX2Achr4d/9lnlZSR3YaUSaI89uUtKv77n1U/gT65uO03MJxcCQ+aYtS38/IAawkubNkvXRQquoMJ9fVde6wykc7xpOiBBqWU4xrJOSkToQHWZaijbk9WtO19Yg5AM/M3KziqX9ToUU8ux+muzUGjKUFhIJ5U9O7ZNx3Qju4k2EL5mnWqrhEKzjN2fTH38Sspv0tX6EtuVzHtFR8IlYZczI9BMD7F0znUgVookUkNxzJEhxqpHfSulYZWYvelVyDZkQezjfCKnBpl/JbUzaMuDxnEgo0Vt9XYVdAbyEvddGebOoi1LeGr4jzDDZImahKzlwk6iJRSjfs/fZL54EGmeZ7DkayySIvQ/wg76xLpg8chxHTLUaWQias+61F/fkT/EDczObpg/4Tew==
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: civo-creds
+      namespace: crossplane-system
+
