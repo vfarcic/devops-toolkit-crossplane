@@ -1,0 +1,31 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: CompositeCluster
+metadata:
+  name: a-team-eks
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-eks
+  compositionRef:
+    name: cluster-aws
+  parameters:
+    nodeSize: medium
+    minNodeCount: 3
+
+---
+
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: GitOps
+metadata:
+  name: a-team-gitops
+  labels:
+    cluster-owner: vfarcic
+spec:
+  id: a-team-gitops
+  compositionRef:
+    name: gitops-argo-cd
+  parameters:
+    kubeConfig:
+      secretName: a-team-eks-cluster
+      secretNamespace: crossplane-system
+    gitOpsRepo: https://github.com/vfarcic/devops-toolkit-crossplane.git
