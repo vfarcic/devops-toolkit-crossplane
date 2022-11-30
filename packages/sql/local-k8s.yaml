@@ -37,12 +37,16 @@ spec:
           chart:
             name: postgresql
             repository: https://charts.bitnami.com/bitnami
-            version: "10.16.2"
+            version: "12.1.2"
           set:
-          - name: postgresqlPassword
+          - name: auth.postgresPassword
             value: postgres
           - name: global.persistence.enabled
-            value: false
+            value: "false"
+          - name: initdb.scripts.00_init_script.sh
+            value: |
+              export PGPASSWORD=$POSTGRES_PASSWORD
+              psql -U postgres -c 'CREATE DATABASE "cncf-demo";'
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -67,3 +71,41 @@ spec:
     - type: FromValue
       name: port
       value: "5432"
+  # - name: sql-config
+  #   base:
+  #     apiVersion: postgresql.sql.crossplane.io/v1alpha1
+  #     kind: ProviderConfig
+  #     metadata:
+  #       name: default
+  #     spec:
+  #       credentials:
+  #         source: PostgreSQLConnectionSecret
+  #         connectionSecretRef:
+  #           namespace: crossplane-system
+  #       sslMode: require
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.credentials.connectionSecretRef.name
+  #     transforms:
+  #       - type: string
+  #         string:
+  #           fmt: "%s-postgresql"
+  #   - fromFieldPath: spec.claimRef.namespace
+  #     toFieldPath: spec.credentials.connectionSecretRef.namespace
+  #   readinessChecks:
+  #     - type: None
+  # - name: sql-db
+  #   base:
+  #     apiVersion: postgresql.sql.crossplane.io/v1alpha1
+  #     kind: Database
+  #     spec:
+  #       forProvider: {}
+  #   patches:
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: metadata.name
+  #   - fromFieldPath: spec.id
+  #     toFieldPath: spec.providerConfigRef.name
+  #   readinessChecks:
+  #     - type: None
