@@ -43,7 +43,7 @@ spec:
             value: postgres
           - name: global.persistence.enabled
             value: "false"
-          - name: initdb.scripts.00_init_script.sh
+          - name: initdb.scripts.00_init_script\.sh
             value: |
               export PGPASSWORD=$POSTGRES_PASSWORD
               psql -U postgres -c 'CREATE DATABASE "cncf-demo";'
