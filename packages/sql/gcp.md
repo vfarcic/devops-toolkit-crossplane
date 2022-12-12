@@ -100,7 +100,7 @@ kubectl create namespace infra
 
 ```bash
 kubectl --namespace infra apply \
-    --filename ../../examples/sql/gcp.yaml
+    --filename ../../examples/sql/gcp-official.yaml
 
 kubectl --namespace infra get sqlclaims
 ```
@@ -109,7 +109,7 @@ kubectl --namespace infra get sqlclaims
 
 ```bash
 kubectl --namespace infra delete \
-    --filename ../../examples/sql/gcp.yaml
+    --filename ../../examples/sql/gcp-official.yaml
 
 gcloud projects delete $PROJECT_ID
 ```
