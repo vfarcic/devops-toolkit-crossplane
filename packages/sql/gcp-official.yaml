@@ -68,27 +68,6 @@ spec:
     - type: FromValue
       name: port
       value: "3306"
-
-
-
-  - name: user
-    base:
-      apiVersion: sql.gcp.upbound.io/v1beta1
-      kind: User
-      spec:
-        forProvider:
-          passwordSecretRef:
-            name: psql-password
-            namespace: upbound-system
-            key: password
-            instanceRef:
-              name: mydb
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-
-
-
   - name: sql-config
     base:
       apiVersion: mysql.sql.crossplane.io/v1alpha1
