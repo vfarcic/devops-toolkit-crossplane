@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: google-mysql
+  name: google-mysql-official
   labels:
-    provider: google
+    provider: google-official
     db: mysql
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
@@ -17,23 +17,23 @@ spec:
   resources:
   - name: sql
     base:
-      apiVersion: database.gcp.crossplane.io/v1beta1
+      apiVersion: sql.gcp.upbound.io/v1beta1
       kind: DatabaseInstance
       spec:
         forProvider:
           region: us-east1
-          instanceType: CLOUD_SQL_INSTANCE
           settings:
-            availabilityType: REGIONAL
+          - availabilityType: REGIONAL
             tier: db-custom-1-3840
             backupConfiguration:
-              enabled: true
+            - enabled: true
               binaryLogEnabled: true
             ipConfiguration:
-              ipv4Enabled: true
+            - ipv4Enabled: true
               authorizedNetworks:
               - name: all
                 value: 0.0.0.0/0
+          deletionProtection: false
         writeConnectionSecretToRef:
           namespace: crossplane-system
     patches:
@@ -55,10 +55,8 @@ spec:
           large: db-custom-64-245760
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-sql"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.state
@@ -106,9 +104,9 @@ spec:
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: google-postgresql
+  name: google-postgresql-official
   labels:
-    provider: google
+    provider: google-official
     db: postgresql
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
@@ -122,23 +120,27 @@ spec:
   resources:
   - name: sql
     base:
-      apiVersion: database.gcp.crossplane.io/v1beta1
-      kind: CloudSQLInstance
+      apiVersion: sql.gcp.upbound.io/v1beta1
+      kind: DatabaseInstance
       spec:
         forProvider:
           region: us-east1
-          instanceType: CLOUD_SQL_INSTANCE
+          rootPasswordSecretRef:
+            name: postgresql-password
+            namespace: crossplane-system
+            key: password
           settings:
-            availabilityType: REGIONAL
+          - availabilityType: REGIONAL
             tier: db-custom-1-3840
             backupConfiguration:
-              enabled: true
+            - enabled: true
               binaryLogEnabled: false
             ipConfiguration:
-              ipv4Enabled: true
+            - ipv4Enabled: true
               authorizedNetworks:
               - name: all
                 value: 0.0.0.0/0
+          deletionProtection: false
         writeConnectionSecretToRef:
           namespace: crossplane-system
     patches:
@@ -160,18 +162,19 @@ spec:
           large: db-custom-64-245760
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: "%s-sql"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.state
       matchString: RUNNABLE
     connectionDetails:
-    - fromConnectionSecretKey: username
+    - type: FromValue
+      name: username
+      value: postgres
     - fromConnectionSecretKey: password
-    - fromConnectionSecretKey: endpoint
+    - fromConnectionSecretKey: publicIP
+      name: endpoint
     - type: FromValue
       name: port
       value: "5432"
