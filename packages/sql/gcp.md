@@ -111,5 +111,5 @@ kubectl --namespace infra get sqlclaims
 kubectl --namespace infra delete \
     --filename ../../examples/sql/gcp.yaml
 
-gcloud projects create $PROJECT_ID
+gcloud projects delete $PROJECT_ID
 ```
