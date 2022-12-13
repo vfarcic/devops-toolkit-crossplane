@@ -60,8 +60,6 @@ spec:
           large: db-custom-64-245760
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
-    # - fromFieldPath: spec.claimRef.namespace
-    #   toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.rootPasswordSecretRef.name
       transforms:
@@ -74,16 +72,6 @@ spec:
     - type: MatchString
       fieldPath: status.atProvider.state
       matchString: RUNNABLE
-    # connectionDetails:
-    # - type: FromValue
-    #   name: username
-    #   value: postgres
-    # - fromConnectionSecretKey: password
-    # - fromConnectionSecretKey: publicIP
-    #   name: endpoint
-    # - type: FromValue
-    #   name: port
-    #   value: "5432"
   - name: user
     base:
       apiVersion: sql.gcp.upbound.io/v1beta1
