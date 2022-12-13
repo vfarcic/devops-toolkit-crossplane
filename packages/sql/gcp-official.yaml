@@ -1,104 +1,3 @@
-apiVersion: apiextensions.crossplane.io/v1
-kind: Composition
-metadata:
-  name: google-mysql-official
-  labels:
-    provider: google-official
-    db: mysql
-spec:
-  writeConnectionSecretsToNamespace: crossplane-system
-  compositeTypeRef:
-    apiVersion: devopstoolkitseries.com/v1alpha1
-    kind: SQL
-  patchSets:
-  - name: metadata
-    patches:
-    - fromFieldPath: metadata.labels
-  resources:
-  - name: sql
-    base:
-      apiVersion: sql.gcp.upbound.io/v1beta1
-      kind: DatabaseInstance
-      spec:
-        forProvider:
-          region: us-east1
-          settings:
-          - availabilityType: REGIONAL
-            tier: db-custom-1-3840
-            backupConfiguration:
-            - enabled: true
-              binaryLogEnabled: true
-            ipConfiguration:
-            - ipv4Enabled: true
-              authorizedNetworks:
-              - name: all
-                value: 0.0.0.0/0
-          deletionProtection: false
-        writeConnectionSecretToRef:
-          namespace: crossplane-system
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.parameters.version
-      toFieldPath: spec.forProvider.databaseVersion
-      transforms:
-      - type: string
-        string:
-          fmt: MYSQL_%s
-    - fromFieldPath: spec.parameters.size
-      toFieldPath: spec.settings.tier
-      transforms:
-      - type: map
-        map:
-          small: db-custom-1-3840
-          medium: db-custom-16-61440
-          large: db-custom-64-245760
-    - fromFieldPath: spec.id
-      toFieldPath: spec.writeConnectionSecretToRef.name
-    - fromFieldPath: spec.claimRef.namespace
-      toFieldPath: spec.writeConnectionSecretToRef.namespace
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.state
-      matchString: RUNNABLE
-    connectionDetails:
-    - fromConnectionSecretKey: username
-    - fromConnectionSecretKey: password
-    - fromConnectionSecretKey: endpoint
-    - type: FromValue
-      name: port
-      value: "3306"
-  - name: sql-config
-    base:
-      apiVersion: mysql.sql.crossplane.io/v1alpha1
-      kind: ProviderConfig
-      spec:
-        credentials:
-          source: MySQLConnectionSecret
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.name
-      toFieldPath: spec.credentials.connectionSecretRef.name
-    - fromFieldPath: spec.claimRef.namespace
-      toFieldPath: spec.credentials.connectionSecretRef.namespace
-    readinessChecks:
-      - type: None
-  - name: sql-db
-    base:
-      apiVersion: mysql.sql.crossplane.io/v1alpha1
-      kind: Database
-      metadata:
-        name: dot
-      spec: {}
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
-    readinessChecks:
-      - type: None
-
 ---
 
 apiVersion: apiextensions.crossplane.io/v1
@@ -126,7 +25,6 @@ spec:
         forProvider:
           region: us-east1
           rootPasswordSecretRef:
-            name: postgresql-password
             namespace: crossplane-system
             key: password
           settings:
@@ -162,22 +60,67 @@ spec:
           large: db-custom-64-245760
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
+    # - fromFieldPath: spec.claimRef.namespace
+    #   toFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.rootPasswordSecretRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-password"
     - fromFieldPath: spec.claimRef.namespace
-      toFieldPath: spec.writeConnectionSecretToRef.namespace
+      toFieldPath: spec.forProvider.rootPasswordSecretRef.namespace
     readinessChecks:
     - type: MatchString
       fieldPath: status.atProvider.state
       matchString: RUNNABLE
-    connectionDetails:
-    - type: FromValue
-      name: username
-      value: postgres
-    - fromConnectionSecretKey: password
-    - fromConnectionSecretKey: publicIP
-      name: endpoint
-    - type: FromValue
-      name: port
-      value: "5432"
+    # connectionDetails:
+    # - type: FromValue
+    #   name: username
+    #   value: postgres
+    # - fromConnectionSecretKey: password
+    # - fromConnectionSecretKey: publicIP
+    #   name: endpoint
+    # - type: FromValue
+    #   name: port
+    #   value: "5432"
+  - name: user
+    base:
+      apiVersion: sql.gcp.upbound.io/v1beta1
+      kind: User
+      spec:
+        forProvider:
+          passwordSecretRef:
+            key: password
+          instanceSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.passwordSecretRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-password"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.forProvider.passwordSecretRef.namespace
+  - name: kubernetes
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: InjectedIdentity
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-sql"
+    readinessChecks:
+      - type: None
   - name: sql-config
     base:
       apiVersion: postgresql.sql.crossplane.io/v1alpha1
@@ -212,3 +155,62 @@ spec:
       toFieldPath: spec.providerConfigRef.name
     readinessChecks:
       - type: None
+  - name: sql-secret
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      metadata:
+        name: foo
+      spec:
+        references:
+        - patchesFrom:
+            apiVersion: sql.gcp.upbound.io/v1beta1
+            kind: User
+            namespace: crossplane-system
+            fieldPath: metadata.name
+          toFieldPath: stringData.username
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            namespace: crossplane-system
+            fieldPath: data.password
+          toFieldPath: data.password
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            namespace: crossplane-system
+            fieldPath: data.publicIP
+          toFieldPath: data.endpoint
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              namespace: crossplane-system
+            data:
+              port: NTQzMg==
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.references[0].patchesFrom.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.references[1].patchesFrom.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-password"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.references[1].patchesFrom.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.references[2].patchesFrom.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-sql"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.forProvider.manifest.metadata.namespace

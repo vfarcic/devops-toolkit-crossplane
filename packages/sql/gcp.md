@@ -3,17 +3,6 @@
 ## Setup
 
 ```bash
-helm repo add crossplane-stable \
-    https://charts.crossplane.io/stable
-
-helm repo update
-
-helm upgrade --install \
-    crossplane crossplane-stable/crossplane \
-    --namespace crossplane-system \
-    --create-namespace \
-    --wait
-
 export PROJECT_ID=dot-$(date +%Y%m%d%H%M%S)
 
 gcloud projects create $PROJECT_ID
@@ -26,45 +15,43 @@ export SA_NAME=devops-toolkit
 
 export SA="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
-gcloud iam service-accounts \
-    create $SA_NAME \
-    --project $PROJECT_ID
+gcloud iam service-accounts create $SA_NAME --project $PROJECT_ID
 
 export ROLE=roles/admin
 
-gcloud projects add-iam-policy-binding \
-    --role $ROLE $PROJECT_ID \
+gcloud projects add-iam-policy-binding --role $ROLE $PROJECT_ID \
     --member serviceAccount:$SA
 
-gcloud iam service-accounts keys \
-    create gcp-creds.json \
-    --project $PROJECT_ID \
-    --iam-account $SA
+gcloud iam service-accounts keys create gcp-creds.json \
+    --project $PROJECT_ID --iam-account $SA
+
+helm repo add crossplane-stable \
+    https://charts.crossplane.io/stable
+
+helm repo update
+
+helm upgrade --install crossplane crossplane-stable/crossplane \
+    --namespace crossplane-system --create-namespace --wait
 
 kubectl --namespace crossplane-system \
     create secret generic gcp-creds \
     --from-file creds=./gcp-creds.json
 
-kubectl --namespace crossplane-system apply \
-    --filename ../../examples/sql/postgresql-password.yaml
-
 kubectl apply \
     --filename ../../crossplane-config/provider-kubernetes-incluster.yaml
-    
+
 kubectl apply \
     --filename ../../crossplane-config/provider-gcp-official.yaml
 
-# kubectl apply \
-#     --filename ../../crossplane-config/provider-gcp.yaml
-
 kubectl apply \
     --filename ../../crossplane-config/config-sql.yaml
+
+kubectl create namespace infra
 
 kubectl get pkgrev
 
 # Wait until all the packages are healthy
 
-# TODO: Uppdate DOC
 echo "apiVersion: gcp.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
@@ -78,22 +65,6 @@ spec:
       name: gcp-creds
       key: creds" \
     | kubectl apply --filename -
-
-# echo "apiVersion: gcp.crossplane.io/v1beta1
-# kind: ProviderConfig
-# metadata:
-#   name: default
-# spec:
-#   projectID: $PROJECT_ID
-#   credentials:
-#     source: Secret
-#     secretRef:
-#       namespace: crossplane-system
-#       name: gcp-creds
-#       key: creds" \
-#     | kubectl apply --filename -
-
-kubectl create namespace infra
 ```
 
 ## Create a PostgreSQL Instance
