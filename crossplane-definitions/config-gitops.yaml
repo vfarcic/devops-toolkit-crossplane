@@ -1,0 +1,8 @@
+---
+
+apiVersion: pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: crossplane-gitops
+spec:
+  package: xpkg.upbound.io/devops-toolkit/dot-gitops:v0.2.13
