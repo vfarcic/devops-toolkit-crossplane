@@ -10,4 +10,4 @@ spec:
     name: cluster-civo
   parameters:
     nodeSize: small
-    minNodeCount: 1
+    minNodeCount: 3
