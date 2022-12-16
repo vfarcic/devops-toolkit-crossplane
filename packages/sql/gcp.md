@@ -82,5 +82,9 @@ kubectl --namespace infra get sqlclaims
 kubectl --namespace infra delete \
     --filename ../../examples/sql/gcp-official.yaml
 
+kubectl get managed
+
+# Wait until all the resources are deleted
+
 gcloud projects delete $PROJECT_ID
 ```
