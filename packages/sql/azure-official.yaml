@@ -39,7 +39,7 @@ spec:
           storageMb: 5120
           autoGrowEnabled: true
           skuName: B_Gen5_2
-          sslEnforcementEnabled: true
+          sslEnforcementEnabled: false
           administratorLogin: postgres # sqladmin
           administratorLoginPasswordSecretRef:
             key: password
