@@ -5,7 +5,7 @@ kind: Secret
 metadata:
   name: my-db-password
 data:
-  password: cG9zdGdyZXM=
+  password: T1QrOXZQcDhMdXhoeFVQWVpLSk1kUG1YM04xTzBTd3YzWG5ZVjI0UFZzcz0=
 
 ---
 
@@ -17,11 +17,10 @@ spec:
   id: my-db
   compositionSelector:
     matchLabels:
-      provider: google-official
+      provider: azure-official
       db: postgresql
   parameters:
-    version: "13"
+    version: "11"
     size: small
   writeConnectionSecretToRef:
     name: my-db
-

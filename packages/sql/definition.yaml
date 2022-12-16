@@ -48,5 +48,4 @@ spec:
                 required:
                 - version
             required:
-            - id
             - parameters

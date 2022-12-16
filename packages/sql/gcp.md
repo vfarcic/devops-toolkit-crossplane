@@ -70,10 +70,14 @@ spec:
 ## Create a PostgreSQL Instance
 
 ```bash
+cat ../../examples/sql/gcp-official.yaml
+
 kubectl --namespace infra apply \
     --filename ../../examples/sql/gcp-official.yaml
 
 kubectl --namespace infra get sqlclaims
+
+kubectl get managed
 ```
 
 ## Destroy 
@@ -84,7 +88,7 @@ kubectl --namespace infra delete \
 
 kubectl get managed
 
-# Wait until all the resources are deleted
+# Wait until all the resources are deleted (ignore `database`)
 
 gcloud projects delete $PROJECT_ID
 ```

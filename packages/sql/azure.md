@@ -3,33 +3,13 @@
 ## Setup
 
 ```bash
+export SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+
 az ad sp create-for-rbac \
     --sdk-auth \
     --role Owner \
+    --scopes /subscriptions/$SUBSCRIPTION_ID \
     | tee azure-creds.json
-
-export AZURE_CLIENT_ID=$(\
-    cat azure-creds.json \
-    | grep clientId \
-    | cut -c 16-51)
-
-export AAD_GRAPH_API=00000003-0000-0000-c000-000000000000
-
-az ad app permission add \
-    --id "${AZURE_CLIENT_ID}" \
-    --api ${AAD_GRAPH_API} \
-    --api-permissions \
-    e1fe6dd8-ba31-4d61-89e7-88639da4683d=Scope \
-    06da0dbc-49e2-44d2-8312-53f166ab848a=Scope \
-    7ab1d382-f21e-4acd-a863-ba3e13f7da61=Role
-
-az ad app permission grant \
-    --id $AZURE_CLIENT_ID \
-    --api $AAD_GRAPH_API \
-    --expires never
-
-az ad app permission admin-consent \
-    --id "${AZURE_CLIENT_ID}"
 
 helm repo add crossplane-stable \
     https://charts.crossplane.io/stable
@@ -65,19 +45,33 @@ kubectl apply \
 ## Create a PostgreSQL Instance
 
 ```bash
-kubectl --namespace infra apply \
-    --filename ../../examples/sql/azure-official.yaml
+cat ../../examples/sql/azure-official.yaml
+
+export NAME_RAND=my-db-$(date +%Y%m%d%H%M%S)
+
+cat ../../examples/sql/azure-official.yaml \
+    | sed -e "s@my-db@$NAME_RAND@g" \
+    | kubectl --namespace infra apply --filename -
+
+# kubectl --namespace infra apply \
+#     --filename ../../examples/sql/azure-official.yaml
 
 kubectl --namespace infra get sqlclaims
+
+kubectl get managed
 ```
 
 ## Destroy 
 
 ```bash
-kubectl --namespace infra delete \
-    --filename ../../examples/sql/azure-official.yaml
+cat ../../examples/sql/azure-official.yaml \
+    | sed -e "s@my-db@$NAME_RAND@g" \
+    | kubectl --namespace infra delete --filename -
+
+# kubectl --namespace infra delete \
+#     --filename ../../examples/sql/azure-official.yaml
 
 kubectl get managed
 
-# Wait until all the resources are deleted
+# Wait until all the resources are deleted (ignore `database`)
 ```
