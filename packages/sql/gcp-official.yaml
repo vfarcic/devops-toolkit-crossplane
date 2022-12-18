@@ -148,7 +148,7 @@ spec:
       apiVersion: kubernetes.crossplane.io/v1alpha1
       kind: Object
       metadata:
-        name: foo
+        name: sql-secret
       spec:
         references:
         - patchesFrom:
