@@ -68,10 +68,6 @@ spec:
           fmt: "%s-password"
     - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.forProvider.rootPasswordSecretRef.namespace
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.state
-      matchString: RUNNABLE
   - name: user
     base:
       apiVersion: sql.gcp.upbound.io/v1beta1

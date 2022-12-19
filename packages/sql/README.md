@@ -11,7 +11,7 @@ export UP_TOKEN=[...]
 
 up login
 
-export VERSION=v0.6.17
+export VERSION=v0.6.18
 
 up xpkg build --name sql.xpkg
 
