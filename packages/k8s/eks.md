@@ -31,95 +31,45 @@ kubectl --namespace crossplane-system \
     create secret generic aws-creds \
     --from-file creds=./aws-creds.conf
 
-echo "
-apiVersion: pkg.crossplane.io/v1
-kind: Configuration
-metadata:
-  name: crossplane-k8s
-spec:
-  package: vfarcic/crossplane-k8s:v0.4.8
+kubectl apply \
+    --filename ../../crossplane-config/provider-kubernetes-incluster.yaml
 
----
+kubectl apply \
+    --filename ../../crossplane-config/provider-aws-official.yaml
 
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: crossplane-provider-aws
-spec:
-  package: crossplane/provider-aws:v0.24.1
-" | kubectl apply --filename -
+kubectl apply \
+    --filename ../../crossplane-config/config-k8s.yaml
+
+kubectl create namespace infra
 
 kubectl get pkgrev
 
 # Wait until all the packages are healthy
 
-echo "
-apiVersion: aws.crossplane.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
-spec:
-  credentials:
-    source: Secret
-    secretRef:
-      namespace: crossplane-system
-      name: aws-creds
-      key: creds
-" | kubectl apply --filename -
-
-kubectl create namespace a-team
+kubectl apply \
+  --filename ../../crossplane-config/provider-config-aws-official.yaml
 ```
 
-## Create a cluster
+## Create an EKS Cluster
 
 ```bash
-echo "
-apiVersion: devopstoolkitseries.com/v1alpha1
-kind: ClusterClaim
-metadata:
-  name: a-team-eks
-spec:
-  id: a-team-eks
-  compositionSelector:
-    matchLabels:
-      provider: aws
-      cluster: eks
-  parameters:
-    nodeSize: medium
-    minNodeCount: 3
-  writeConnectionSecretToRef:
-    name: a-team-eks
-" | kubectl --namespace a-team apply --filename -
+kubectl --namespace infra apply \
+    --filename ../../examples/k8s/aws-eks-official.yaml
+    
+kubectl --namespace infra get clusterclaims
 
 kubectl get managed
-
-kubectl --namespace a-team get clusterclaims
-
-# Wait until the cluster is ready
-```
-
-## Use the cluster
-
-```bash
-kubectl --namespace a-team \
-    get secret a-team-eks \
-    --output jsonpath="{.data.kubeconfig}" \
-    | base64 -d \
-    | tee kubeconfig.yaml
-
-# The credentials in `kubeconfig.yaml` are temporary for security reasons
-
-kubectl --kubeconfig kubeconfig.yaml \
-    get nodes
 ```
 
 ## Destroy 
 
 ```bash
-kubectl --namespace a-team \
-    delete clusterclaim a-team-eks
+kubectl --namespace infra delete \
+    --filename ../../examples/k8s/aws-eks-official.yaml
 
 kubectl get managed
 
-# Wait until all managed AWS resources are removed
+# Wait until all the resources are deleted (ignore `database`)
+
+gcloud projects delete $PROJECT_ID
 ```

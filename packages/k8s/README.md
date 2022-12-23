@@ -1,8 +1,6 @@
 ## Publish To Upbound
 
 ```bash
-export VERSION=v0.5.10
-
 # Replace `[...]` with the Upbound Cloud account
 export UP_ACCOUNT=[...]
 
@@ -12,6 +10,8 @@ export UP_TOKEN=[...]
 # Create `dot-kubernetes` repository
 
 up login
+
+export VERSION=v0.7.0
 
 up xpkg build --name k8s.xpkg
 
