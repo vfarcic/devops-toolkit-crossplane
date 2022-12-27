@@ -53,6 +53,7 @@ kubectl apply \
 ## Create an EKS Cluster
 
 ```bash
+# TODO: Continue
 kubectl --namespace infra apply \
     --filename ../../examples/k8s/aws-eks-official.yaml
     

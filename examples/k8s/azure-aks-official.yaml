@@ -1,0 +1,14 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: a-team-aks
+spec:
+  id: ateamaks
+  compositionSelector:
+    matchLabels:
+      provider: azure-official
+      cluster: aks
+  parameters:
+    nodeSize: small
+    minNodeCount: 3
+    version: 1.25.4
