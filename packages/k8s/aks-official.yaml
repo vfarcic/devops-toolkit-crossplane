@@ -66,9 +66,9 @@ spec:
       transforms:
       - type: map
         map:
-          small: Standard_D2_v2
-          medium: Standard_D4_v2
-          large: Standard_D16_v3
+          small: Standard_D1_v2
+          medium: Standard_D2_v2
+          large: Standard_D4_v2
     - type: ToCompositeFieldPath
       fromFieldPath: metadata.name
       toFieldPath: status.clusterName
