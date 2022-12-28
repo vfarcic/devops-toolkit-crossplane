@@ -25,8 +25,6 @@ spec:
           initialClusterVersion: latest
           initialNodeCount: 1
           removeDefaultNodePool: true
-          # releaseChannel:
-          #   - channel: STABLE
           management:
             - autoRepair: true
               autoUpgrade: true
@@ -39,7 +37,7 @@ spec:
       - type: string
         string:
           fmt: '%s-cluster'
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.initialClusterVersion
@@ -53,10 +51,6 @@ spec:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
       name: value
-    # readinessChecks:
-    # - type: MatchString
-    #   fieldPath: status.atProvider.status
-    #   matchString: RUNNING
   - name: nodepool
     base:
       apiVersion: container.gcp.upbound.io/v1beta1
@@ -99,10 +93,6 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.conditions[0].reason
       toFieldPath: status.nodePoolStatus
-    # readinessChecks:
-    # - type: MatchString
-    #   fieldPath: status.atProvider.status
-    #   matchString: RUNNING
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
