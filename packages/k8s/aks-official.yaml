@@ -53,6 +53,8 @@ spec:
       - type: string
         string:
           fmt: '%s-cluster'
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.defaultNodePool[0].name
     - fromFieldPath: spec.id
@@ -78,8 +80,6 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.conditions[0].reason
       toFieldPath: status.nodePoolStatus
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.writeConnectionSecretToRef.namespace
     connectionDetails:
     - fromConnectionSecretKey: kubeconfig
     - fromConnectionSecretKey: kubeconfig
