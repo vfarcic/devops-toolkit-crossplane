@@ -41,10 +41,6 @@ spec:
                     description: "Supported sizes: small, medium, large"
                     type: string
                     default: small
-                  namespace:
-                    description: "Used only for DBs running in Kubernetes clusters"
-                    type: string
-                    default: default
                 required:
                 - version
             required:
