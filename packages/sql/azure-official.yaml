@@ -52,8 +52,8 @@ spec:
       toFieldPath: metadata.name
     - fromFieldPath: spec.id
       toFieldPath: spec.writeConnectionSecretToRef.name
-    # - fromFieldPath: spec.claimRef.namespace
-    #   toFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.parameters.version
       toFieldPath: spec.forProvider.version
     - fromFieldPath: spec.parameters.size
