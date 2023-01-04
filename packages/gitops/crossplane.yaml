@@ -10,5 +10,5 @@ metadata:
     meta.crossplane.io/readme: A Configuration package that defines GitOps and GitOpsClaim types that can be used to provision Kubernetes clusters with fully operational GitOps tools Argo CD and Rancher Fleet
 spec:
   dependsOn:
-  - provider: crossplane/provider-helm
+  - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
     version: ">=v0.9"

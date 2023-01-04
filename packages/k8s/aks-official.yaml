@@ -96,7 +96,7 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
@@ -168,7 +168,7 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
@@ -325,7 +325,7 @@ spec:
             metadata:
               name: crossplane-provider-helm
             spec:
-              package: crossplane/provider-helm:v0.10.0
+              package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.12.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
@@ -415,7 +415,7 @@ spec:
             metadata:
               name: crossplane-sql
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.5.40
+              package: xpkg.upbound.io/devops-toolkit/dot-sql:v0.6.23
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name

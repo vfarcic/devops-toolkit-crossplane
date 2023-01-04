@@ -27,7 +27,7 @@ providers:
       name: provider-kubernetes
   helm:
     version: "v0.10.0"
-    package: crossplane/provider-helm:v0.10.0
+    package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.12.0
     controllerConfigRef:
       name: provider-kubernetes
   sql:
