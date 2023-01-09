@@ -11,7 +11,7 @@ export UP_TOKEN=[...]
 
 up login
 
-export VERSION=v0.8.10
+export VERSION=v0.8.11
 
 up xpkg build --name k8s.xpkg
 
