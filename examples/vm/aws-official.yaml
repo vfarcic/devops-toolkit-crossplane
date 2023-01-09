@@ -1,28 +1,23 @@
 ---
 
-apiVersion: ec2.aws.crossplane.io/v1alpha1
+apiVersion: ec2.aws.upbound.io/v1beta1
 kind: Instance
 metadata:
   name: my-vm
-  labels:
-    app: my-vm
 spec:
   forProvider:
-    imageId: ami-052efd3df9dad4825
+    ami: ami-052efd3df9dad4825
     region: us-east-1
     instanceType: t2.micro
-    subnetIdSelector:
-      matchLabels:
-        app: my-vm
+    subnetIdRef:
+      name: my-vm
 
 ---
 
-apiVersion: ec2.aws.crossplane.io/v1beta1
+apiVersion: ec2.aws.upbound.io/v1beta1
 kind: VPC
 metadata:
   name: my-vm
-  labels:
-    app: my-vm
 spec:
   forProvider:
     region: us-east-1
@@ -31,18 +26,14 @@ spec:
 
 ---
 
-apiVersion: ec2.aws.crossplane.io/v1beta1
+apiVersion: ec2.aws.upbound.io/v1beta1
 kind: Subnet
 metadata:
   name: my-vm
-  labels:
-    app: my-vm
 spec:
   forProvider:
     region: us-east-1
     availabilityZone: us-east-1a
     cidrBlock: 10.0.0.0/24
-    vpcIdSelector:
-      matchLabels:
-        app: my-vm
-    mapPublicIPOnLaunch: true
+    vpcIdRef:
+      name: my-vm
