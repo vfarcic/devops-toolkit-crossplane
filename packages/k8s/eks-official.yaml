@@ -11,9 +11,9 @@ spec:
     kind: CompositeCluster
   writeConnectionSecretsToNamespace: crossplane-system
   patchSets:
-  - name: metadata
-    patches:
-    - fromFieldPath: metadata.labels
+    - name: metadata
+      patches:
+        - fromFieldPath: metadata.labels
   resources:
   - name: ekscluster
     base:
@@ -22,47 +22,57 @@ spec:
       spec:
         forProvider:
           region: us-east-1
-          version: "1.23"
+          version: "1.24"
           roleArnSelector:
             matchControllerRef: true
-          resourcesVpcConfig:
-            endpointPrivateAccess: true
-            endpointPublicAccess: true
-            subnetIdSelector:
-              matchControllerRef: true
+          vpcConfig:
+            - endpointPrivateAccess: true
+              endpointPublicAccess: true
+              subnetIdSelector:
+                matchControllerRef: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.parameters.version
-      toFieldPath: spec.forProvider.version
-    - fromFieldPath: spec.id
-      toFieldPath: spec.writeConnectionSecretToRef.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-cluster'
-    - fromFieldPath: spec.claimRef.namespace
-      toFieldPath: spec.writeConnectionSecretToRef.namespace
-    - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-controlplane'
-    - type: ToCompositeFieldPath
-      fromFieldPath: metadata.name
-      toFieldPath: status.clusterName
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.status
-      toFieldPath: status.controlPlaneStatus
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - fromFieldPath: spec.parameters.version
+        toFieldPath: spec.forProvider.version
+      - fromFieldPath: spec.id
+        toFieldPath: spec.forProvider.roleArnSelector.matchLabels.role
+        transforms:
+          - type: string
+            string:
+              fmt: '%s-controlplane'
+      - type: ToCompositeFieldPath
+        fromFieldPath: metadata.name
+        toFieldPath: status.clusterName
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.atProvider.status
+        toFieldPath: status.controlPlaneStatus
     readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.status
-      matchString: ACTIVE
+      - type: MatchString
+        fieldPath: status.atProvider.status
+        matchString: ACTIVE
+  - name: clusterAuth
+    base:
+      apiVersion: eks.aws.upbound.io/v1beta1
+      kind: ClusterAuth
+      spec:
+        forProvider:
+          region: us-east-1
+          clusterNameSelector:
+            matchControllerRef: true
+    patches:
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - fromFieldPath: spec.id
+        toFieldPath: spec.writeConnectionSecretToRef.name
+        transforms:
+          - type: string
+            string:
+              fmt: '%s-cluster'
+      - fromFieldPath: spec.claimRef.namespace
+        toFieldPath: spec.writeConnectionSecretToRef.namespace
     connectionDetails:
-    - fromConnectionSecretKey: kubeconfig
-    - fromConnectionSecretKey: kubeconfig
-      name: value
+      - fromConnectionSecretKey: kubeconfig
   - name: eksnodegroup
     base:
       apiVersion: eks.aws.upbound.io/v1beta1
@@ -72,16 +82,16 @@ spec:
           region: us-east-1
           clusterNameSelector:
             matchControllerRef: true
-          nodeRoleSelector:
+          nodeRoleArnSelector:
             matchControllerRef: true
-          subnetSelector:
+          subnetIdSelector:
             matchControllerRef: true
           scalingConfig:
-            minSize: 1
-            maxSize: 10
-            desiredSize: 1
+            - minSize: 1
+              maxSize: 10
+              desiredSize: 1
           instanceTypes:
-          - t3.small
+            - t3.small
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -94,15 +104,15 @@ spec:
           medium: t3.medium
           large: t3.large
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.nodeRoleSelector.matchLabels.role
+      toFieldPath: spec.forProvider.nodeRoleArnSelector.matchLabels.role
       transforms:
       - type: string
         string:
           fmt: '%s-nodegroup'
     - fromFieldPath: spec.parameters.minNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.minSize
+      toFieldPath: spec.forProvider.scalingConfig[0].minSize
     - fromFieldPath: spec.parameters.minNodeCount
-      toFieldPath: spec.forProvider.scalingConfig.desiredSize
+      toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
     - type: ToCompositeFieldPath
       fromFieldPath: status.atProvider.status
       toFieldPath: status.nodePoolStatus
@@ -116,7 +126,7 @@ spec:
       kind: Role
       spec:
         forProvider:
-          assumeRolePolicyDocument: |
+          assumeRolePolicy: |
             {
               "Version": "2012-10-17",
               "Statement": [
@@ -152,7 +162,7 @@ spec:
       kind: Role
       spec:
         forProvider:
-          assumeRolePolicyDocument: |
+          assumeRolePolicy: |
             {
               "Version": "2012-10-17",
               "Statement": [
@@ -189,7 +199,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
     patches:
     - fromFieldPath: spec.id
@@ -199,7 +209,7 @@ spec:
         string:
           fmt: '%s-controlplane'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -211,7 +221,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSServicePolicy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
     patches:
     - fromFieldPath: spec.id
@@ -221,7 +231,7 @@ spec:
         string:
           fmt: '%s-service'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -233,7 +243,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
     patches:
     - fromFieldPath: spec.id
@@ -243,7 +253,7 @@ spec:
         string:
           fmt: '%s-worker'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -255,7 +265,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
     patches:
     - fromFieldPath: spec.id
@@ -265,7 +275,7 @@ spec:
         string:
           fmt: '%s-cni'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -277,7 +287,7 @@ spec:
       spec:
         forProvider:
           policyArn: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-          roleNameSelector:
+          roleSelector:
             matchControllerRef: true
     patches:
     - fromFieldPath: spec.id
@@ -287,7 +297,7 @@ spec:
         string:
           fmt: '%s-registry'
     - fromFieldPath: spec.id
-      toFieldPath: spec.forProvider.roleNameSelector.matchLabels.role
+      toFieldPath: spec.forProvider.roleSelector.matchLabels.role
       transforms:
       - type: string
         string:
@@ -314,12 +324,6 @@ spec:
           region: us-east-1
           vpcIdSelector:
             matchControllerRef: true
-          egress:
-          - fromPort: 0
-            toPort: 0
-            ipProtocol: "-1"
-            ipRanges:
-            - cidrIp: 0.0.0.0/0
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -327,6 +331,25 @@ spec:
       toFieldPath: spec.forProvider.groupName
     readinessChecks:
     - type: None
+  - name: securityGroupRule
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: I am too lazy to write descriptions
+          region: us-east-1
+          type: egress
+          fromPort: 0
+          toPort: 0
+          protocol: "-1"
+          cidrBlocks:
+            - 0.0.0.0/0
+          securityGroupIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
   - name: subnet-nodepool-1a
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
@@ -342,10 +365,9 @@ spec:
           cidrBlock: 10.0.0.0/24
           vpcIdSelector:
             matchControllerRef: true
-          mapPublicIPOnLaunch: true
+          mapPublicIpOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            "kubernetes.io/role/elb": "1"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -368,10 +390,9 @@ spec:
           cidrBlock: 10.0.1.0/24
           vpcIdSelector:
             matchControllerRef: true
-          mapPublicIPOnLaunch: true
+          mapPublicIpOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            "kubernetes.io/role/elb": "1"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -394,10 +415,9 @@ spec:
           cidrBlock: 10.0.2.0/24
           vpcIdSelector:
             matchControllerRef: true
-          mapPublicIPOnLaunch: true
+          mapPublicIpOnLaunch: true
           tags:
-          - key: kubernetes.io/role/elb
-            value: "1"
+            "kubernetes.io/role/elb": "1"
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
@@ -417,7 +437,7 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-  - name: routetable
+  - name: routeTable
     base:
       apiVersion: ec2.aws.upbound.io/v1beta1
       kind: RouteTable
@@ -426,29 +446,101 @@ spec:
           region: us-east-1
           vpcIdSelector:
             matchControllerRef: true
-          routes:
-          - destinationCidrBlock: 0.0.0.0/0
-            gatewayIdSelector:
-              matchControllerRef: true
-          associations:
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-east-1a
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-east-1b
-                access: public
-          - subnetIdSelector:
-              matchControllerRef: true
-              matchLabels:
-                zone: us-east-1c
-                access: public
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
+  - name: route
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          destinationCidrBlock: 0.0.0.0/0
+          gatewayIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: mainRouteTableAssociation
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: MainRouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: routeTableAssociation1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          subnetIdSelector:
+            matchControllerRef: true
+            matchLabels:
+              zone: us-east-1a
+              access: public
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-1a'
+  - name: routeTableAssociation1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          subnetIdSelector:
+            matchControllerRef: true
+            matchLabels:
+              zone: us-east-1b
+              access: public
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-1b'
+  - name: routeTableAssociation1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          subnetIdSelector:
+            matchControllerRef: true
+            matchLabels:
+              zone: us-east-1c
+              access: public
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-1c'
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -461,7 +553,7 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
@@ -471,35 +563,6 @@ spec:
           fmt: '%s-cluster'
     readinessChecks:
     - type: None
-  - name: ingress
-    base:
-      apiVersion: helm.crossplane.io/v1beta1
-      kind: Release
-      spec:
-        rollbackLimit: 3
-        forProvider:
-          namespace: ingress-nginx
-          chart:
-            name: ingress-nginx
-            repository: https://kubernetes.github.io/ingress-nginx
-            version: 4.2.0
-          values:
-            controller:
-              ingressClassResource:
-                default: true
-              annotations:
-                service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
-                service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
-                service.beta.kubernetes.io/aws-load-balancer-type: nlb
-    patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-      transforms:
-      - type: string
-        string:
-          fmt: '%s-ingress'
-    - fromFieldPath: spec.id
-      toFieldPath: spec.providerConfigRef.name
   - name: crossplane
     base:
       apiVersion: helm.crossplane.io/v1beta1
@@ -533,7 +596,7 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.claimRef.namespace
       toFieldPath: spec.credentials.secretRef.namespace
     - fromFieldPath: spec.id
       toFieldPath: spec.credentials.secretRef.name
@@ -666,7 +729,7 @@ spec:
             metadata:
               name: crossplane-provider-kubernetes
             spec:
-              package: crossplane/provider-kubernetes:v0.4.0
+              package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.6.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
@@ -690,7 +753,7 @@ spec:
             metadata:
               name: crossplane-provider-helm
             spec:
-              package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.12.0
+              package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.13.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:

@@ -1,0 +1,406 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: aws-postgresql-official
+  labels:
+    provider: aws-official
+    db: postgresql
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: devopstoolkitseries.com/v1alpha1
+    kind: SQL
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.labels
+  resources:
+  - name: vpc
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: VPC
+      spec:
+        forProvider:
+          region: us-east-1
+          cidrBlock: 10.0.0.0/16
+          enableDnsSupport: true
+          enableDnsHostnames: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: subnet-a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1a
+      spec:
+        forProvider:
+          region: us-east-1
+          availabilityZone: us-east-1a
+          cidrBlock: 10.0.0.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-a"
+  - name: subnet-b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1b
+      spec:
+        forProvider:
+          region: us-east-1
+          availabilityZone: us-east-1b
+          cidrBlock: 10.0.1.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-b"
+  - name: subnet-c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Subnet
+      metadata:
+        labels:
+          zone: us-east-1c
+      spec:
+        forProvider:
+          region: us-east-1
+          availabilityZone: us-east-1c
+          cidrBlock: 10.0.2.0/24
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+        - type: string
+          string:
+            fmt: "%s-c"
+  - name: subnetgroup
+    base:
+      apiVersion: rds.aws.upbound.io/v1beta1
+      kind: SubnetGroup
+      spec:
+        forProvider:
+          region: us-east-1
+          description: I'm too lazy to write a good description
+          subnetIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: gateway
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: InternetGateway
+      spec:
+        forProvider:
+          region: us-east-1
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: routeTable
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTable
+      spec:
+        forProvider:
+          region: us-east-1
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: route
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Route
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          destinationCidrBlock: 0.0.0.0/0
+          gatewayIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: mainRouteTableAssociation
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: MainRouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: routeTableAssociation1a
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          subnetIdSelector:
+            matchControllerRef: true
+            matchLabels:
+              zone: us-east-1a
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-1a'
+  - name: routeTableAssociation1b
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          subnetIdSelector:
+            matchControllerRef: true
+            matchLabels:
+              zone: us-east-1b
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-1b'
+  - name: routeTableAssociation1c
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: RouteTableAssociation
+      spec:
+        forProvider:
+          region: us-east-1
+          routeTableIdSelector:
+            matchControllerRef: true
+          subnetIdSelector:
+            matchControllerRef: true
+            matchLabels:
+              zone: us-east-1c
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: '%s-1c'
+  - name: securityGroup
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroup
+      spec:
+        forProvider:
+          description: I am too lazy to write descriptions
+          region: us-east-1
+          vpcIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: securityGroupRule
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: SecurityGroupRule
+      spec:
+        forProvider:
+          description: I am too lazy to write descriptions
+          region: us-east-1
+          type: ingress
+          fromPort: 5432
+          toPort: 5432
+          protocol: tcp
+          cidrBlocks:
+            - 0.0.0.0/0
+          securityGroupIdSelector:
+            matchControllerRef: true
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: rdsinstance
+    base:
+      apiVersion: rds.aws.upbound.io/v1beta1
+      kind: Instance
+      spec:
+        forProvider:
+          region: us-east-1
+          dbSubnetGroupNameSelector:
+            matchControllerRef: true
+          vpcSecurityGroupIdSelector:
+            matchControllerRef: true
+          instanceClass: db.m5.large
+          username: masteruser
+          engine: postgres
+          engineVersion: "14.1"
+          skipFinalSnapshot: true
+          publiclyAccessible: true
+          allocatedStorage: 200
+          passwordSecretRef:
+            namespace: crossplane-system
+            key: password
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    # - fromFieldPath: spec.id
+    #   toFieldPath: spec.writeConnectionSecretToRef.name
+    # - fromFieldPath: spec.claimRef.namespace
+    #   toFieldPath: spec.writeConnectionSecretToRef.namespace
+    - fromFieldPath: spec.parameters.size
+      toFieldPath: spec.forProvider.instanceClass
+      transforms:
+      - type: map
+        map:
+          small: db.m5.large
+          medium: db.m5.2xlarge
+          large: db.m5.8xlarge
+    - fromFieldPath: spec.parameters.version
+      toFieldPath: spec.forProvider.engineVersion
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.passwordSecretRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-password"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.forProvider.passwordSecretRef.namespace
+  - name: sql-config
+    base:
+      apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      metadata:
+        name: default
+      spec:
+        credentials:
+          source: PostgreSQLConnectionSecret
+          connectionSecretRef:
+            namespace: crossplane-system
+        sslMode: require
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.credentials.connectionSecretRef.name
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.credentials.connectionSecretRef.namespace
+    readinessChecks:
+      - type: None
+  - name: sql-db
+    base:
+      apiVersion: postgresql.sql.crossplane.io/v1alpha1
+      kind: Database
+      spec:
+        forProvider: {}
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+    readinessChecks:
+      - type: None
+  - name: kubernetes
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: ProviderConfig
+      spec:
+        credentials:
+          source: InjectedIdentity
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-sql"
+    readinessChecks:
+      - type: None
+  - name: sql-secret
+    base:
+      apiVersion: kubernetes.crossplane.io/v1alpha1
+      kind: Object
+      metadata:
+        name: sql-secret
+      spec:
+        references:
+        - patchesFrom:
+            apiVersion: rds.aws.upbound.io/v1beta1
+            kind: Instance
+            namespace: crossplane-system
+            fieldPath: spec.forProvider.username
+          toFieldPath: stringData.username
+        - patchesFrom:
+            apiVersion: v1
+            kind: Secret
+            namespace: crossplane-system
+            fieldPath: data.password
+          toFieldPath: data.password
+        - patchesFrom:
+            apiVersion: rds.aws.upbound.io/v1beta1
+            kind: Instance
+            namespace: crossplane-system
+            fieldPath: status.atProvider.address
+          toFieldPath: stringData.endpoint
+        forProvider:
+          manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+              namespace: crossplane-system
+            data:
+              port: NTQzMg==
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.references[0].patchesFrom.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.references[1].patchesFrom.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-password"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.references[1].patchesFrom.namespace
+    - fromFieldPath: spec.id
+      toFieldPath: spec.references[2].patchesFrom.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.manifest.metadata.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.providerConfigRef.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-sql"
+    - fromFieldPath: spec.claimRef.namespace
+      toFieldPath: spec.forProvider.manifest.metadata.namespace

@@ -29,8 +29,7 @@ kubectl apply \
 kubectl apply \
     --filename ../../crossplane-config/provider-azure-official.yaml
 
-kubectl apply \
-    --filename ../../crossplane-config/config-sql.yaml
+kubectl apply --filename ../../crossplane-config/config-sql.yaml
 
 kubectl create namespace infra
 
@@ -53,9 +52,6 @@ cat ../../examples/sql/azure-official.yaml \
     | sed -e "s@my-db@$NAME_RAND@g" \
     | kubectl --namespace infra apply --filename -
 
-# kubectl --namespace infra apply \
-#     --filename ../../examples/sql/azure-official.yaml
-
 kubectl --namespace infra get sqlclaims
 
 kubectl get managed
@@ -67,9 +63,6 @@ kubectl get managed
 cat ../../examples/sql/azure-official.yaml \
     | sed -e "s@my-db@$NAME_RAND@g" \
     | kubectl --namespace infra delete --filename -
-
-# kubectl --namespace infra delete \
-#     --filename ../../examples/sql/azure-official.yaml
 
 kubectl get managed
 

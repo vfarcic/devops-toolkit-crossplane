@@ -22,7 +22,7 @@ charts:
 providers:
   kubernetes:
     version: "v0.4.0"
-    package: crossplane/provider-kubernetes:v0.4.0
+    package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.6.0
     controllerConfigRef:
       name: provider-kubernetes
   helm:

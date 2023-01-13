@@ -11,4 +11,4 @@ metadata:
 spec:
   dependsOn:
   - provider: xpkg.upbound.io/crossplane-contrib/provider-helm
-    version: ">=v0.9"
+    version: ">=v0.13.0"

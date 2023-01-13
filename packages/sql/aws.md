@@ -34,8 +34,7 @@ kubectl apply \
 kubectl apply \
     --filename ../../crossplane-config/provider-aws-official.yaml
 
-kubectl apply \
-    --filename ../../crossplane-config/config-k8s.yaml
+kubectl apply --filename ../../crossplane-config/config-sql.yaml
 
 kubectl create namespace infra
 
@@ -50,10 +49,12 @@ kubectl apply \
 ## Create an EKS Cluster
 
 ```bash
+cat ../../examples/sql/aws-official.yaml
+
 kubectl --namespace infra apply \
-    --filename ../../examples/k8s/aws-eks-official.yaml
+    --filename ../../examples/sql/aws-official.yaml
     
-kubectl --namespace infra get clusterclaims
+kubectl --namespace infra get sqlclaims
 
 kubectl get managed
 ```
@@ -62,7 +63,7 @@ kubectl get managed
 
 ```bash
 kubectl --namespace infra delete \
-    --filename ../../examples/k8s/aws-eks-official.yaml
+    --filename ../../examples/sql/aws-official.yaml
 
 kubectl get managed
 

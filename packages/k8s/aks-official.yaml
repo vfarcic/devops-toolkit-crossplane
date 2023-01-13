@@ -272,7 +272,7 @@ spec:
             metadata:
               name: crossplane-provider-kubernetes
             spec:
-              package: crossplane/provider-kubernetes:v0.4.0
+              package: xpkg.upbound.io/crossplane-contrib/provider-kubernetes:v0.6.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:
@@ -296,7 +296,7 @@ spec:
             metadata:
               name: crossplane-provider-helm
             spec:
-              package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.12.0
+              package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.13.0
               controllerConfigRef:
                 name: provider-kubernetes
     patches:

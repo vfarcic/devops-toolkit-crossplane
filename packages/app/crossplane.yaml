@@ -10,5 +10,5 @@ metadata:
     meta.crossplane.io/readme: A Configuration package that defines application types like frontend, backend, backend with a database, etc.
 spec:
   dependsOn:
-  - provider: crossplane/provider-kubernetes
-    version: ">=v0.4.0"
+  - provider: xpkg.upbound.io/crossplane-contrib/provider-kubernetes
+    version: ">=v0.6.0"
