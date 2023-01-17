@@ -315,9 +315,11 @@ spec:
           vpcIdSelector:
             matchControllerRef: true
           egress:
-          - fromPort: 0
-            toPort: 0
-            ipProtocol: "-1"
+          - ipProtocol: "-1"  # This is enough to let EC2 treats it like 
+                              # 'Type=All trafic', 'Protocol=All', 'Port range=All'
+                              # The same approach can be applied to "ingress"
+#            fromPort: 0      # Crossplane has never 'SYNC=true' if used
+#            toPort: 0        # Crossplane has never 'SYNC=true' if used
             ipRanges:
             - cidrIp: 0.0.0.0/0
     patches:
