@@ -63,8 +63,7 @@ spec:
           - us-east1-d
           clusterSelector:
             matchControllerRef: true
-          config:
-            preemptible: true
+          nodeConfig:
             oauthScopes:
             - https://www.googleapis.com/auth/cloud-platform
           autoscaling:
@@ -85,7 +84,7 @@ spec:
     - fromFieldPath: spec.parameters.minNodeCount
       toFieldPath: spec.forProvider.autoscaling[0].minNodeCount
     - fromFieldPath: spec.parameters.nodeSize
-      toFieldPath: spec.forProvider.config.machineType
+      toFieldPath: spec.forProvider.nodeConfig.machineType
       transforms:
       - type: map
         map:
