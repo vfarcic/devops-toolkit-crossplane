@@ -35,7 +35,7 @@ providers:
     package: crossplane/provider-sql:v0.5.0
 configurations:
   app:
-    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.8"
+    package: "xpkg.upbound.io/devops-toolkit/dot-application:v0.3.9"
   monitoring:
     package: "xpkg.upbound.io/devops-toolkit/dot-monitoring:v0.0.41"
   sql:

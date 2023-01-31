@@ -342,7 +342,7 @@ spec:
             metadata:
               name: crossplane-app
             spec:
-              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.8
+              package: xpkg.upbound.io/devops-toolkit/dot-application:v0.3.9
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
