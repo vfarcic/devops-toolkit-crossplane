@@ -45,7 +45,7 @@ spec:
       fromFieldPath: metadata.name
       toFieldPath: status.clusterName
     - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions[0].reason
+      fromFieldPath: status.atProvider.status
       toFieldPath: status.controlPlaneStatus
   - name: clusterAuth
     base:
@@ -110,7 +110,7 @@ spec:
     - fromFieldPath: spec.parameters.minNodeCount
       toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
     - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions[0].reason
+      fromFieldPath: status.atProvider.status
       toFieldPath: status.nodePoolStatus
   - name: iamrole-controlplane
     base:
