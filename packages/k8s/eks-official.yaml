@@ -47,10 +47,6 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.conditions[0].reason
       toFieldPath: status.controlPlaneStatus
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.status
-      matchString: ACTIVE
   - name: clusterAuth
     base:
       apiVersion: eks.aws.upbound.io/v1beta1
@@ -116,10 +112,6 @@ spec:
     - type: ToCompositeFieldPath
       fromFieldPath: status.conditions[0].reason
       toFieldPath: status.nodePoolStatus
-    readinessChecks:
-    - type: MatchString
-      fieldPath: status.atProvider.status
-      matchString: ACTIVE
   - name: iamrole-controlplane
     base:
       apiVersion: iam.aws.upbound.io/v1beta1
