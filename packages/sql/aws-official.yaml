@@ -273,10 +273,6 @@ spec:
     patches:
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-    # - fromFieldPath: spec.id
-    #   toFieldPath: spec.writeConnectionSecretToRef.name
-    # - fromFieldPath: spec.claimRef.namespace
-    #   toFieldPath: spec.writeConnectionSecretToRef.namespace
     - fromFieldPath: spec.parameters.size
       toFieldPath: spec.forProvider.instanceClass
       transforms:
