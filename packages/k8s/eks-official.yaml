@@ -533,6 +533,17 @@ spec:
       - type: string
         string:
           fmt: '%s-1c'
+  - name: addonEbs
+    base:
+      apiVersion: ec2.aws.upbound.io/v1beta1
+      kind: Addon
+      metadata:
+        name: aws-ebs-csi-driver
+      spec:
+        forProvider:
+          region: us-east-1
+          clusterNameSelector:
+            matchControllerRef: true
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1

@@ -11,5 +11,3 @@ spec:
   parameters:
     nodeSize: medium
     minNodeCount: 1
-  writeConnectionSecretToRef:
-    name: a-team-gke

@@ -22,6 +22,4 @@ spec:
   parameters:
     version: "13"
     size: small
-  writeConnectionSecretToRef:
-    name: my-db
 

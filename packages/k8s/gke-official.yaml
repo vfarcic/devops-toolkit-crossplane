@@ -58,42 +58,42 @@ spec:
       spec:
         forProvider:
           locations:
-          - us-east1-b
-          - us-east1-c
-          - us-east1-d
+            - us-east1-b
+            - us-east1-c
+            - us-east1-d
           clusterSelector:
             matchControllerRef: true
           nodeConfig:
-            oauthScopes:
-            - https://www.googleapis.com/auth/cloud-platform
+            - oauthScopes:
+              - https://www.googleapis.com/auth/cloud-platform
           autoscaling:
             - enabled: true
               maxNodeCount: 3
           management:
             - autoRepair: true
-              autoUpgrade: false
+              autoUpgrade: true
     patches:
-    - fromFieldPath: spec.id
-      toFieldPath: metadata.name
-    - fromFieldPath: spec.writeConnectionSecretToRef.namespace
-      toFieldPath: spec.credentials.secretRef.namespace
-    - fromFieldPath: spec.parameters.version
-      toFieldPath: spec.forProvider.version
-    - fromFieldPath: spec.parameters.minNodeCount
-      toFieldPath: spec.forProvider.initialNodeCount
-    - fromFieldPath: spec.parameters.minNodeCount
-      toFieldPath: spec.forProvider.autoscaling[0].minNodeCount
-    - fromFieldPath: spec.parameters.nodeSize
-      toFieldPath: spec.forProvider.nodeConfig.machineType
-      transforms:
-      - type: map
-        map:
-          small: n1-standard-2
-          medium: n1-standard-4
-          large: n1-standard-16
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.conditions[0].reason
-      toFieldPath: status.nodePoolStatus
+      - fromFieldPath: spec.id
+        toFieldPath: metadata.name
+      - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+        toFieldPath: spec.credentials.secretRef.namespace
+      - fromFieldPath: spec.parameters.version
+        toFieldPath: spec.forProvider.version
+      - fromFieldPath: spec.parameters.minNodeCount
+        toFieldPath: spec.forProvider.initialNodeCount
+      - fromFieldPath: spec.parameters.minNodeCount
+        toFieldPath: spec.forProvider.autoscaling[0].minNodeCount
+      - fromFieldPath: spec.parameters.nodeSize
+        toFieldPath: spec.forProvider.nodeConfig[0].machineType
+        transforms:
+          - type: map
+            map:
+              small: n1-standard-2
+              medium: n1-standard-4
+              large: n1-standard-16
+      - type: ToCompositeFieldPath
+        fromFieldPath: status.conditions[0].reason
+        toFieldPath: status.nodePoolStatus
   - name: helm
     base:
       apiVersion: helm.crossplane.io/v1beta1
