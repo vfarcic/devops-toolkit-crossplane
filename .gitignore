@@ -9,3 +9,4 @@ kubeconfig*.yaml
 *.xpkg
 /vault-keys.json
 /aws-eks.yaml
+/gke_gcloud_auth_plugin_cache
