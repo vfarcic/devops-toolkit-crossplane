@@ -1,0 +1,116 @@
+grafana:
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.127.0.0.1.nip.io
+    ingressClassName: traefik
+  adminPassword: admin
+prometheus:
+  ingress:
+    enabled: true
+    hosts:
+      - prometheus.127.0.0.1.nip.io
+    ingressClassName: traefik
+kube-state-metrics:
+  extraArgs:
+    - "--custom-resource-state-config-file=/etc/ksm/crossplane.yaml"
+  volumeMounts:
+    - name: ksm-config
+      mountPath: /etc/ksm/
+  volumes:
+    - name: ksm-config
+      configMap:
+        name: ksm
+  collectors:
+    # Default types
+    # Copied from
+    # <https://github.com/prometheus-community/helm-charts/blob/c3b697d31b8631fb8847f7f313155deeb5962f98/charts/kube-state-metrics/values.yaml#L250>.
+    - certificatesigningrequests
+    - configmaps
+    - cronjobs
+    - daemonsets
+    - deployments
+    - endpoints
+    - horizontalpodautoscalers
+    - ingresses
+    - jobs
+    - leases
+    - limitranges
+    - mutatingwebhookconfigurations
+    - namespaces
+    - networkpolicies
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    - poddisruptionbudgets
+    - pods
+    - replicasets
+    - replicationcontrollers
+    - resourcequotas
+    - secrets
+    - services
+    - statefulsets
+    - storageclasses
+    - validatingwebhookconfigurations
+    - volumeattachments
+    # CRDs
+    - sqlclaims
+    - vpcs
+    - subnets
+    - subnetgroups
+    - internetgateways
+    - routetables
+    - routes
+    - mainroutetableassociations
+    - routetableassociations
+    - securitygroups
+    - securitygrouprules
+    - instances
+    - databases
+    - objects
+  rbac:
+    extraRules:
+      - apiGroups:
+          - devopstoolkitseries.com
+        resources:
+          - sqlclaims
+        verbs:
+          - list
+          - watch
+      - apiGroups:
+          - ec2.aws.upbound.io
+        resources:
+          - vpcs
+          - subnets
+          - internetgateways
+          - routetables
+          - routes
+          - mainroutetableassociations
+          - routetableassociations
+          - securitygroups
+          - securitygrouprules
+        verbs:
+          - list
+          - watch
+      - apiGroups:
+          - rds.aws.upbound.io
+        resources:
+          - subnetgroups
+          - instances
+        verbs:
+          - list
+          - watch
+      - apiGroups:
+          - postgresql.sql.crossplane.io
+        resources:
+          - databases
+        verbs:
+          - list
+          - watch
+      - apiGroups:
+          - kubernetes.crossplane.io
+        resources:
+          - objects
+        verbs:
+          - list
+          - watch
