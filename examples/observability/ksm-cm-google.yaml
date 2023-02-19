@@ -13,6 +13,9 @@ data:
             group: devopstoolkitseries.com
             version: v1alpha1
             kind: SQLClaim
+          labelsFromPath:
+            name: [metadata, name]
+            namespace: [metadata, namespace]
           metrics:
             - name: status_condition
               help: "The conditions of a SQLClaim."
@@ -29,12 +32,15 @@ data:
                     - "False"
                     - "Unknown"
         - groupVersionKind:
-            group: ec2.aws.upbound.io
-            version: v1beta1
-            kind: VPC
+            group: devopstoolkitseries.com
+            version: v1alpha1
+            kind: ClusterClaim
+          labelsFromPath:
+            name: [metadata, name]
+            namespace: [metadata, namespace]
           metrics:
             - name: status_condition
-              help: "The conditions of a VPC."
+              help: "The conditions of a ClusterClaim."
               each:
                 type: StateSet
                 stateSet:
@@ -48,12 +54,14 @@ data:
                     - "False"
                     - "Unknown"
         - groupVersionKind:
-            group: ec2.aws.upbound.io
+            group: container.gcp.upbound.io
             version: v1beta1
-            kind: Subnet
+            kind: Cluster
+          labelsFromPath:
+            name: [metadata, name]
           metrics:
             - name: status_condition
-              help: "The conditions of a Subnet."
+              help: "The conditions of a Cluster."
               each:
                 type: StateSet
                 stateSet:
@@ -67,12 +75,14 @@ data:
                     - "False"
                     - "Unknown"
         - groupVersionKind:
-            group: rds.aws.upbound.io
+            group: container.gcp.upbound.io
             version: v1beta1
-            kind: SubnetGroup
+            kind: NodePool
+          labelsFromPath:
+            name: [metadata, name]
           metrics:
             - name: status_condition
-              help: "The conditions of a SubnetGroup."
+              help: "The conditions of a NodePool."
               each:
                 type: StateSet
                 stateSet:
@@ -86,12 +96,14 @@ data:
                     - "False"
                     - "Unknown"
         - groupVersionKind:
-            group: ec2.aws.upbound.io
+            group: sql.gcp.upbound.io
             version: v1beta1
-            kind: InternetGateway
+            kind: DatabaseInstance
+          labelsFromPath:
+            name: [metadata, name]
           metrics:
             - name: status_condition
-              help: "The conditions of a InternetGateway."
+              help: "The conditions of a DatabaseInstance."
               each:
                 type: StateSet
                 stateSet:
@@ -105,126 +117,14 @@ data:
                     - "False"
                     - "Unknown"
         - groupVersionKind:
-            group: ec2.aws.upbound.io
+            group: sql.gcp.upbound.io
             version: v1beta1
-            kind: RouteTable
+            kind: User
+          labelsFromPath:
+            name: [metadata, name]
           metrics:
             - name: status_condition
-              help: "The conditions of a RouteTable."
-              each:
-                type: StateSet
-                stateSet:
-                  labelName: status
-                  path: [status, conditions]
-                  labelsFromPath:
-                    condition: [type]
-                  valueFrom: [status]
-                  list:
-                    - "True"
-                    - "False"
-                    - "Unknown"
-        - groupVersionKind:
-            group: ec2.aws.upbound.io
-            version: v1beta1
-            kind: Route
-          metrics:
-            - name: status_condition
-              help: "The conditions of a Route."
-              each:
-                type: StateSet
-                stateSet:
-                  labelName: status
-                  path: [status, conditions]
-                  labelsFromPath:
-                    condition: [type]
-                  valueFrom: [status]
-                  list:
-                    - "True"
-                    - "False"
-                    - "Unknown"
-        - groupVersionKind:
-            group: ec2.aws.upbound.io
-            version: v1beta1
-            kind: MainRouteTableAssociation
-          metrics:
-            - name: status_condition
-              help: "The conditions of a MainRouteTableAssociation."
-              each:
-                type: StateSet
-                stateSet:
-                  labelName: status
-                  path: [status, conditions]
-                  labelsFromPath:
-                    condition: [type]
-                  valueFrom: [status]
-                  list:
-                    - "True"
-                    - "False"
-                    - "Unknown"
-        - groupVersionKind:
-            group: ec2.aws.upbound.io
-            version: v1beta1
-            kind: RouteTableAssociation
-          metrics:
-            - name: status_condition
-              help: "The conditions of a RouteTableAssociation."
-              each:
-                type: StateSet
-                stateSet:
-                  labelName: status
-                  path: [status, conditions]
-                  labelsFromPath:
-                    condition: [type]
-                  valueFrom: [status]
-                  list:
-                    - "True"
-                    - "False"
-                    - "Unknown"
-        - groupVersionKind:
-            group: ec2.aws.upbound.io
-            version: v1beta1
-            kind: SecurityGroup
-          metrics:
-            - name: status_condition
-              help: "The conditions of a SecurityGroup."
-              each:
-                type: StateSet
-                stateSet:
-                  labelName: status
-                  path: [status, conditions]
-                  labelsFromPath:
-                    condition: [type]
-                  valueFrom: [status]
-                  list:
-                    - "True"
-                    - "False"
-                    - "Unknown"
-        - groupVersionKind:
-            group: ec2.aws.upbound.io
-            version: v1beta1
-            kind: SecurityGroupRule
-          metrics:
-            - name: status_condition
-              help: "The conditions of a SecurityGroupRule."
-              each:
-                type: StateSet
-                stateSet:
-                  labelName: status
-                  path: [status, conditions]
-                  labelsFromPath:
-                    condition: [type]
-                  valueFrom: [status]
-                  list:
-                    - "True"
-                    - "False"
-                    - "Unknown"
-        - groupVersionKind:
-            group: rds.aws.upbound.io
-            version: v1beta1
-            kind: Instance
-          metrics:
-            - name: status_condition
-              help: "The conditions of a Instance."
+              help: "The conditions of a User."
               each:
                 type: StateSet
                 stateSet:
@@ -241,6 +141,8 @@ data:
             group: postgresql.sql.crossplane.io
             version: v1alpha1
             kind: Database
+          labelsFromPath:
+            name: [metadata, name]
           metrics:
             - name: status_condition
               help: "The conditions of a Database."
@@ -260,9 +162,32 @@ data:
             group: kubernetes.crossplane.io
             version: v1alpha1
             kind: Object
+          labelsFromPath:
+            name: [metadata, name]
           metrics:
             - name: status_condition
               help: "The conditions of an Object."
+              each:
+                type: StateSet
+                stateSet:
+                  labelName: status
+                  path: [status, conditions]
+                  labelsFromPath:
+                    condition: [type]
+                  valueFrom: [status]
+                  list:
+                    - "True"
+                    - "False"
+                    - "Unknown"
+        - groupVersionKind:
+            group: helm.crossplane.io
+            version: v1alpha1
+            kind: Release
+          labelsFromPath:
+            name: [metadata, name]
+          metrics:
+            - name: status_condition
+              help: "The conditions of a Release."
               each:
                 type: StateSet
                 stateSet:
