@@ -80,7 +80,7 @@ kube-state-metrics:
           - nodepools
         verbs:
           - list
-          - watch          
+          - watch
       - apiGroups:
           - sql.gcp.upbound.io
         resources:
