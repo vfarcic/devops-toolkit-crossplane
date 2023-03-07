@@ -1,0 +1,59 @@
+---
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: crossplane-sql
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["devopstoolkitseries.com"]
+      apiVersions: ["v1alpha1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["sqlclaims", "sqls"]
+  validations:
+  - expression: "object.spec.parameters.size.matches('^small|medium|large$')"
+    message: "size must be one of small, medium, or large"
+---
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: crossplane-sql
+spec:
+  policyName: crossplane-sql
+  matchResources:
+    namespaceSelector:
+      matchExpressions:
+      - key: environment
+        operator: NotIn
+        values:
+        - silly
+---
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: crossplane-sql-production
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["devopstoolkitseries.com"]
+      apiVersions: ["v1alpha1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["sqlclaims", "sqls"]
+  validations:
+  - expression: "object.spec.parameters.size.matches('^medium|large$')"
+    message: "size must be one of medium or large"
+  - expression: "object.spec.parameters.version.matches('^1[3-4][.].*$')"
+    message: "version must be one of 13.* or 14.*"
+---
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: crossplane-sql-production
+spec:
+  policyName: crossplane-sql-production
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        environment: production
