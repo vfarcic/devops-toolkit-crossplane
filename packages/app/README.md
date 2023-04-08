@@ -7,11 +7,11 @@ export UP_ACCOUNT=[...]
 # Replace `[...]` with the Upbound Cloud token
 export UP_TOKEN=[...]
 
-# Create `dot-kubernetes` repository
+# Create `dot-application` repository
 
 up login
 
-export VERSION=v0.3.9
+export VERSION=v0.4.5
 
 up xpkg build --name app.xpkg
 

@@ -47,11 +47,21 @@ spec:
                     type: object
                     properties:
                       name:
-                        description: The name of the Secret with DB authentication (used only with compositions with the label location=remote).
+                        description: The name of the Secret with DB authentication (used only with compositions with the label location=remote). This field is used only with the `app-backend-db*` Compositions.
                         type: string
                       namespace:
-                        description: The Namespace with the Secret with DB authentication (used only with compositions with the label location=remote).
+                        description: The Namespace with the Secret with DB authentication (used only with compositions with the label location=remote).  This field is used only with the `app-backend-db*` Compositions.
                         type: string
+                  db:
+                    type: object
+                    properties:
+                      version:
+                        description: The DB version depends on the DB type and versions available in the selected provider. This field is used only with the `app-backend-db-google` Composition.
+                        type: string
+                      size:
+                        description: Supported sizes are `small`, `medium`, and `large`. This field is used only with the Composition `app-backend-db-google`.
+                        type: string
+                        default: small
                   kubernetesProviderConfigName:
                     description: The name of the Kubernetes provider config (used only with compositions with the label location=remote).
                     type: string
