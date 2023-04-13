@@ -11,7 +11,7 @@ export UP_TOKEN=[...]
 
 up login
 
-export VERSION=v0.4.5
+export VERSION=v0.5.0
 
 up xpkg build --name app.xpkg
 
