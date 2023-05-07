@@ -1,20 +1,5 @@
-## Publish To Upbound
+## WARNING!!!
 
-```bash
-# Replace `[...]` with the Upbound Cloud account
-export UP_ACCOUNT=[...]
+This package has been moved to https://github.com/vfarcic/crossplane-app
 
-# Replace `[...]` with the Upbound Cloud token
-export UP_TOKEN=[...]
-
-# Create `dot-application` repository
-
-up login
-
-export VERSION=v0.5.0
-
-up xpkg build --name app.xpkg
-
-up xpkg push --package app.xpkg \
-    xpkg.upbound.io/$UP_ACCOUNT/dot-application:$VERSION
-```
+The files in this directory are not maintained anymore and will be removed in the future.
