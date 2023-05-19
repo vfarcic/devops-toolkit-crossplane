@@ -1,21 +1,5 @@
-## Publish To Upbound
+## WARNING!!!
 
-```bash
-# Replace `[...]` with the Upbound Cloud account
-export UP_ACCOUNT=[...]
+This package has been moved to https://github.com/vfarcic/crossplane-kubernetes.
 
-# Replace `[...]` with the Upbound Cloud token
-export UP_TOKEN=[...]
-
-# Create `dot-kubernetes` repository
-
-up login
-
-export VERSION=v0.9.38
-
-up xpkg build --name k8s.xpkg
-
-up xpkg push \
-    --package k8s.xpkg \
-    xpkg.upbound.io/$UP_ACCOUNT/dot-kubernetes:$VERSION
-```
+The files in this directory are not maintained anymore and will be removed in the future.
