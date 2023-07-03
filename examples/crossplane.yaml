@@ -10,7 +10,7 @@ spec:
   source:
     chart: crossplane
     repoURL: https://charts.crossplane.io/stable
-    targetRevision: 1.9.0
+    targetRevision: 1.12.2
   destination:
     namespace: crossplane-system
     server: https://kubernetes.default.svc
