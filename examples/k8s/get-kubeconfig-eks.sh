@@ -1,5 +1,3 @@
-unset KUBECONFIG
-
 export NAMESPACE=${1:-a-team}
 
 export SECRET=${2:-a-team-eks}
