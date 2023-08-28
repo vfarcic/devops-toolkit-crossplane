@@ -1,5 +1,4 @@
 ---
-
 apiVersion: ec2.aws.upbound.io/v1beta1
 kind: Instance
 metadata:
@@ -11,9 +10,7 @@ spec:
     instanceType: t2.micro
     subnetIdRef:
       name: my-vm
-
 ---
-
 apiVersion: ec2.aws.upbound.io/v1beta1
 kind: VPC
 metadata:
@@ -23,9 +20,7 @@ spec:
     region: us-east-1
     cidrBlock: 10.0.0.0/16
     enableDnsSupport: true
-
 ---
-
 apiVersion: ec2.aws.upbound.io/v1beta1
 kind: Subnet
 metadata:
