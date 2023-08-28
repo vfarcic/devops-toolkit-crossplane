@@ -1,0 +1,8 @@
+project: dot
+providers:
+  google_secretmanager:
+    env:
+      AWS_ACCESS_KEY_ID:
+        path: projects/vfarcic/secrets/aws-access-key-id/versions/1
+      AWS_SECRET_ACCESS_KEY:
+        path: projects/vfarcic/secrets/aws-secret-access-key/versions/1
