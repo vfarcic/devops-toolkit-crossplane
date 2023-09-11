@@ -18,4 +18,4 @@ spec:
       db: postgresql
   parameters:
     version: "13.4"
-    size: small
+    size: medium
