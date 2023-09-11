@@ -21,6 +21,7 @@ metadata:
   name: crossplane-sql
 spec:
   policyName: crossplane-sql
+  validationActions: [Deny]
   matchResources:
     namespaceSelector:
       matchExpressions:
@@ -53,6 +54,7 @@ metadata:
   name: crossplane-sql-production
 spec:
   policyName: crossplane-sql-production
+  validationActions: [Deny]
   matchResources:
     namespaceSelector:
       matchLabels:
